@@ -6,7 +6,7 @@
 
 # Interface: PreparedTransactionsNeedDecreaseSpendAmountForGas
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:54](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L54)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:54](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L54)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:54](https://g
 decreasedSpendAmount: BigNumber
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:59](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L59)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:59](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L59)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:59](https://g
 estimatedGasFeeInDecimal: BigNumber
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:58](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L58)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:58](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L58)
 
 ---
 
@@ -36,7 +36,7 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:58](https://g
 feeCurrency: TokenBalance
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:56](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L56)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:56](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L56)
 
 ---
 
@@ -46,7 +46,7 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:56](https://g
 maxGasFeeInDecimal: BigNumber
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:57](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L57)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:57](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L57)
 
 ---
 
@@ -56,4 +56,4 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:57](https://g
 type: 'need-decrease-spend-amount-for-gas'
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:55](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L55)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:55](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L55)

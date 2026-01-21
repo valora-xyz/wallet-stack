@@ -6,7 +6,7 @@
 
 # Interface: PublicAppConfig\<tabScreenConfigs\>
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:23](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L23)
+Defined in: [packages/wallet-stack/src/public/types.tsx:23](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L23)
 
 ## Type Parameters
 
@@ -20,7 +20,7 @@ Defined in: [packages/wallet-stack/src/public/types.tsx:23](https://github.com/d
 deepLinkUrlScheme: string
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:26](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L26)
+Defined in: [packages/wallet-stack/src/public/types.tsx:26](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L26)
 
 ---
 
@@ -30,7 +30,7 @@ Defined in: [packages/wallet-stack/src/public/types.tsx:26](https://github.com/d
 displayName: string
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:25](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L25)
+Defined in: [packages/wallet-stack/src/public/types.tsx:25](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L25)
 
 ---
 
@@ -40,7 +40,7 @@ Defined in: [packages/wallet-stack/src/public/types.tsx:25](https://github.com/d
 optional experimental: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:206](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L206)
+Defined in: [packages/wallet-stack/src/public/types.tsx:206](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L206)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -289,7 +289,7 @@ projectName: string
 optional features: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:157](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L157)
+Defined in: [packages/wallet-stack/src/public/types.tsx:157](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L157)
 
 #### cloudBackup?
 
@@ -353,7 +353,7 @@ projectId: string
 optional ios: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:29](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L29)
+Defined in: [packages/wallet-stack/src/public/types.tsx:29](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L29)
 
 #### appStoreId?
 
@@ -383,7 +383,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:178](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L178)
+Defined in: [packages/wallet-stack/src/public/types.tsx:178](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L178)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -396,7 +396,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:195](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L195)
+Defined in: [packages/wallet-stack/src/public/types.tsx:195](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L195)
 
 #### enabledNetworkIds?
 
@@ -412,7 +412,7 @@ optional enabledNetworkIds: NetworkId[];
 registryName: string
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:24](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L24)
+Defined in: [packages/wallet-stack/src/public/types.tsx:24](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L24)
 
 ---
 
@@ -422,7 +422,7 @@ Defined in: [packages/wallet-stack/src/public/types.tsx:24](https://github.com/d
 optional screens: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:140](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L140)
+Defined in: [packages/wallet-stack/src/public/types.tsx:140](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L140)
 
 #### custom()?
 
@@ -499,7 +499,7 @@ optional screens: tabScreenConfigs;
 optional themes: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:34](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/public/types.tsx#L34)
+Defined in: [packages/wallet-stack/src/public/types.tsx:34](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L34)
 
 #### default
 

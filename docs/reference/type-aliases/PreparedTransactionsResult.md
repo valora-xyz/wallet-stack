@@ -13,4 +13,4 @@ type PreparedTransactionsResult =
   | PreparedTransactionsNotEnoughBalanceForGas
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:67](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L67)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:67](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L67)
