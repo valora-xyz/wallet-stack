@@ -72,7 +72,7 @@ export const withAndroidUserAgent: ConfigPlugin<{ appName?: string }> = (config,
   return withMainApplication(config, (config) => {
     if (!['kt'].includes(config.modResults.language)) {
       throw new Error(
-        `Cannot setup Divvi mobile because the project MainApplication is not a supported language: ${config.modResults.language}`
+        `Cannot setup Wallet Stack because the project MainApplication is not a supported language: ${config.modResults.language}`
       )
     }
 
@@ -85,7 +85,7 @@ export const withAndroidUserAgent: ConfigPlugin<{ appName?: string }> = (config,
     } catch (error: any) {
       if (error.code === 'ERR_NO_MATCH') {
         throw new Error(
-          `Cannot add Divvi mobile to the project's MainApplication because it's malformed. Please report this with a copy of your project MainApplication.`
+          `Cannot add Wallet Stack to the project's MainApplication because it's malformed. Please report this with a copy of your project MainApplication.`
         )
       }
       throw error

@@ -63,7 +63,7 @@ export const withIosAppDelegateResetKeychain: ConfigPlugin = (config) => {
   return withAppDelegate(config, (config) => {
     if (config.modResults.language !== 'swift') {
       throw new Error(
-        `Cannot setup Divvi mobile because the project AppDelegate is not Swift: ${config.modResults.language}`
+        `Cannot setup Wallet Stack because the project AppDelegate is not Swift: ${config.modResults.language}`
       )
     }
 
@@ -73,7 +73,7 @@ export const withIosAppDelegateResetKeychain: ConfigPlugin = (config) => {
     } catch (error: any) {
       if (error.code === 'ERR_NO_MATCH') {
         throw new Error(
-          `Cannot add Divvi mobile to the project's AppDelegate because it's malformed. Please report this with a copy of your project AppDelegate.`
+          `Cannot add Wallet Stack to the project's AppDelegate because it's malformed. Please report this with a copy of your project AppDelegate.`
         )
       }
       throw error
