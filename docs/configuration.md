@@ -18,11 +18,11 @@ import { createApp } from 'wallet-stack'
 
 const App = createApp({
   // Unique identifier for your app
-  registryName: 'my-divvi-app',
+  registryName: 'my-wallet-app',
   // Display name shown to users
-  displayName: 'My Divvi App',
+  displayName: 'My Wallet App',
   // URL scheme for deep linking
-  deepLinkUrlScheme: 'mydivviapp',
+  deepLinkUrlScheme: 'mywalletapp',
 })
 ```
 
