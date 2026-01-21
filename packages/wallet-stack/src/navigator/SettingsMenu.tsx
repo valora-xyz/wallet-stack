@@ -341,9 +341,4 @@ const styles = StyleSheet.create({
   debugInfoText: {
     ...typeScale.bodySmall,
   },
-  logo: {
-    marginTop: 'auto',
-    paddingVertical: Spacing.Thick24,
-    alignItems: 'center',
-  },
 })
