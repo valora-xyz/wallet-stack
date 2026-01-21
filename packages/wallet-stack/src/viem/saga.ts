@@ -78,7 +78,6 @@ export function* sendPreparedTransactions(
     blockTag: 'pending',
   })
 
-  const chainId = yield* call([wallet, 'getChainId'])
   const txHashes: Hash[] = []
   for (let i = 0; i < preparedTransactions.length; i++) {
     const preparedTransaction = preparedTransactions[i]
