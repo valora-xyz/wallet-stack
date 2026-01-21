@@ -1,8 +1,6 @@
-import { getReferralTag } from '@divvi/referral-sdk'
 import BigNumber from 'bignumber.js'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { TransactionEvents } from 'src/analytics/Events'
-import { getAppConfig } from 'src/appConfig'
 import { TokenBalanceWithAddress } from 'src/tokens/slice'
 import { Network, NetworkId } from 'src/transactions/types'
 import { estimateFeesPerGas } from 'src/viem/estimateFeesPerGas'
@@ -22,7 +20,7 @@ import {
   tryEstimateTransaction,
   tryEstimateTransactions,
 } from 'src/viem/prepareTransactions'
-import { mockAppConfig, mockCeloTokenBalance, mockEthTokenBalance } from 'test/values'
+import { mockCeloTokenBalance, mockEthTokenBalance } from 'test/values'
 import {
   Address,
   BaseError,
@@ -37,7 +35,6 @@ import {
 import { estimateGas } from 'viem/actions'
 import mocked = jest.mocked
 
-jest.mock('@divvi/referral-sdk')
 jest.mock('src/viem/estimateFeesPerGas')
 jest.mock('viem', () => ({
   ...jest.requireActual('viem'),
@@ -61,7 +58,6 @@ jest.mock('src/viem/index', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks()
-  jest.mocked(getReferralTag).mockReturnValue('divviData')
 })
 
 describe('prepareTransactions module', () => {
@@ -144,67 +140,6 @@ describe('prepareTransactions module', () => {
   }
   const mockPublicClient = {} as unknown as jest.Mocked<(typeof publicClient)[Network.Celo]>
   describe('prepareTransactions function', () => {
-    it.each([
-      {
-        description: 'is attached when data is provided',
-        inputData: '0xdata' as Hex,
-        expectedData: '0xdatadivviData',
-      },
-      {
-        description: 'is not attached when data is undefined',
-        inputData: undefined,
-        expectedData: undefined,
-      },
-    ])('divvi data $description', async ({ inputData, expectedData }) => {
-      jest.mocked(getAppConfig).mockReturnValueOnce({
-        ...mockAppConfig,
-        divviProtocol: {
-          divviId: '0xdivviId',
-        },
-      })
-      jest.mocked(getReferralTag).mockReturnValue('divviData')
-      mocked(estimateFeesPerGas).mockResolvedValue({
-        maxFeePerGas: BigInt(100),
-        maxPriorityFeePerGas: BigInt(2),
-        baseFeePerGas: BigInt(50),
-      })
-      mocked(estimateGas).mockResolvedValue(BigInt(1_000))
-
-      // max gas fee is 100 * 1k = 100k units, too high for either fee currency
-
-      const result = await prepareTransactions({
-        feeCurrencies: mockFeeCurrencies,
-        spendToken: mockSpendToken,
-        spendTokenAmount: new BigNumber(45_000),
-        decreasedAmountGasFeeMultiplier: 1,
-        baseTransactions: [
-          {
-            from: '0xfrom' as Address,
-            to: '0xto' as Address,
-            data: inputData,
-          },
-        ],
-        isGasSubsidized: true,
-        origin: 'send',
-      })
-      expect(result).toStrictEqual({
-        type: 'possible',
-        feeCurrency: mockFeeCurrencies[0],
-        transactions: [
-          {
-            from: '0xfrom',
-            to: '0xto',
-            data: expectedData,
-
-            gas: BigInt(1000),
-            maxFeePerGas: BigInt(100),
-            maxPriorityFeePerGas: BigInt(2),
-            _baseFeePerGas: BigInt(50),
-          },
-        ],
-      })
-    })
-
     it('throws if trying to sendAmount > sendToken balance', async () => {
       await expect(() =>
         prepareTransactions({
@@ -994,45 +929,6 @@ describe('prepareTransactions module', () => {
       // The estimateGas should have been called with reduced amount (1)
       expect(capturedData).toContain(
         '0000000000000000000000000000000000000000000000000000000000000001'
-      ) // 1 in hex
-
-      // But the returned transaction should have the original data
-      expect(result).toBeDefined()
-      expect(result?.data).toBe(originalTransferData)
-      expect(result?.gas).toBe(BigInt(21000))
-    })
-    it('estimates with reduced amount for gas-token ERC20 transfers with divvi suffix and restores original amount', async () => {
-      const originalTransferData =
-        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8divviData' as Hex // 1000
-      const baseTransaction: TransactionRequest = {
-        from: '0x123' as Address,
-        to: mockSpendToken.address as Address,
-        data: originalTransferData,
-      }
-
-      // Mock estimateGas to capture what data is passed
-      let capturedData: Hex | undefined
-      mocked(estimateGas).mockImplementation(async (_client, tx: any) => {
-        capturedData = tx.data
-        return BigInt(21000)
-      })
-
-      const result = await tryEstimateTransaction({
-        client: mockPublicClient,
-        baseTransaction,
-        maxFeePerGas: BigInt(100),
-        maxPriorityFeePerGas: BigInt(2),
-        baseFeePerGas: BigInt(50),
-        feeCurrencySymbol: mockSpendToken.symbol,
-        feeCurrencyAddress: mockSpendToken.address as Address,
-        spendToken: mockSpendToken,
-        spendTokenAmount: new BigNumber(1000),
-        isGasSubsidized: false,
-      })
-
-      // The estimateGas should have been called with reduced amount (1)
-      expect(capturedData).toContain(
-        '0000000000000000000000000000000000000000000000000000000000000001divviData'
       ) // 1 in hex
 
       // But the returned transaction should have the original data

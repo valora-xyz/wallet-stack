@@ -1,4 +1,3 @@
-import { submitDivviReferralSaga } from 'src/divviProtocol/saga'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { CANCELLED_PIN_INPUT } from 'src/pincode/authentication'
@@ -98,11 +97,6 @@ export function* sendPreparedTransactions(
       'Successfully sent transaction to the network',
       hash
     )
-
-    yield* call(submitDivviReferralSaga, {
-      txHash: hash,
-      chainId,
-    })
 
     const tokensById = yield* select(tokensByIdSelector)
     const feeCurrencyId = getFeeCurrencyToken([preparedTransaction], networkId, tokensById)?.tokenId

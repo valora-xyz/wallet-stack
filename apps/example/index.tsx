@@ -1,7 +1,7 @@
-import { createApp } from 'wallet-stack'
 import { registerRootComponent } from 'expo'
 import Constants from 'expo-constants'
 import React from 'react'
+import { createApp } from 'wallet-stack'
 import CustomScreen from './screens/CustomScreen'
 import PlaygroundScreen from './screens/PlaygroundScreen'
 
@@ -75,10 +75,6 @@ const App = createApp({
       </>
     ),
   },
-  // Find your divviId at https://app.divvi.xyz/
-  // divviProtocol: {
-  //   divviId: '',
-  // },
 
   // Special cases to cover experimental features with e2e tests
   ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {

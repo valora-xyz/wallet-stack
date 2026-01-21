@@ -30,22 +30,6 @@ const App = createApp({
 
 You can customize various aspects of your app by adding optional configuration:
 
-### Integrating with the Divvi Protocol
-
-Earn Divvi rewards based on the value your users bring to the blockchain protocols you integrate with. To register your app with the Divvi Protocol visit the [Divvi Portal](https://app.divvi.xyz/)
-
-To enable Divvi Protocol integration, add the `divviProtocol` configuration to your app:
-
-```typescript
-const App = createApp({
-  // ... basic config
-  // Find your divviId at https://app.divvi.xyz/
-  divviProtocol: {
-    divviId: '0xyour_divvi_id',
-  },
-})
-```
-
 ### Theme Customization
 
 Wallet Stack allows you to customize the look and feel of your app through the `themes` configuration. Note that currently only a single theme is supported.
