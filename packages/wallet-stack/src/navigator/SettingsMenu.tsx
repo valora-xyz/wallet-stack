@@ -35,7 +35,6 @@ import Lock from 'src/icons/Lock'
 import Wallet from 'src/icons/navigator/Wallet'
 import Preferences from 'src/icons/Preferences'
 import Stack from 'src/icons/Stack'
-import DivviLogo from 'src/images/DivviLogo'
 import { headerWithCloseButton } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -277,9 +276,6 @@ export default function SettingsMenu({ route }: Props) {
           </View>
         </TouchableWithoutFeedback>
         {getDevSettingsComp()}
-        <View style={styles.logo}>
-          <DivviLogo />
-        </View>
       </ScrollView>
     </SafeAreaView>
   )
