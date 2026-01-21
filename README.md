@@ -22,7 +22,6 @@ Built on top of [Expo](https://expo.dev), the industry standard for React Native
   - Optimism Mainnet
   - Polygon PoS
   - Base
-- 🔌 **Protocol Integration**: Native support for the Divvi protocol
 - 📱 **App Store Ready**: Streamlined deployment process using Expo EAS
 
 ## Quick Start
@@ -74,12 +73,6 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 ## Security
 
 Found a security issue? Please report it following our [Security Policy](SECURITY.md).
-
-## Community
-
-- 💬 Join our [Discord](https://discord.com/invite/EaxZDhMuDn)
-- 🐦 Follow us on [X](https://x.com/letsdivvi)
-- 📝 Read our [Blog](https://blog.divvi.xyz)
 
 ## License
 

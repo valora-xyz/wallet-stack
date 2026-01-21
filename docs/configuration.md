@@ -18,33 +18,17 @@ import { createApp } from 'wallet-stack'
 
 const App = createApp({
   // Unique identifier for your app
-  registryName: 'my-divvi-app',
+  registryName: 'my-wallet-app',
   // Display name shown to users
-  displayName: 'My Divvi App',
+  displayName: 'My Wallet App',
   // URL scheme for deep linking
-  deepLinkUrlScheme: 'mydivviapp',
+  deepLinkUrlScheme: 'mywalletapp',
 })
 ```
 
 ## Customizing Your App
 
 You can customize various aspects of your app by adding optional configuration:
-
-### Integrating with the Divvi Protocol
-
-Earn Divvi rewards based on the value your users bring to the blockchain protocols you integrate with. To register your app with the Divvi Protocol visit the [Divvi Portal](https://app.divvi.xyz/)
-
-To enable Divvi Protocol integration, add the `divviProtocol` configuration to your app:
-
-```typescript
-const App = createApp({
-  // ... basic config
-  // Find your divviId at https://app.divvi.xyz/
-  divviProtocol: {
-    divviId: '0xyour_divvi_id',
-  },
-})
-```
 
 ### Theme Customization
 

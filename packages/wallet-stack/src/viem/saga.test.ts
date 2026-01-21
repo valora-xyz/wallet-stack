@@ -3,7 +3,6 @@ import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { EffectProviders, StaticProvider, throwError } from 'redux-saga-test-plan/providers'
 import { call } from 'redux-saga/effects'
-import { submitDivviReferralSaga } from 'src/divviProtocol/saga'
 import { BaseStandbyTransaction, addStandbyTransaction } from 'src/transactions/slice'
 import { NetworkId, TokenTransactionTypeV2 } from 'src/transactions/types'
 import { ViemWallet } from 'src/viem/getLockableWallet'
@@ -22,10 +21,6 @@ import {
   mockQRCodeRecipient,
 } from 'test/values'
 import { getTransactionCount } from 'viem/actions'
-
-jest.mock('src/divviProtocol/saga', () => ({
-  submitDivviReferralSaga: jest.fn().mockResolvedValue(true),
-}))
 
 const preparedTransactions: TransactionRequest[] = [
   {
@@ -121,14 +116,6 @@ describe('sendPreparedTransactions', () => {
       .withState(createMockStore({}).getState())
       .provide(createDefaultProviders())
       .call(getViemWallet, networkConfig.viemChain.celo, false)
-      .call(submitDivviReferralSaga, {
-        txHash: '0xmockTxHash1',
-        chainId: 42220,
-      })
-      .call(submitDivviReferralSaga, {
-        txHash: '0xmockTxHash2',
-        chainId: 42220,
-      })
       .put(
         addStandbyTransaction({
           ...mockStandbyTransactions[0],

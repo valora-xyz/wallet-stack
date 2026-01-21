@@ -1,9 +1,7 @@
-import { getReferralTag } from '@divvi/referral-sdk'
 import BigNumber from 'bignumber.js'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { TransactionEvents } from 'src/analytics/Events'
 import { TransactionOrigin } from 'src/analytics/types'
-import { getAppConfig } from 'src/appConfig'
 import { STATIC_GAS_PADDING } from 'src/config'
 import {
   NativeTokenBalance,
@@ -411,23 +409,6 @@ export async function prepareTransactions({
         spendToken.decimals
       }`
     )
-  }
-
-  // Attach divvi tag to all transactions if divvi is enabled
-  const config = getAppConfig()
-  if (config.divviProtocol) {
-    const walletAddress = baseTransactions[0].from
-    const referralTag =
-      walletAddress &&
-      getReferralTag({
-        consumer: config.divviProtocol.divviId,
-        user: walletAddress,
-      })
-    if (referralTag) {
-      baseTransactions.forEach((tx) => {
-        tx.data = tx.data && ((tx.data + referralTag) as Hex)
-      })
-    }
   }
 
   const gasFees: Array<{

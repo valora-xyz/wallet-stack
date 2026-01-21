@@ -1,5 +1,4 @@
 import type { ImageSourcePropType } from 'react-native'
-import { Address } from 'viem'
 import type { NavigatorScreen } from './navigate'
 
 // Type for tab configuration
@@ -261,10 +260,6 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     showImportTokensFlow?: boolean
     showSwapTokenFilters?: boolean
     enableSwapAppFee?: boolean
-  }
-
-  divviProtocol?: {
-    divviId: Address
   }
 }
 

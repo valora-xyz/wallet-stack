@@ -3,9 +3,9 @@ sidebar_position: 1
 sidebar_label: Getting started
 ---
 
-# Getting Started with Divvi Mobile
+# Getting Started with Wallet Stack
 
-Creating a mobile app with Divvi Mobile is incredibly quick and straightforward. In just a few steps, you'll have your own fully functional blockchain wallet mobile app ready for development!
+Creating a mobile app with Wallet Stack is incredibly quick and straightforward. In just a few steps, you'll have your own fully functional blockchain wallet mobile app ready for development!
 
 ## Basic Prerequisites
 
@@ -20,7 +20,7 @@ You'll need:
 1. Create a new app using our template:
 
 ```bash
-yarn create expo --template https://github.com/divvi-xyz/divvi-app-starter my-app
+yarn create expo --template https://github.com/valora-xyz/wallet-stack-starter my-app
 cd my-app
 ```
 
@@ -38,7 +38,7 @@ yarn prebuild
 
 ## Setting Up Your Development Environment
 
-Before running your app, you'll need to set up your development environment. While we use Expo's build tools, Divvi Mobile requires a native development environment (it cannot run in Expo Go).
+Before running your app, you'll need to set up your development environment. While we use Expo's build tools, Wallet Stack requires a native development environment (it cannot run in Expo Go).
 
 Follow Expo's interactive setup guide:
 
@@ -52,7 +52,7 @@ The guide will walk you through setting up:
   - Android Studio, SDK, and Emulator
 - Required tools and dependencies
 
-Make sure to select "Development build" mode in the guide, as this is required for Divvi Mobile apps.
+Make sure to select "Development build" mode in the guide, as this is required for Wallet Stack apps.
 
 ## Running Your App
 
@@ -82,6 +82,5 @@ This will build your app and launch it in your simulator/emulator. The developme
 
 If you run into any issues or have questions:
 
-- Open an issue on our [GitHub repository](https://github.com/divvi-xyz/divvi-mobile)
-- Join our community [Discord server](https://discord.com/invite/EaxZDhMuDn)
+- Open an issue on our [GitHub repository](https://github.com/valora-xyz/wallet-stack)
 - Coming soon: check our troubleshooting guide

@@ -20,7 +20,6 @@ Key capabilities include:
 - **Rapid App Development**: Create a fully functional Web3 app in minutes
 - **Full Customization**: Control every aspect of your app's look and feel
 - **Blockchain Integration**: Built-in support for major networks and Web3 features
-- **Divvi Protocol Integration**: Native support for the Divvi protocol
 - **App Store Ready**: Streamlined deployment process using Expo EAS
 
 ## Core Components
@@ -60,7 +59,6 @@ Web3 capabilities include:
 - Transaction handling
 - Custom contract interactions
 - Multi-network support
-- Divvi protocol integration
 
 ### 3. Web3 Optimized UX
 
@@ -95,7 +93,6 @@ Pre-built components designed for Web3:
 
 - **Framework**: React Native + Expo
 - **Web3**: viem + WalletConnect
-- **Protocol**: Divvi Protocol
 - **Build & Deploy**: Expo Application Services (EAS)
 
 ## Security
