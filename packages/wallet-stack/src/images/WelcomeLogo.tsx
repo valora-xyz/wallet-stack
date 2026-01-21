@@ -15,6 +15,6 @@ export default function WelcomeLogo() {
 const styles = StyleSheet.create({
   header: {
     ...typeScale.displaySmall,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 })
