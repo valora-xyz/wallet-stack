@@ -66,6 +66,7 @@ import {
   v233Schema,
   v235Schema,
   v251Schema,
+  v253Schema,
   v28Schema,
   v2Schema,
   v35Schema,
@@ -1920,6 +1921,20 @@ describe('Redux persist migrations', () => {
     const expectedSchema: any = _.cloneDeep(oldSchema)
     expectedSchema.jumpstart = _.pick(oldSchema.jumpstart, 'reclaimStatus')
     expectedSchema.app = _.omit(oldSchema.app, 'inviterAddress')
+    expect(migratedSchema).toStrictEqual(expectedSchema)
+  })
+
+  it('works from 253 to 254', () => {
+    const oldSchema = {
+      ...v253Schema,
+      home: {
+        ...v253Schema.home,
+        hasSeenDivviBottomSheet: false,
+      },
+    }
+    const migratedSchema = migrations[254](oldSchema)
+    const expectedSchema: any = _.cloneDeep(oldSchema)
+    expectedSchema.home = _.omit(oldSchema.home, 'hasSeenDivviBottomSheet')
     expect(migratedSchema).toStrictEqual(expectedSchema)
   })
 })

@@ -11,7 +11,6 @@ export enum Actions {
   NFT_CELEBRATION_DISPLAYED = 'HOME/NFT_CELEBRATION_DISPLAYED',
   NFT_REWARD_READY_TO_DISPLAY = 'HOME/NFT_REWARD_READY_TO_DISPLAY',
   NFT_REWARD_DISPLAYED = 'HOME/NFT_REWARD_DISPLAYED',
-  DIVVI_BOTTOM_SHEET_SEEN = 'HOME/DIVVI_BOTTOM_SHEET_SEEN',
 }
 
 export interface VisitHomeAction {
@@ -64,10 +63,6 @@ interface NftRewardDisplayedAction {
   type: Actions.NFT_REWARD_DISPLAYED
 }
 
-interface DivviBottomSheetSeenAction {
-  type: Actions.DIVVI_BOTTOM_SHEET_SEEN
-}
-
 export type ActionTypes =
   | SetLoadingAction
   | UpdateNotificationsAction
@@ -77,7 +72,6 @@ export type ActionTypes =
   | NftCelebrationDisplayedAction
   | NftRewardReadyToDisplayAction
   | NftRewardDisplayedAction
-  | DivviBottomSheetSeenAction
 
 export const visitHome = (): VisitHomeAction => ({
   type: Actions.VISIT_HOME,
@@ -147,8 +141,4 @@ export const nftRewardReadyToDisplay = ({
 
 export const nftRewardDisplayed = (): NftRewardDisplayedAction => ({
   type: Actions.NFT_REWARD_DISPLAYED,
-})
-
-export const divviBottomSheetSeen = (): DivviBottomSheetSeenAction => ({
-  type: Actions.DIVVI_BOTTOM_SHEET_SEEN,
 })

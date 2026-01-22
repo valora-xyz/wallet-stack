@@ -71,12 +71,3 @@ export const showNftRewardSelector = (state: RootState) => {
     state.home.nftCelebration.status === NftCelebrationStatus.reminderReadyToDisplay
   )
 }
-
-export const showDivviBottomSheetSelector = (state: RootState) => {
-  const featureGateEnabled = getFeatureGate(StatsigFeatureGates.SHOW_DIVVI_SLICES_BOTTOM_SHEET)
-  if (!featureGateEnabled) {
-    return false
-  }
-
-  return !state.home.hasSeenDivviBottomSheet
-}
