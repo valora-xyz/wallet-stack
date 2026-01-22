@@ -400,10 +400,10 @@ interface OnboardingEventsProperties {
     error: string
   }
   [OnboardingEvents.protect_wallet_use_recovery]:
-  | {
-    position?: number
-  }
-  | undefined
+    | {
+        position?: number
+      }
+    | undefined
   [OnboardingEvents.protect_wallet_help]: undefined
   [OnboardingEvents.protect_wallet_help_dismiss]: undefined
   [OnboardingEvents.protect_wallet_copy_phrase]: undefined
@@ -496,29 +496,29 @@ interface SendEventsProperties {
   }
   [SendEvents.send_confirm_back]: undefined
   [SendEvents.send_confirm_send]:
-  | {
-    origin: SendOrigin
-    isScan: boolean
-    isRequest: boolean
-    localCurrencyExchangeRate?: string | null
-    localCurrency: LocalCurrencyCode
-    dollarAmount: string | null
-    localCurrencyAmount: string | null
-  }
-  | {
-    origin: SendOrigin
-    recipientType: RecipientType
-    isScan: boolean
-    localCurrency: LocalCurrencyCode
-    usdAmount: string | null
-    localCurrencyAmount: string | null
-    tokenAmount: string
-    tokenSymbol: string
-    tokenAddress: string | null
-    networkId: NetworkId | null
-    tokenId: string
-    isTokenManuallyImported: boolean
-  }
+    | {
+        origin: SendOrigin
+        isScan: boolean
+        isRequest: boolean
+        localCurrencyExchangeRate?: string | null
+        localCurrency: LocalCurrencyCode
+        dollarAmount: string | null
+        localCurrencyAmount: string | null
+      }
+    | {
+        origin: SendOrigin
+        recipientType: RecipientType
+        isScan: boolean
+        localCurrency: LocalCurrencyCode
+        usdAmount: string | null
+        localCurrencyAmount: string | null
+        tokenAmount: string
+        tokenSymbol: string
+        tokenAddress: string | null
+        networkId: NetworkId | null
+        tokenId: string
+        isTokenManuallyImported: boolean
+      }
 
   [SendEvents.send_secure_start]: {
     confirmByScan: boolean
@@ -733,18 +733,18 @@ interface FiatExchangeEventsProperties {
     fiatType: LocalCurrencyCode
     defaultFiatType: LocalCurrencyCode
   } & Omit<ProviderSelectionAnalyticsData, 'transferCryptoAmount'> &
-  (
-    | {
-      flow: CICOFlow.CashOut
-      cryptoAmount: number // given by user
-      fiatAmount: undefined // exchange rate varies by provider
-    }
-    | {
-      flow: CICOFlow.CashIn
-      cryptoAmount: undefined // exchange rate varies by provider
-      fiatAmount: number // given by user
-    }
-  )
+    (
+      | {
+          flow: CICOFlow.CashOut
+          cryptoAmount: number // given by user
+          fiatAmount: undefined // exchange rate varies by provider
+        }
+      | {
+          flow: CICOFlow.CashIn
+          cryptoAmount: undefined // exchange rate varies by provider
+          fiatAmount: number // given by user
+        }
+    )
   [FiatExchangeEvents.cico_providers_exchanges_selected]: {
     flow: CICOFlow
   } & ProviderSelectionAnalyticsData
@@ -1194,12 +1194,59 @@ interface SwapEventsProperties {
   }
   [SwapEvents.swap_gas_fees_learn_more]: undefined
   [SwapEvents.swap_review_submit]: SwapQuoteEvent &
-  Web3LibraryProps &
-  Partial<SwapTxsProperties> & {
-    isUnfavorableRate: boolean
-  }
+    Web3LibraryProps &
+    Partial<SwapTxsProperties> & {
+      isUnfavorableRate: boolean
+    }
   [SwapEvents.swap_execute_success]:
-  | ({ swapType: 'same-chain' } & SwapQuoteEvent &
+    | ({ swapType: 'same-chain' } & SwapQuoteEvent &
+        SwapTimeMetrics &
+        Web3LibraryProps &
+        Partial<SwapTxsProperties> &
+        SwapTxsReceiptProperties & {
+          fromTokenBalance: string
+          swapExecuteTxId: string
+          swapApproveTxId: string
+          estimatedSellTokenUsdValue?: number
+          estimatedBuyTokenUsdValue?: number
+          estimatedAppFeeUsdValue: number | undefined
+          areSwapTokensShuffled: boolean
+        })
+    | ({ swapType: 'cross-chain' } & {
+        swapExecuteTxId: string
+        toTokenId: string
+        toTokenAmount: string
+        toTokenAmountUsd?: number
+        toTokenBalance?: string
+        fromTokenId: string
+        fromTokenAmount: string
+        fromTokenAmountUsd?: number
+        fromTokenBalance?: string
+        networkFeeTokenId?: string
+        networkFeeAmount?: string
+        networkFeeAmountUsd?: number
+        appFeeTokenId?: string
+        appFeeAmount?: string
+        appFeeAmountUsd?: number
+        crossChainFeeTokenId?: string
+        crossChainFeeAmount?: string
+        crossChainFeeAmountUsd?: number
+      })
+  [SwapEvents.swap_execute_error]: SwapQuoteEvent &
+    SwapTimeMetrics &
+    Web3LibraryProps &
+    Partial<SwapTxsProperties> &
+    SwapTxsReceiptProperties & {
+      error: string
+      fromTokenBalance: string
+      swapExecuteTxId: string
+      swapApproveTxId: string
+      estimatedSellTokenUsdValue?: number
+      estimatedBuyTokenUsdValue?: number
+      estimatedAppFeeUsdValue: number | undefined
+      areSwapTokensShuffled: boolean
+    }
+  [SwapEvents.swap_cancel]: SwapQuoteEvent &
     SwapTimeMetrics &
     Web3LibraryProps &
     Partial<SwapTxsProperties> &
@@ -1211,54 +1258,7 @@ interface SwapEventsProperties {
       estimatedBuyTokenUsdValue?: number
       estimatedAppFeeUsdValue: number | undefined
       areSwapTokensShuffled: boolean
-    })
-  | ({ swapType: 'cross-chain' } & {
-    swapExecuteTxId: string
-    toTokenId: string
-    toTokenAmount: string
-    toTokenAmountUsd?: number
-    toTokenBalance?: string
-    fromTokenId: string
-    fromTokenAmount: string
-    fromTokenAmountUsd?: number
-    fromTokenBalance?: string
-    networkFeeTokenId?: string
-    networkFeeAmount?: string
-    networkFeeAmountUsd?: number
-    appFeeTokenId?: string
-    appFeeAmount?: string
-    appFeeAmountUsd?: number
-    crossChainFeeTokenId?: string
-    crossChainFeeAmount?: string
-    crossChainFeeAmountUsd?: number
-  })
-  [SwapEvents.swap_execute_error]: SwapQuoteEvent &
-  SwapTimeMetrics &
-  Web3LibraryProps &
-  Partial<SwapTxsProperties> &
-  SwapTxsReceiptProperties & {
-    error: string
-    fromTokenBalance: string
-    swapExecuteTxId: string
-    swapApproveTxId: string
-    estimatedSellTokenUsdValue?: number
-    estimatedBuyTokenUsdValue?: number
-    estimatedAppFeeUsdValue: number | undefined
-    areSwapTokensShuffled: boolean
-  }
-  [SwapEvents.swap_cancel]: SwapQuoteEvent &
-  SwapTimeMetrics &
-  Web3LibraryProps &
-  Partial<SwapTxsProperties> &
-  SwapTxsReceiptProperties & {
-    fromTokenBalance: string
-    swapExecuteTxId: string
-    swapApproveTxId: string
-    estimatedSellTokenUsdValue?: number
-    estimatedBuyTokenUsdValue?: number
-    estimatedAppFeeUsdValue: number | undefined
-    areSwapTokensShuffled: boolean
-  }
+    }
   [SwapEvents.swap_learn_more]: undefined
   [SwapEvents.swap_price_impact_warning_displayed]: SwapEvent & {
     provider: string
@@ -1334,27 +1334,27 @@ interface AssetsEventsProperties {
   [AssetsEvents.view_collectibles]: undefined
   [AssetsEvents.view_dapp_positions]: undefined
   [AssetsEvents.tap_asset]:
-  | {
-    assetType: 'token'
-    address: string | null
-    title: string // Example: 'cUSD'
-    description: string
-    balanceUsd: number
-  }
-  | {
-    assetType: 'position'
-    network: NetworkId // Example: 'celo-mainnet'
-    appId: string // Example: 'ubeswap'
-    address: string
-    title: string // Example: MOO / CELO
-    description: string
-    balanceUsd: number
-  }
-  | ({
-    assetType: 'token'
-    title: string // Example: 'cUSD'
-    description: string
-  } & TokenProperties)
+    | {
+        assetType: 'token'
+        address: string | null
+        title: string // Example: 'cUSD'
+        description: string
+        balanceUsd: number
+      }
+    | {
+        assetType: 'position'
+        network: NetworkId // Example: 'celo-mainnet'
+        appId: string // Example: 'ubeswap'
+        address: string
+        title: string // Example: MOO / CELO
+        description: string
+        balanceUsd: number
+      }
+    | ({
+        assetType: 'token'
+        title: string // Example: 'cUSD'
+        description: string
+      } & TokenProperties)
   [AssetsEvents.tap_claim_rewards]: undefined
   [AssetsEvents.tap_token_details_action]: {
     action: TokenActionName
@@ -1526,7 +1526,7 @@ interface EarnEventsProperties {
   [EarnEvents.earn_before_deposit_action_press]: {
     action: BeforeDepositActionName
   } & TokenProperties &
-  EarnCommonProperties
+    EarnCommonProperties
   [EarnEvents.earn_deposit_provider_info_press]: EarnDepositProperties
   [EarnEvents.earn_deposit_terms_and_conditions_press]: {
     type: 'providerTermsAndConditions' | 'providerDocuments' | 'appTermsAndConditions'
@@ -1548,9 +1548,9 @@ interface EarnEventsProperties {
     crossChainFeeAmountUsd?: number
   }
   [EarnEvents.earn_deposit_submit_error]: EarnDepositProperties &
-  EarnDepositTxsReceiptProperties & {
-    error: string
-  }
+    EarnDepositTxsReceiptProperties & {
+      error: string
+    }
   [EarnEvents.earn_deposit_submit_cancel]: EarnDepositProperties
   [EarnEvents.earn_enter_amount_continue_press]: {
     amountInUsd: string
@@ -1567,10 +1567,10 @@ interface EarnEventsProperties {
   } & EarnCommonProperties
   [EarnEvents.earn_feed_item_select]: {
     origin:
-    | TokenTransactionTypeV2.EarnDeposit
-    | TokenTransactionTypeV2.EarnWithdraw
-    | TokenTransactionTypeV2.EarnClaimReward
-    | TokenTransactionTypeV2.EarnSwapDeposit
+      | TokenTransactionTypeV2.EarnDeposit
+      | TokenTransactionTypeV2.EarnWithdraw
+      | TokenTransactionTypeV2.EarnClaimReward
+      | TokenTransactionTypeV2.EarnSwapDeposit
   }
   [EarnEvents.earn_collect_earnings_press]: EarnWithdrawProperties
   [EarnEvents.earn_withdraw_submit_start]: EarnWithdrawProperties
