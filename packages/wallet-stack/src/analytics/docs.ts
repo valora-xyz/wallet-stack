@@ -670,4 +670,6 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   // [JumpstartEvents.jumpstart_add_assets_action_press]: 'When user selects an add assets action from the available options',
   // [JumpstartEvents.jumpstart_intro_seen]: `when jumpstart intro is seen by the user`,
   // [OnboardingEvents.stale_keychain_items_cleared]: `Stale keychain items where found during onboarding and cleared`,
+  // [HomeEvents.divvi_bottom_sheet_displayed]: `When the Divvi bottom sheet is displayed to the user`,
+  // [HomeEvents.divvi_bottom_sheet_cta_pressed]: `When the user presses the CTA button in the Divvi bottom sheet.`,
 }
