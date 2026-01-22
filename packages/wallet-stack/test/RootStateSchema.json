@@ -5444,9 +5444,6 @@
         "State_5": {
             "additionalProperties": false,
             "properties": {
-                "hasSeenDivviBottomSheet": {
-                    "type": "boolean"
-                },
                 "hasVisitedHome": {
                     "type": "boolean"
                 },
@@ -5497,7 +5494,6 @@
                 }
             },
             "required": [
-                "hasSeenDivviBottomSheet",
                 "hasVisitedHome",
                 "loading",
                 "nftCelebration",

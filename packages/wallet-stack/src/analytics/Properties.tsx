@@ -197,8 +197,6 @@ interface HomeEventsProperties {
     contractAddress: string
     remainingDays: number
   }
-  [HomeEvents.divvi_bottom_sheet_displayed]: undefined
-  [HomeEvents.divvi_bottom_sheet_cta_pressed]: undefined
 }
 
 interface SettingsEventsProperties {

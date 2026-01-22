@@ -3755,6 +3755,15 @@ export const v253Schema = {
   },
 }
 
+export const v254Schema = {
+  ...v253Schema,
+  _persist: {
+    ...v253Schema._persist,
+    version: 254,
+  },
+  home: _.omit(v253Schema.home, 'hasSeenDivviBottomSheet'),
+}
+
 export function getLatestSchema(): Partial<RootState> {
-  return v253Schema as Partial<RootState>
+  return v254Schema as Partial<RootState>
 }

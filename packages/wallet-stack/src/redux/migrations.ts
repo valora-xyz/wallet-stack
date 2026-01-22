@@ -2066,4 +2066,8 @@ export const migrations = {
     ...state,
     sendCalls: { batchById: {} },
   }),
+  254: (state: any) => ({
+    ...state,
+    home: _.omit(state.home, 'hasSeenDivviBottomSheet'),
+  }),
 }
