@@ -23,7 +23,7 @@ const App = createApp({
     : 'example',
   features: {
     // Special cases to cover experimental features with e2e tests
-    ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
+    ...(process.env.EXPO_PUBLIC_WALLET_STACK_E2E === 'true' && {
       cloudBackup: false,
       walletConnect: {
         projectId: '8f6f2517f4485c013849d38717ec90d1', // valora-e2e-client project
@@ -77,7 +77,7 @@ const App = createApp({
   },
 
   // Special cases to cover experimental features with e2e tests
-  ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
+  ...(process.env.EXPO_PUBLIC_WALLET_STACK_E2E === 'true' && {
     experimental: {
       bidali: {
         url: 'https://commerce.bidali.com',
