@@ -1,12 +1,12 @@
 import { Contract, providers, utils, Wallet } from 'ethers'
 import {
-    Address,
-    createPublicClient,
-    createWalletClient,
-    erc20Abi,
-    Hex,
-    http,
-    publicActions,
+  Address,
+  createPublicClient,
+  createWalletClient,
+  erc20Abi,
+  Hex,
+  http,
+  publicActions,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { celo } from 'viem/chains'
