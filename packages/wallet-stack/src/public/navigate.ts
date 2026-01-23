@@ -15,7 +15,7 @@ const TAG = 'public/navigate'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace DivviNavigation {
+  namespace WalletNavigation {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface RootParamList extends StackParamList {}
   }
@@ -25,7 +25,7 @@ export type NavigatorScreen = ReturnType<
   // TODO: this weird looking type works around a type error when checking the lib vs example app
   // Maybe we can get rid of this once we're able to ship declaration files
   typeof createNativeStackNavigator<
-    DivviNavigation.RootParamList extends ParamListBase ? DivviNavigation.RootParamList : never
+    WalletNavigation.RootParamList extends ParamListBase ? WalletNavigation.RootParamList : never
   >
 >['Screen']
 
@@ -57,7 +57,7 @@ export type StackParamList = {
 
 export type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-type NavigateArgs<ParamList = DivviNavigation.RootParamList> = {
+type NavigateArgs<ParamList = WalletNavigation.RootParamList> = {
   [RouteName in keyof ParamList]: undefined extends ParamList[RouteName]
     ? [RouteName] | [RouteName, ParamList[RouteName]]
     : [RouteName, ParamList[RouteName]]
