@@ -132,7 +132,7 @@ function modifyERC20TransferAmount(originalData: Hex, newAmount: BigNumber): Hex
   const newAmountHex = newAmount.toString(16).padStart(AMOUNT_HEX_LENGTH, '0')
 
   // Return the modified data, appending the original data after the expected
-  // length (for any suffix like the divvi suffix)
+  // length (for any suffix)
   return (recipientPart + newAmountHex + originalData.slice(expectedLength)) as Hex
 }
 

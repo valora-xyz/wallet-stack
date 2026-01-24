@@ -10,7 +10,7 @@ if (!expoConfig) {
   throw new Error('expoConfig is not available')
 }
 
-// Create Divvi app
+// Create wallet app
 const App = createApp({
   // For now use 'Valora' so CPV works (since it's known by identity-service)
   // TODO: find a better long term solution
@@ -86,7 +86,7 @@ const App = createApp({
       phoneNumberVerification: true,
       zendeskConfig: {
         apiKey: 'dummyApiKey',
-        projectName: 'divviapp',
+        projectName: 'walletapp',
       },
       alchemyApiKey: process.env.ALCHEMY_API_KEY,
     },
