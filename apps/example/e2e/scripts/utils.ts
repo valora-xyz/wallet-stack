@@ -10,7 +10,7 @@ import {
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { celo } from 'viem/chains'
-import { DIVVI_NETWORK_IDS_TO_VIEM_CHAINS, E2E_TEST_NFT_API_URL, REFILL_TOKENS } from './consts'
+import { E2E_TEST_NFT_API_URL, NETWORK_IDS_TO_VIEM_CHAINS, REFILL_TOKENS } from './consts'
 import { Token } from './types'
 
 export async function checkBalance(
@@ -106,7 +106,7 @@ export async function wipe1155AssetsForAddress(address: string): Promise<void> {
     },
   ]
 
-  for (const [networkId, chain] of Object.entries(DIVVI_NETWORK_IDS_TO_VIEM_CHAINS)) {
+  for (const [networkId, chain] of Object.entries(NETWORK_IDS_TO_VIEM_CHAINS)) {
     try {
       const response = await fetch(
         `${E2E_TEST_NFT_API_URL}?address=${address}&networkId=${networkId}`

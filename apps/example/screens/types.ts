@@ -14,7 +14,7 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeSta
 
 // This allows type-safe navigation to known and custom screens using the `navigate` function from `wallet-stack`
 declare global {
-  namespace DivviNavigation {
+  namespace WalletNavigation {
     interface RootParamList extends RootStackParamList {}
   }
 }

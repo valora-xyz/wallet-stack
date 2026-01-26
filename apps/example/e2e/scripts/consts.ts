@@ -42,7 +42,7 @@ export enum NetworkId {
   'base-mainnet' = 'base-mainnet',
 }
 
-export const DIVVI_NETWORK_IDS_TO_VIEM_CHAINS = {
+export const NETWORK_IDS_TO_VIEM_CHAINS = {
   [NetworkId['arbitrum-one']]: arbitrum,
   [NetworkId['base-mainnet']]: base,
   [NetworkId['celo-mainnet']]: celo,

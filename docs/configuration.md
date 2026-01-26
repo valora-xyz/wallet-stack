@@ -157,7 +157,7 @@ type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScree
 
 // Enable type-safe navigation globally
 declare global {
-  namespace DivviNavigation {
+  namespace WalletNavigation {
     interface RootParamList extends RootStackParamList {}
   }
 }
