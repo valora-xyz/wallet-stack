@@ -1,5 +1,5 @@
-import { CachesDirectoryPath } from '@divvi/react-native-fs'
 import { Network } from '@fiatconnect/fiatconnect-types'
+import { CachesDirectoryPath } from '@valora/react-native-fs'
 import Config from 'react-native-config'
 import { SpendMerchant } from 'src/fiatExchanges/Spend'
 import { LoggerLevel } from 'src/utils/LoggerLevels'

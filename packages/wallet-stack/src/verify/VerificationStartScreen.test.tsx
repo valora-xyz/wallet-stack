@@ -1,5 +1,5 @@
-import * as Keychain from '@divvi/react-native-keychain'
 import { fireEvent, render, waitFor, within } from '@testing-library/react-native'
+import * as Keychain from '@valora/react-native-keychain'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { navigate } from 'src/navigator/NavigationService'

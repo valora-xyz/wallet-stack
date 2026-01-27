@@ -1,6 +1,6 @@
-import * as Keychain from '@divvi/react-native-keychain'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import * as Keychain from '@valora/react-native-keychain'
 import React, { useEffect, useLayoutEffect, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'

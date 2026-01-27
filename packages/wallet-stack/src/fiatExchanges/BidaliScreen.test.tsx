@@ -1,5 +1,5 @@
-import { WebView } from '@interaxyz/react-native-webview'
 import { render } from '@testing-library/react-native'
+import { WebView } from '@valora/react-native-webview'
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import { getAppConfig } from 'src/appConfig'

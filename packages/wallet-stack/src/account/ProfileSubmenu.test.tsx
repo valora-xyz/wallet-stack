@@ -1,5 +1,5 @@
-import * as Keychain from '@divvi/react-native-keychain'
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
+import * as Keychain from '@valora/react-native-keychain'
 import { FetchMock } from 'jest-fetch-mock/types'
 import * as React from 'react'
 import 'react-native'

@@ -1,6 +1,6 @@
-import { ShouldStartLoadRequest } from '@interaxyz/react-native-webview/lib/WebViewTypes'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { ShouldStartLoadRequest } from '@valora/react-native-webview/lib/WebViewTypes'
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
