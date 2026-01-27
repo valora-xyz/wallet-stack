@@ -134,7 +134,7 @@ class AppAnalytics {
 
     if (STATSIG_ENABLED) {
       try {
-        let overrideStableID: string | undefined
+        let overrideStableID: string
         if (this.segmentClient) {
           overrideStableID = this.segmentClient.userInfo.get().anonymousId
           Logger.debug(TAG, 'Statsig stable ID from Segment', overrideStableID)
@@ -142,7 +142,7 @@ class AppAnalytics {
           overrideStableID = uniqueID
           Logger.debug(TAG, 'Statsig stable ID from device UniqueID', overrideStableID)
         } else {
-          Logger.debug(TAG, 'Statsig initializing without stable ID override')
+          throw new Error('Cannot get stable ID: segmentClient is undefined and device UniqueID is unavailable')
         }
         await StatsigClientSingleton.initialize(overrideStableID)
       } catch (error) {
