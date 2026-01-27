@@ -97,6 +97,15 @@ class AppAnalytics {
 
   async init() {
     let uniqueID
+    try {
+      const deviceInfo = await getDeviceInfo()
+      this.deviceInfo = deviceInfo
+      uniqueID = deviceInfo.UniqueID
+      this.sessionId = sha256(Buffer.from(uniqueID + String(Date.now()))).slice(2)
+    } catch (error) {
+      Logger.error(TAG, 'getDeviceInfo error', error)
+    }
+
     if (SEGMENT_API_KEY) {
       try {
         this.segmentClient = createClient({
@@ -114,15 +123,6 @@ class AppAnalytics {
           this.segmentClient.add({ plugin: new FirebasePlugin() })
         }
 
-        try {
-          const deviceInfo = await getDeviceInfo()
-          this.deviceInfo = deviceInfo
-          uniqueID = deviceInfo.UniqueID
-          this.sessionId = sha256(Buffer.from(uniqueID + String(Date.now()))).slice(2)
-        } catch (error) {
-          Logger.error(TAG, 'getDeviceInfo error', error)
-        }
-
         Logger.info(TAG, 'Segment Analytics Integration initialized!')
       } catch (err) {
         const error = ensureError(err)
@@ -134,11 +134,16 @@ class AppAnalytics {
 
     if (STATSIG_ENABLED) {
       try {
-        if (!this.segmentClient) {
-          throw new Error('segmentClient is undefined, cannot get anonymous ID')
+        let overrideStableID: string | undefined
+        if (this.segmentClient) {
+          overrideStableID = this.segmentClient.userInfo.get().anonymousId
+          Logger.debug(TAG, 'Statsig stable ID from Segment', overrideStableID)
+        } else if (uniqueID) {
+          overrideStableID = uniqueID
+          Logger.debug(TAG, 'Statsig stable ID from device UniqueID', overrideStableID)
+        } else {
+          Logger.debug(TAG, 'Statsig initializing without stable ID override')
         }
-        const overrideStableID = this.segmentClient.userInfo.get().anonymousId
-        Logger.debug(TAG, 'Statsig stable ID', overrideStableID)
         await StatsigClientSingleton.initialize(overrideStableID)
       } catch (error) {
         Logger.warn(TAG, `Statsig setup error`, error)
