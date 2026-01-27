@@ -142,7 +142,9 @@ class AppAnalytics {
           overrideStableID = uniqueID
           Logger.debug(TAG, 'Statsig stable ID from device UniqueID', overrideStableID)
         } else {
-          throw new Error('Cannot get stable ID: segmentClient is undefined and device UniqueID is unavailable')
+          throw new Error(
+            'Cannot get stable ID: segmentClient is undefined and device UniqueID is unavailable'
+          )
         }
         await StatsigClientSingleton.initialize(overrideStableID)
       } catch (error) {
