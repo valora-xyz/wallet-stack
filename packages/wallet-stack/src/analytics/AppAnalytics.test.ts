@@ -1,7 +1,7 @@
 import { createClient } from '@segment/analytics-react-native'
 import { PincodeType } from 'src/account/reducer'
 import AppAnalyticsModule from 'src/analytics/AppAnalytics'
-import { OnboardingEvents } from 'src/analytics/Events'
+import { NavigationEvents, OnboardingEvents } from 'src/analytics/Events'
 import * as config from 'src/config'
 import { store } from 'src/redux/store'
 import StatsigClientSingleton from 'src/statsig/client'
@@ -36,6 +36,23 @@ jest.mock('src/web3/networkConfig', () => {
     },
   }
 })
+
+const mockMixpanelInit = jest.fn().mockResolvedValue(undefined)
+const mockMixpanelTrack = jest.fn()
+const mockMixpanelIdentify = jest.fn().mockResolvedValue(undefined)
+const mockMixpanelReset = jest.fn()
+const mockMixpanelFlush = jest.fn()
+const mockMixpanelConstructor = jest.fn()
+
+jest.mock('mixpanel-react-native', () => ({
+  Mixpanel: mockMixpanelConstructor.mockImplementation(() => ({
+    init: mockMixpanelInit,
+    track: mockMixpanelTrack,
+    identify: mockMixpanelIdentify,
+    reset: mockMixpanelReset,
+    flush: mockMixpanelFlush,
+  })),
+}))
 
 const mockDeviceId = 'abc-def-123' // mocked in __mocks__/react-native-device-info.ts (but importing from that file causes weird errors)
 const expectedSessionId = '453e535d43b22002185f316d5b41561010d9224580bfb608da132e74b128227a'
@@ -206,6 +223,8 @@ describe('AppAnalytics', () => {
     mockConfig.STATSIG_API_KEY = 'statsig-key'
     mockConfig.STATSIG_ENABLED = true
     mockConfig.SEGMENT_API_KEY = 'segment-key'
+    mockConfig.MIXPANEL_TOKEN = 'mixpanel-token'
+    mockConfig.MIXPANEL_ENABLED = true
     mockConfig.ENABLED_NETWORK_IDS = ['celo-alfajores']
     mockStore.getState.mockImplementation(() => state)
   })
@@ -238,27 +257,51 @@ describe('AppAnalytics', () => {
       await AppAnalytics.init()
       expect(StatsigClientSingleton.initialize).not.toHaveBeenCalled()
     })
+
+    it('initializes Mixpanel when MIXPANEL_TOKEN is present', async () => {
+      await AppAnalytics.init()
+      expect(mockMixpanelConstructor).toHaveBeenCalledWith('mixpanel-token', false, true)
+      expect(mockMixpanelInit).toHaveBeenCalledWith(false, undefined, undefined)
+    })
+
+    it('does not initialize Mixpanel if MIXPANEL_TOKEN is not present', async () => {
+      mockConfig.MIXPANEL_TOKEN = undefined
+      mockConfig.MIXPANEL_ENABLED = false
+      await AppAnalytics.init()
+      expect(mockMixpanelConstructor).not.toHaveBeenCalled()
+    })
+
+    it('initializes Mixpanel with custom API host when provided', async () => {
+      mockConfig.MIXPANEL_API_HOST = 'https://api-eu.mixpanel.com'
+      await AppAnalytics.init()
+      expect(mockMixpanelInit).toHaveBeenCalledWith(false, undefined, 'https://api-eu.mixpanel.com')
+    })
   })
 
   it('delays identify calls until async init has finished', async () => {
     AppAnalytics.identify('0xUSER', { someUserProp: 'testValue' })
     expect(mockSegmentClient.identify).not.toHaveBeenCalled()
+    expect(mockMixpanelConstructor).not.toHaveBeenCalled()
 
     await AppAnalytics.init()
     // Now that init has finished identify should have been called
     expect(mockSegmentClient.identify).toHaveBeenCalledWith('0xUSER', { someUserProp: 'testValue' })
+    expect(mockMixpanelIdentify).toHaveBeenCalledWith('0xUSER')
 
     // And now test that identify calls go trough directly
     mockSegmentClient.identify.mockClear()
+    mockMixpanelIdentify.mockClear()
     AppAnalytics.identify('0xUSER2', { someUserProp: 'testValue2' })
     expect(mockSegmentClient.identify).toHaveBeenCalledWith('0xUSER2', {
       someUserProp: 'testValue2',
     })
+    expect(mockMixpanelIdentify).toHaveBeenCalledWith('0xUSER2')
   })
 
   it('delays track calls until async init has finished', async () => {
     AppAnalytics.track(OnboardingEvents.pin_invalid, { error: 'some error' })
     expect(mockSegmentClient.track).not.toHaveBeenCalled()
+    expect(mockMixpanelConstructor).not.toHaveBeenCalled()
 
     await AppAnalytics.init()
     // Now that init has finished track should have been called
@@ -267,12 +310,23 @@ describe('AppAnalytics', () => {
       ...defaultProperties,
       error: 'some error',
     })
+    expect(mockMixpanelTrack).toHaveBeenCalledTimes(1)
+    expect(mockMixpanelTrack).toHaveBeenCalledWith(OnboardingEvents.pin_invalid, {
+      ...defaultProperties,
+      error: 'some error',
+    })
 
     // And now test that track calls go trough directly
     mockSegmentClient.track.mockClear()
+    mockMixpanelTrack.mockClear()
     AppAnalytics.track(OnboardingEvents.pin_invalid, { error: 'some error' })
     expect(mockSegmentClient.track).toHaveBeenCalledTimes(1)
     expect(mockSegmentClient.track).toHaveBeenCalledWith(OnboardingEvents.pin_invalid, {
+      ...defaultProperties,
+      error: 'some error',
+    })
+    expect(mockMixpanelTrack).toHaveBeenCalledTimes(1)
+    expect(mockMixpanelTrack).toHaveBeenCalledWith(OnboardingEvents.pin_invalid, {
       ...defaultProperties,
       error: 'some error',
     })
@@ -281,11 +335,19 @@ describe('AppAnalytics', () => {
   it('delays screen calls until async init has finished', async () => {
     AppAnalytics.page('Some Page', { someProp: 'testValue' })
     expect(mockSegmentClient.screen).not.toHaveBeenCalled()
+    expect(mockMixpanelConstructor).not.toHaveBeenCalled()
 
     await AppAnalytics.init()
-    // Now that init has finished identify should have been called
+    // Now that init has finished screen should have been called
     expect(mockSegmentClient.screen).toHaveBeenCalledTimes(1)
     expect(mockSegmentClient.screen).toHaveBeenCalledWith('Some Page', {
+      ...defaultProperties,
+      sCurrentScreenId: 'Some Page',
+      someProp: 'testValue',
+    })
+    expect(mockMixpanelTrack).toHaveBeenCalledTimes(1)
+    expect(mockMixpanelTrack).toHaveBeenCalledWith(NavigationEvents.screen_viewed, {
+      screen_name: 'Some Page',
       ...defaultProperties,
       sCurrentScreenId: 'Some Page',
       someProp: 'testValue',
@@ -293,9 +355,18 @@ describe('AppAnalytics', () => {
 
     // And now test that page calls go trough directly
     mockSegmentClient.screen.mockClear()
+    mockMixpanelTrack.mockClear()
     AppAnalytics.page('Some Page2', { someProp: 'testValue2' })
     expect(mockSegmentClient.screen).toHaveBeenCalledTimes(1)
     expect(mockSegmentClient.screen).toHaveBeenCalledWith('Some Page2', {
+      ...defaultProperties,
+      sCurrentScreenId: 'Some Page2',
+      someProp: 'testValue2',
+      sPrevScreenId: 'Some Page',
+    })
+    expect(mockMixpanelTrack).toHaveBeenCalledTimes(1)
+    expect(mockMixpanelTrack).toHaveBeenCalledWith(NavigationEvents.screen_viewed, {
+      screen_name: 'Some Page2',
       ...defaultProperties,
       sCurrentScreenId: 'Some Page2',
       someProp: 'testValue2',
@@ -311,6 +382,11 @@ describe('AppAnalytics', () => {
       ...defaultProperties,
       error: 'some error',
     })
+    expect(mockMixpanelTrack).toHaveBeenCalledTimes(1)
+    expect(mockMixpanelTrack).toHaveBeenCalledWith(OnboardingEvents.pin_invalid, {
+      ...defaultProperties,
+      error: 'some error',
+    })
   })
 
   it('adds super properties to all screen events', async () => {
@@ -322,6 +398,22 @@ describe('AppAnalytics', () => {
       someProp: 'someValue',
       sCurrentScreenId: 'ScreenA',
     })
+    expect(mockMixpanelTrack).toHaveBeenCalledTimes(1)
+    expect(mockMixpanelTrack).toHaveBeenCalledWith(NavigationEvents.screen_viewed, {
+      screen_name: 'ScreenA',
+      ...defaultProperties,
+      someProp: 'someValue',
+      sCurrentScreenId: 'ScreenA',
+    })
+  })
+
+  it('resets both Segment and Mixpanel', async () => {
+    await AppAnalytics.init()
+    await AppAnalytics.reset()
+    expect(mockSegmentClient.flush).toHaveBeenCalled()
+    expect(mockSegmentClient.reset).toHaveBeenCalled()
+    expect(mockMixpanelFlush).toHaveBeenCalled()
+    expect(mockMixpanelReset).toHaveBeenCalled()
   })
 
   it('returns a different sessionId if the time is different', async () => {
