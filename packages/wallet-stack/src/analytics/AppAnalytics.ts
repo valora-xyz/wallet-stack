@@ -267,9 +267,14 @@ class AppAnalytics {
 
     // Identify in Mixpanel
     if (this.mixpanelClient) {
-      this.mixpanelClient.identify(userID).catch((err) => {
-        Logger.error(TAG, `Failed to identify user ${userID} in Mixpanel`, err)
-      })
+      this.mixpanelClient
+        .identify(userID)
+        .then(() => {
+          this.mixpanelClient!.getPeople().set(safeTraits)
+        })
+        .catch((err) => {
+          Logger.error(TAG, `Failed to identify user ${userID} in Mixpanel`, err)
+        })
     }
   }
 

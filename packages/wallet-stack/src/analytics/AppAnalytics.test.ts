@@ -42,6 +42,7 @@ const mockMixpanelTrack = jest.fn()
 const mockMixpanelIdentify = jest.fn().mockResolvedValue(undefined)
 const mockMixpanelReset = jest.fn()
 const mockMixpanelFlush = jest.fn()
+const mockMixpanelPeopleSet = jest.fn()
 const mockMixpanelConstructor = jest.fn()
 
 jest.mock('mixpanel-react-native', () => ({
@@ -51,6 +52,7 @@ jest.mock('mixpanel-react-native', () => ({
     identify: mockMixpanelIdentify,
     reset: mockMixpanelReset,
     flush: mockMixpanelFlush,
+    getPeople: jest.fn(() => ({ set: mockMixpanelPeopleSet })),
   })),
 }))
 
@@ -260,7 +262,7 @@ describe('AppAnalytics', () => {
 
     it('initializes Mixpanel when MIXPANEL_TOKEN is present', async () => {
       await AppAnalytics.init()
-      expect(mockMixpanelConstructor).toHaveBeenCalledWith('mixpanel-token', false, true)
+      expect(mockMixpanelConstructor).toHaveBeenCalledWith('mixpanel-token', false, false)
       expect(mockMixpanelInit).toHaveBeenCalledWith(false, undefined, undefined)
     })
 
@@ -287,15 +289,19 @@ describe('AppAnalytics', () => {
     // Now that init has finished identify should have been called
     expect(mockSegmentClient.identify).toHaveBeenCalledWith('0xUSER', { someUserProp: 'testValue' })
     expect(mockMixpanelIdentify).toHaveBeenCalledWith('0xUSER')
+    expect(mockMixpanelPeopleSet).toHaveBeenCalledWith({ someUserProp: 'testValue' })
 
     // And now test that identify calls go trough directly
     mockSegmentClient.identify.mockClear()
     mockMixpanelIdentify.mockClear()
+    mockMixpanelPeopleSet.mockClear()
     AppAnalytics.identify('0xUSER2', { someUserProp: 'testValue2' })
     expect(mockSegmentClient.identify).toHaveBeenCalledWith('0xUSER2', {
       someUserProp: 'testValue2',
     })
     expect(mockMixpanelIdentify).toHaveBeenCalledWith('0xUSER2')
+    await mockMixpanelIdentify.mock.results[0].value // await the identify() promise
+    expect(mockMixpanelPeopleSet).toHaveBeenCalledWith({ someUserProp: 'testValue2' })
   })
 
   it('delays track calls until async init has finished', async () => {
