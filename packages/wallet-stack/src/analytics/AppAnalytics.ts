@@ -245,11 +245,7 @@ class AppAnalytics {
 
     // Track to Mixpanel
     if (this.mixpanelClient) {
-      try {
-        this.mixpanelClient.track(eventName, props)
-      } catch (err) {
-        Logger.error(TAG, `Failed to track event ${eventName} to Mixpanel`, err)
-      }
+      this.mixpanelClient.track(eventName, props)
     }
   }
 
@@ -337,12 +333,8 @@ class AppAnalytics {
 
     // Reset Mixpanel
     if (this.mixpanelClient) {
-      try {
-        this.mixpanelClient.flush()
-        this.mixpanelClient.reset()
-      } catch (error) {
-        Logger.error(TAG, 'Error resetting Mixpanel analytics', error)
-      }
+      this.mixpanelClient.flush()
+      this.mixpanelClient.reset()
     }
   }
 
