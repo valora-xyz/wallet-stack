@@ -126,14 +126,14 @@ const SecuritySubmenu = ({ route, navigation }: Props) => {
     return onPressContinueWithAccountRemoval()
   }
 
-  const handleToggleAnalytics = (value: boolean) => {
-    // Fire analytics event before or after dispatch to ensure it is not skipped
-    if (value) {
-      dispatch(setAnalyticsEnabled(value))
-      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled: value })
+  const handleToggleAnalytics = (enabled: boolean) => {
+    // Fire analytics event either before or after dispatch -- to ensure it is not skipped
+    if (enabled) {
+      dispatch(setAnalyticsEnabled(enabled))
+      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled })
     } else {
-      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled: value })
-      dispatch(setAnalyticsEnabled(value))
+      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled })
+      dispatch(setAnalyticsEnabled(enabled))
     }
   }
 

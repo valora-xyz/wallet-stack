@@ -161,9 +161,9 @@ class AppAnalytics {
 
     if (MIXPANEL_ENABLED && MIXPANEL_TOKEN) {
       try {
-        const trackAutomaticEvents = false
+        const trackLegacyAutomaticEvents = false
         const useNative = true
-        this.mixpanelClient = new Mixpanel(MIXPANEL_TOKEN, trackAutomaticEvents, useNative)
+        this.mixpanelClient = new Mixpanel(MIXPANEL_TOKEN, trackLegacyAutomaticEvents, useNative)
 
         const optOutTrackingDefault = !this.isEnabled()
         const superProperties = undefined
