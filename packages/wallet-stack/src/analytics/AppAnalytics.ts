@@ -2,7 +2,6 @@ import { createClient, SegmentClient } from '@segment/analytics-react-native'
 import { AdjustPlugin } from '@segment/analytics-react-native-plugin-adjust'
 import { DestinationFiltersPlugin } from '@segment/analytics-react-native-plugin-destination-filters'
 import { FirebasePlugin } from '@segment/analytics-react-native-plugin-firebase'
-import _ from 'lodash'
 import { Mixpanel } from 'mixpanel-react-native'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
@@ -27,6 +26,7 @@ import { store } from 'src/redux/store'
 import StatsigClientSingleton from 'src/statsig/client'
 import { ensureError } from 'src/utils/ensureError'
 import Logger from 'src/utils/Logger'
+import { sanitizeProperties } from 'src/utils/serialization'
 import { sha256 } from 'viem'
 
 const TAG = 'AppAnalytics'
@@ -162,7 +162,7 @@ class AppAnalytics {
     if (MIXPANEL_ENABLED && MIXPANEL_TOKEN) {
       try {
         const trackAutomaticEvents = false
-        const useNative = false
+        const useNative = true
         this.mixpanelClient = new Mixpanel(MIXPANEL_TOKEN, trackAutomaticEvents, useNative)
 
         const optOutTrackingDefault = !this.isEnabled()
@@ -225,10 +225,10 @@ class AppAnalytics {
       return
     }
 
-    const props: {} = {
+    const props = sanitizeProperties({
       ...this.getSuperProps(),
       ...eventProperties,
-    }
+    })
 
     if (__DEV__) {
       Logger.debug(TAG, `Tracking event ${eventName} with properties:`, props)
@@ -260,8 +260,7 @@ class AppAnalytics {
       return
     }
 
-    // The firebase segment plugin can't handle null or undefined values
-    const safeTraits = _.omitBy(traits, _.isNil)
+    const safeTraits = sanitizeProperties(traits)
 
     // Identify in Segment
     if (this.segmentClient) {
@@ -295,10 +294,10 @@ class AppAnalytics {
       this.currentScreenId = screenId
     }
 
-    const props: {} = {
+    const props = sanitizeProperties({
       ...this.getSuperProps(),
       ...eventProperties,
-    }
+    })
 
     // Track screen in Segment
     if (this.segmentClient) {
@@ -309,14 +308,10 @@ class AppAnalytics {
 
     // Track screen in Mixpanel
     if (this.mixpanelClient) {
-      try {
-        this.mixpanelClient.track(NavigationEvents.screen_viewed, {
-          screen_name: screenId,
-          ...props,
-        })
-      } catch (err) {
-        Logger.error(TAG, 'Error tracking page in Mixpanel', err)
-      }
+      this.mixpanelClient.track(NavigationEvents.screen_viewed, {
+        screen_name: screenId,
+        ...props,
+      })
     }
   }
 

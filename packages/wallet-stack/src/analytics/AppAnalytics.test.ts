@@ -266,7 +266,7 @@ describe('AppAnalytics', () => {
 
     it('initializes Mixpanel when MIXPANEL_TOKEN is present', async () => {
       await AppAnalytics.init()
-      expect(mockMixpanelConstructor).toHaveBeenCalledWith('mixpanel-token', false, false)
+      expect(mockMixpanelConstructor).toHaveBeenCalledWith('mixpanel-token', false, true)
       expect(mockMixpanelInit).toHaveBeenCalledWith(false, undefined, undefined)
     })
 
