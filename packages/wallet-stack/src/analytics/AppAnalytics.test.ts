@@ -43,6 +43,8 @@ const mockMixpanelIdentify = jest.fn().mockResolvedValue(undefined)
 const mockMixpanelReset = jest.fn()
 const mockMixpanelFlush = jest.fn()
 const mockMixpanelPeopleSet = jest.fn()
+const mockMixpanelOptInTracking = jest.fn()
+const mockMixpanelOptOutTracking = jest.fn()
 const mockMixpanelConstructor = jest.fn()
 
 jest.mock('mixpanel-react-native', () => ({
@@ -53,6 +55,8 @@ jest.mock('mixpanel-react-native', () => ({
     reset: mockMixpanelReset,
     flush: mockMixpanelFlush,
     getPeople: jest.fn(() => ({ set: mockMixpanelPeopleSet })),
+    optInTracking: mockMixpanelOptInTracking,
+    optOutTracking: mockMixpanelOptOutTracking,
   })),
 }))
 
@@ -420,6 +424,20 @@ describe('AppAnalytics', () => {
     expect(mockSegmentClient.reset).toHaveBeenCalled()
     expect(mockMixpanelFlush).toHaveBeenCalled()
     expect(mockMixpanelReset).toHaveBeenCalled()
+  })
+
+  it('calls optOutTracking when analytics is disabled', async () => {
+    await AppAnalytics.init()
+    AppAnalytics.setAnalyticsEnabled(false)
+    expect(mockMixpanelOptOutTracking).toHaveBeenCalled()
+    expect(mockMixpanelOptInTracking).not.toHaveBeenCalled()
+  })
+
+  it('calls optInTracking when analytics is enabled', async () => {
+    await AppAnalytics.init()
+    AppAnalytics.setAnalyticsEnabled(true)
+    expect(mockMixpanelOptInTracking).toHaveBeenCalled()
+    expect(mockMixpanelOptOutTracking).not.toHaveBeenCalled()
   })
 
   it('returns a different sessionId if the time is different', async () => {

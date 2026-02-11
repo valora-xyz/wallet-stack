@@ -203,6 +203,16 @@ class AppAnalytics {
     return this.sessionId
   }
 
+  setAnalyticsEnabled(enabled: boolean) {
+    if (this.mixpanelClient) {
+      if (enabled) {
+        this.mixpanelClient.optInTracking()
+      } else {
+        this.mixpanelClient.optOutTracking()
+      }
+    }
+  }
+
   track<EventName extends keyof AnalyticsPropertiesList>(
     ...args: undefined extends AnalyticsPropertiesList[EventName]
       ? [EventName] | [EventName, AnalyticsPropertiesList[EventName]]
