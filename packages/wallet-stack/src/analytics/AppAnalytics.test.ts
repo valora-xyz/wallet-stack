@@ -222,9 +222,15 @@ describe('AppAnalytics', () => {
       expect(mockCreateSegmentClient).not.toHaveBeenCalled()
     })
 
-    it('creates statsig client on initialization with default statsig user', async () => {
+    it('creates statsig client on initialization with Segment anonymous ID when Segment is available', async () => {
       await AppAnalytics.init()
       expect(StatsigClientSingleton.initialize).toHaveBeenCalledWith('anonId')
+    })
+
+    it('creates statsig client with device UniqueID when Segment is not available', async () => {
+      mockConfig.SEGMENT_API_KEY = undefined
+      await AppAnalytics.init()
+      expect(StatsigClientSingleton.initialize).toHaveBeenCalledWith('abc-def-123')
     })
 
     it('does not initialize statsig if STATSIG_ENABLED is false', async () => {

@@ -330,7 +330,7 @@ function SendSelectRecipient({ route }: Props) {
       const shareOptions: ShareSingleOptions = {
         social: Social.Sms,
         recipient: recipient.e164PhoneNumber,
-        message: t('inviteWithSMS.shareMessage', { shareUrl }),
+        message: t('inviteWithSmsMessage.shareMessage', { shareUrl }),
       }
 
       await Share.shareSingle(shareOptions)
