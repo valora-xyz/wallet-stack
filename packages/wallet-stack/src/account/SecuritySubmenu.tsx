@@ -127,10 +127,14 @@ const SecuritySubmenu = ({ route, navigation }: Props) => {
   }
 
   const handleToggleAnalytics = (value: boolean) => {
-    dispatch(setAnalyticsEnabled(value))
-    AppAnalytics.track(SettingsEvents.settings_analytics, {
-      enabled: value,
-    })
+    // Fire analytics event before or after dispatch to ensure it is not skipped
+    if (value) {
+      dispatch(setAnalyticsEnabled(value))
+      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled: value })
+    } else {
+      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled: value })
+      dispatch(setAnalyticsEnabled(value))
+    }
   }
 
   const handleRequirePinToggle = (value: boolean) => {
