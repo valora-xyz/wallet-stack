@@ -4,6 +4,7 @@ import { call, select } from 'redux-saga/effects'
 import { generateSignedMessage } from 'src/account/saga'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { storeMnemonic } from 'src/backup/utils'
+import { clearStoredAccounts } from 'src/web3/KeychainAccounts'
 import { currentLanguageSelector } from 'src/i18n/selectors'
 import { getPasswordSaga, retrieveSignedMessage } from 'src/pincode/authentication'
 import { MnemonicLanguages, MnemonicStrength, generateMnemonic } from 'src/utils/account'
@@ -12,7 +13,7 @@ import {
   UnlockResult,
   getConnectedAccount,
   getConnectedUnlockedAccount,
-  getOrCreateAccount,
+  createAccount,
   getWalletAddress,
   unlockAccount,
   assignAccountFromPrivateKey,
@@ -40,15 +41,7 @@ const state = createMockStore({
   web3: { account: mockAccount },
 }).getState()
 
-describe(getOrCreateAccount, () => {
-  it('returns an existing account', async () => {
-    await expectSaga(getOrCreateAccount)
-      .withState(state)
-      .not.call.fn(generateMnemonic)
-      .returns('0x0000000000000000000000000000000000007e57')
-      .run()
-  })
-
+describe(createAccount, () => {
   it.each`
     expectedAddress                                 | expectedPrivateDek                                                      | mnemonic
     ${'0xE025583d25Eff2C254999b5904C97bAe9B3F8D83'} | ${'0xb6812219f7003c27cc1ef17c2033c033a38cfc52d83f176a0667086787d59d39'} | ${'avellana novio zona pinza ducha íntimo amante diluir toldo peón ocio encía gen balcón carro lingote millón amasar mármol bondad toser soledad croqueta agosto'}
@@ -57,10 +50,9 @@ describe(getOrCreateAccount, () => {
   `(
     'creates a new account $expectedAddress',
     async ({ expectedAddress, expectedPrivateDek, mnemonic }) => {
-      await expectSaga(getOrCreateAccount)
+      await expectSaga(createAccount)
         .withState(state)
         .provide([
-          [select(currentAccountSelector), null],
           [matchers.call.fn(generateMnemonic), mnemonic],
           [
             call(storeMnemonic, mnemonic, expectedAddress),
@@ -71,6 +63,7 @@ describe(getOrCreateAccount, () => {
           ],
           [call(getPasswordSaga, expectedAddress, false, true), 'somePassword'],
         ])
+        .call(clearStoredAccounts)
         .put(setAccount(expectedAddress))
         .returns(expectedAddress)
         .run()
@@ -86,10 +79,9 @@ describe(getOrCreateAccount, () => {
   `(
     'creates an account with a mnemonic in $expectedMnemonicLang when app language is $appLang',
     async ({ appLang, expectedMnemonicLang }) => {
-      const { returnValue } = await expectSaga(getOrCreateAccount)
+      const { returnValue } = await expectSaga(createAccount)
         .withState(state)
         .provide([
-          [select(currentAccountSelector), null],
           [select(currentLanguageSelector), appLang],
           [
             matchers.call.fn(storeMnemonic),
