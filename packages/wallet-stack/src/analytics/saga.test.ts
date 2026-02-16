@@ -2,8 +2,9 @@ import { expectSaga } from 'redux-saga-test-plan'
 import { dynamic } from 'redux-saga-test-plan/providers'
 import { select } from 'redux-saga/effects'
 import AppAnalytics from 'src/analytics/AppAnalytics'
-import { updateUserTraits } from 'src/analytics/saga'
+import { handleSetAnalyticsEnabled, updateUserTraits } from 'src/analytics/saga'
 import { getCurrentUserTraits } from 'src/analytics/selectors'
+import { Actions } from 'src/app/actions'
 
 jest.mock('src/config', () => ({
   ...jest.requireActual('src/config'),
@@ -53,5 +54,25 @@ describe(updateUserTraits, () => {
       walletAddress: null,
       someUserProp: 'changed2',
     })
+  })
+})
+
+describe(handleSetAnalyticsEnabled, () => {
+  it('calls setAnalyticsEnabled with the enabled value', async () => {
+    await expectSaga(handleSetAnalyticsEnabled, {
+      type: Actions.SET_ANALYTICS_ENABLED,
+      enabled: false,
+    }).silentRun()
+
+    expect(AppAnalytics.setAnalyticsEnabled).toHaveBeenCalledWith(false)
+  })
+
+  it('calls setAnalyticsEnabled when analytics is re-enabled', async () => {
+    await expectSaga(handleSetAnalyticsEnabled, {
+      type: Actions.SET_ANALYTICS_ENABLED,
+      enabled: true,
+    }).silentRun()
+
+    expect(AppAnalytics.setAnalyticsEnabled).toHaveBeenCalledWith(true)
   })
 })

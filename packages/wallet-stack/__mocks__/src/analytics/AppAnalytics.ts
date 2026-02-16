@@ -13,6 +13,7 @@ class AppAnalytics {
   )
   getSessionId = jest.fn(() => 'this is a session id')
   setUserAddress = jest.fn((address: string | null | undefined) => console.log(address))
+  setAnalyticsEnabled = jest.fn((enabled: boolean) => console.log('setAnalyticsEnabled', enabled))
   identify = jest.fn((userID: string) => console.log(userID))
   track = jest.fn(
     <EventName extends keyof AnalyticsPropertiesList>(

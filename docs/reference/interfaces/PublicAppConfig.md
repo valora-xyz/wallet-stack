@@ -40,7 +40,7 @@ Defined in: [packages/wallet-stack/src/public/types.tsx:25](https://github.com/v
 optional experimental: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:206](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L206)
+Defined in: [packages/wallet-stack/src/public/types.tsx:210](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L210)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -297,6 +297,24 @@ Defined in: [packages/wallet-stack/src/public/types.tsx:157](https://github.com/
 optional cloudBackup: boolean;
 ```
 
+#### mixpanel?
+
+```ts
+optional mixpanel: object;
+```
+
+##### mixpanel.apiHost?
+
+```ts
+optional apiHost: string;
+```
+
+##### mixpanel.token
+
+```ts
+token: string
+```
+
 #### segment?
 
 ```ts
@@ -383,7 +401,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:178](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L178)
+Defined in: [packages/wallet-stack/src/public/types.tsx:182](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L182)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -396,7 +414,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:195](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L195)
+Defined in: [packages/wallet-stack/src/public/types.tsx:199](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L199)
 
 #### enabledNetworkIds?
 
