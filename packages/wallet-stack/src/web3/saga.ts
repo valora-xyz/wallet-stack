@@ -12,28 +12,23 @@ import Logger from 'src/utils/Logger'
 import { MnemonicLanguages, MnemonicStrength, generateMnemonic } from 'src/utils/account'
 import { privateKeyToAddress } from 'src/utils/address'
 import { ensureError } from 'src/utils/ensureError'
+import { clearStoredAccounts } from 'src/web3/KeychainAccounts'
 import { Actions, SetAccountAction, setAccount } from 'src/web3/actions'
 import { UNLOCK_DURATION } from 'src/web3/consts'
 import { getKeychainAccounts } from 'src/web3/contracts'
-import { currentAccountSelector, walletAddressSelector } from 'src/web3/selectors'
+import { walletAddressSelector } from 'src/web3/selectors'
 import { call, put, select, take } from 'typed-redux-saga'
 import { RootState } from '../redux/reducers'
 
 const TAG = 'web3/saga'
 
-export function* getOrCreateAccount() {
-  const account = yield* select(currentAccountSelector)
-  if (account) {
-    Logger.debug(
-      TAG + '@getOrCreateAccount',
-      'Tried to create account twice, returning the existing one'
-    )
-    return account
-  }
-
+export function* createAccount() {
   let privateKey: string | undefined
   try {
-    Logger.debug(TAG + '@getOrCreateAccount', 'Creating a new account')
+    Logger.debug(TAG + '@createAccount', 'Clearing stored accounts')
+    yield* call(clearStoredAccounts)
+
+    Logger.debug(TAG + '@createAccount', 'Creating a new account')
 
     const mnemonicBitLength = MnemonicStrength.s128_12words
     const mnemonicLanguage = MnemonicLanguages.english
@@ -45,7 +40,7 @@ export function* getOrCreateAccount() {
     }
     let duplicateInMnemonic = checkDuplicate(mnemonic)
     while (duplicateInMnemonic) {
-      Logger.debug(TAG + '@getOrCreateAccount', 'Regenerating mnemonic to avoid duplicates')
+      Logger.debug(TAG + '@createAccount', 'Regenerating mnemonic to avoid duplicates')
       mnemonic = yield* call(generateMnemonic, mnemonicBitLength, mnemonicLanguage)
       duplicateInMnemonic = checkDuplicate(mnemonic)
     }
@@ -71,7 +66,7 @@ export function* getOrCreateAccount() {
   } catch (err) {
     const error = ensureError(err)
     const sanitizedError = Logger.sanitizeError(error, privateKey)
-    Logger.error(TAG + '@getOrCreateAccount', 'Error creating account', sanitizedError)
+    Logger.error(TAG + '@createAccount', 'Error creating account', sanitizedError)
     throw new Error(ErrorMessages.ACCOUNT_SETUP_FAILED)
   }
 }
