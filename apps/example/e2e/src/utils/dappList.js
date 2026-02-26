@@ -30,7 +30,7 @@ export async function fetchDappList(userAgent = '') {
   let dappList = null
   try {
     const response = await fetch(
-      'https://us-central1-celo-mobile-alfajores.cloudfunctions.net/dappList',
+      'https://us-central1-celo-mobile-mainnet.cloudfunctions.net/dappList',
       {
         headers: {
           'User-Agent': userAgent,

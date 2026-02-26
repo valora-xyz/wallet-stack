@@ -930,6 +930,9 @@ interface PerformanceProperties {
 
 interface NavigationProperties {
   [NavigationEvents.navigator_not_ready]: undefined
+  [NavigationEvents.screen_viewed]: {
+    screen_name: string
+  }
 }
 
 export interface WalletConnect1Properties {

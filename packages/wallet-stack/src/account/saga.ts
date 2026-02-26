@@ -40,7 +40,7 @@ import { safely } from 'src/utils/safely'
 import { clearStoredAccounts } from 'src/web3/KeychainAccounts'
 import { getKeychainAccounts } from 'src/web3/contracts'
 import networkConfig from 'src/web3/networkConfig'
-import { getOrCreateAccount, getWalletAddress, unlockAccount } from 'src/web3/saga'
+import { createAccount, getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { walletAddressSelector } from 'src/web3/selectors'
 import { call, put, select, spawn, take, takeLeading } from 'typed-redux-saga'
 const TAG = 'account/saga'
@@ -75,10 +75,14 @@ export function* initializeAccountSaga() {
   Logger.debug(TAG + '@initializeAccountSaga', 'Creating account')
   try {
     AppAnalytics.track(OnboardingEvents.initialize_account_start)
-    yield* call(getOrCreateAccount)
-    yield* call(generateSignedMessage)
 
     const choseToRestoreAccount = yield* select(choseToRestoreAccountSelector)
+    if (!choseToRestoreAccount) {
+      yield* call(createAccount)
+    }
+
+    yield* call(generateSignedMessage)
+
     if (choseToRestoreAccount) {
       yield* call(handlePreviouslyVerifiedPhoneNumber)
     }
