@@ -1,6 +1,10 @@
 {
   extends: ['github>valora-xyz/renovate-config:default.json5', ':disableDigestUpdates'],
 
+  // Disable all dependency updates for now.
+  // Only vulnerability alerts are enabled (see below).
+  enabled: false,
+
   vulnerabilityAlerts: {
     enabled: true,
     labels: ['security'],
@@ -55,7 +59,7 @@
       matchDepTypes: ['devDependencies'],
       groupName: 'devDependencies',
       // But exclude some specific packages from this group
-      matchPackageNames: ['!typescript'],
+      excludePackageNames: ['typescript'],
       // set default priority for dev dependencies
       prPriority: 0,
     },
@@ -66,74 +70,38 @@
     },
     {
       // Group updates for @testing-library packages
-      matchPackageNames: ['/^@testing-library//'],
+      matchPackagePatterns: ['^@testing-library/'],
       groupName: 'testing-library',
     },
     {
       // Group updates for @react-native-firebase packages
-      matchPackageNames: ['/^@react-native-firebase//'],
+      matchPackagePatterns: ['^@react-native-firebase/'],
       groupName: 'react-native-firebase',
       // TODO(ENG-105): enable once we have migrated away from react-native-sms-retriever
       enabled: false,
     },
     {
       // Group updates for @segment packages
-      matchPackageNames: ['/^@segment//'],
+      matchPackagePatterns: ['^@segment/'],
       groupName: 'segment',
     },
     {
       // Group updates for prettier packages
-      matchPackageNames: ['/^prettier/'],
+      matchPackagePatterns: ['^prettier'],
       groupName: 'prettier',
     },
     {
       // Group updates for walletconnect packages
-      matchPackageNames: ['/^@walletconnect//'],
+      matchPackagePatterns: ['^@walletconnect/'],
       groupName: 'walletconnect',
     },
     {
-      // Disable updates for Expo-managed packages used in this repo.
-      // These have strict version constraints tied to the Expo SDK version
-      // and should only be updated together via `npx expo install`.
-      // When adding new Expo-managed deps, check if they appear in
-      // node_modules/expo/bundledNativeModules.json and add them here.
-      matchPackageNames: [
-        '@react-native-async-storage/async-storage',
-        '@react-native-community/netinfo',
-        '@react-native-masked-view/masked-view',
-        '@react-native-picker/picker',
-        '@sentry/react-native',
-        'expo',
-        'expo-build-properties',
-        'expo-camera',
-        'expo-constants',
-        'expo-dev-client',
-        'expo-image',
-        'expo-splash-screen',
-        'react',
-        'react-native',
-        'react-native-gesture-handler',
-        'react-native-pager-view',
-        'react-native-reanimated',
-        'react-native-safe-area-context',
-        'react-native-screens',
-        'react-native-svg',
-      ],
-      enabled: false,
-    },
-    {
-      // Disable updates for wallet-stack peerDependencies, because
-      // it may break consumer apps out of sync with these updates.
-      matchDepTypes: ['peerDependencies'],
-      matchFileNames: ['packages/wallet-stack/package.json'],
-      enabled: false,
-    },
-    {
-      // Avoid auto merge of major updates on auth0, firebase and walletconnect
-      matchPackageNames: [
-        '/^@react-native-firebase//',
-        '/react-native-auth0/',
-        '/^@walletconnect//',
+      // Avoid auto merge of major updates on rn, auth0, firebase and walletconnect
+      matchPackagePatterns: [
+        '^@react-native-firebase/',
+        'react-native-auth0',
+        '^@walletconnect/',
+        '^react-native$',
       ],
       matchUpdateTypes: ['major'],
       automerge: false,
