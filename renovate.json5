@@ -92,10 +92,40 @@
       groupName: 'walletconnect',
     },
     {
-      // Disable updates for Expo-managed packages
+      // Disable updates for Expo-managed packages used in this repo.
       // These have strict version constraints tied to the Expo SDK version
-      // and should only be updated together via `npx expo install`
-      matchPackageNames: ['expo', 'react-native', '/^expo-/', '/^@expo//'],
+      // and should only be updated together via `npx expo install`.
+      // When adding new Expo-managed deps, check if they appear in
+      // node_modules/expo/bundledNativeModules.json and add them here.
+      matchPackageNames: [
+        '@react-native-async-storage/async-storage',
+        '@react-native-community/netinfo',
+        '@react-native-masked-view/masked-view',
+        '@react-native-picker/picker',
+        '@sentry/react-native',
+        'expo',
+        'expo-build-properties',
+        'expo-camera',
+        'expo-constants',
+        'expo-dev-client',
+        'expo-image',
+        'expo-splash-screen',
+        'react',
+        'react-native',
+        'react-native-gesture-handler',
+        'react-native-pager-view',
+        'react-native-reanimated',
+        'react-native-safe-area-context',
+        'react-native-screens',
+        'react-native-svg',
+      ],
+      enabled: false,
+    },
+    {
+      // Disable updates for wallet-stack peerDependencies, because
+      // it may break consumer apps out of sync with these updates.
+      matchDepTypes: ['peerDependencies'],
+      matchFileNames: ['packages/wallet-stack/package.json'],
       enabled: false,
     },
     {
