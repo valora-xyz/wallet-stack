@@ -315,7 +315,7 @@
   "superchargeClaimFailure": "Возникла проблема с заявкой на вознаграждения Supercharge.",
   "superchargeNotificationBody": "Вознаграждения Supercharge уже ждут вас! Получите их прямо сейчас",
   "superchargeNotificationStart": "Получить вознаграждения",
-  "superchargingNotificationBody": "Вы получаете 12% С Supercharge ⚡",
+  "superchargingNotificationBody": "Вы получаете 25% С Supercharge ⚡",
   "superchargingNotificationBodyV1_33": "Вы получаете {{apy}}% вознаграждений по системе Supercharge ⚡",
   "superchargingNotificationStart": "Дополнительно",
   "startSuperchargingNotificationBody": "Получайте еженедельные криптовознаграждения. Присоединяйтесь к Supercharge!",
@@ -333,7 +333,7 @@
   "transaction": {
     "operation": "Операция",
     "data": "Данные",
-    "signTX": "Tранзакцию",
+    "signTX": "Подписать транзакцию",
     "details": "Подробнее"
   },
   "shareInfo": "Вы должны подключить свой кошелек, чтобы подтвердить транзакции в этом Dapp. После подключения у него будет доступ к адресу вашего кошелька.",
@@ -398,9 +398,9 @@
   "exchanges": "Криптобиржа",
   "noExchanges": "В вашем регионе отсутствуют доступные Криптобиржа для {{digitalAsset}}.",
   "buySellOnExchanges": "Покупка/продажа на Криптобиржа",
-  "cashOut": "Вывести средства",
+  "cashOut": "Вывод средств",
   "cashOutSubtitle": "Потратьте средства на подарочные сертификаты и другие покупки или отправьте их на Криптобиржа",
-  "cashOutComingSoon": "Вывод средства (скоро)",
+  "cashOutComingSoon": "Вывод средств (скоро)",
   "spend": "Потратить",
   "spendSubtitle": "Воспользуйтесь своим остатком у торговцев, обеспечивающих такую возможность",
   "amountCelo": "Сумма (CELO)",
@@ -472,7 +472,7 @@
   "unsupportedLocation": "{{appName}} не поддерживается в вашем регионе",
   "unsupportedPaymentMethod": "Оплата {{paymentMethod}} не поддерживается в вашем регионе",
   "noProviders": "В вашем регионе отсутствуют доступные поставщики для {{digitalAsset}}.",
-  "noPaymentMethods": "В вашем регионе отсутствуют доступные способы оплаты для {{digitalAsset}}.",
+  "noPaymentMethods": "В вашем регионе недоступны способы оплаты для {{digitalAsset}}.",
   "switchCurrency": "Изменить валюту",
   "accept": "Принять",
   "at": "в",
@@ -505,8 +505,8 @@
   "paste": "Вставить",
   "choose": "Выбрать",
   "receivedPayment": "Полученный платеж",
-  "receivedNft": "NFT получен",
-  "sentNft": "NFT отправлен",
+  "receivedNft": "Полученный NFT",
+  "sentNft": "Отправленный NFT",
   "getStarted": "Начать",
   "manageCeloDollars": "Управление Celo Dollars",
   "sendCeloDollars": "Отправить Celo Dollars",
@@ -710,7 +710,8 @@
     "title": "Пригласите друзей и получите до 12 cUSD",
     "body": "Как только они подключат свои номера и внесут средства в {{appName}}, вы получите по 0,50 cUSD."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "Пригласить с помощью SMS",
+  "inviteWithSmsMessage": {
     "title": "Пригласить с помощью SMS",
     "shareMessage": "Привет! Зарегистрируйся на кошельке {{appName}} . Я использую его для приумножения своих сбережений в долларах и криптовалютах, а ты можешь настроить его за считанные секунды, указав лишь номер телефона: {{shareUrl}}."
   },
