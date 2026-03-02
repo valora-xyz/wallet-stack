@@ -277,15 +277,15 @@
   "consumerIncentivesSummary": "Mas há mais recompensas a caminho. Até 28 de maio, obtenha {{percent}}% de recompensas anuais sobre seu saldo mais alto em stablecoin (cUSD, cEUR ou cREAL). Veja como funciona:",
   "earnWeekly": {
     "header": "Conecte seu número de celular",
-    "text": "Toque em Conectar o número caso ainda não o tenha conectado."
+    "text": "Toque em conectar o número caso ainda não o tenha conectado."
   },
   "noMinCommitment": {
-    "header": "Adicione fundos",
-    "earningText": "Receba recompensas no seu saldo de 10-1000 cUSD, 10-1000 cEUR, ou 50-6000 cREAL.",
+    "header": "Adicionar um saldo mínimo",
+    "earningText": "Receba recompensas sobre valores de 10 a 10.000 cUSD, 10 a 1.000 cEUR ou 50 a 6.000 cREAL.",
     "connectText": "Você só precisa de um saldo mínimo de {{minBalance}} {{currency}} e estar conectado ao seu número de celular para começar a ganhar recompensas."
   },
   "saveMoreEarnMore": {
-    "header": "Crie sua Frase de Recuperação",
+    "header": "Configure sua frase de recuperação",
     "text": "Isto irá garantir que suas recompensas estejam seguras em seu controle."
   },
   "conclusion": "É muito simples. Aumente seu cripto hoje mesmo!",
@@ -293,34 +293,34 @@
   "superchargeDescription": "Mas há mais recompensas a caminho. Até 28 de maio, obtenha {{apy}}% de recompensas anuais sobre seu saldo mais alto em {{token}}. Veja como funciona:",
   "superchargeConnectNumber": "Conecte seu número de celular",
   "superchargeReconnectNumber": "Reconecte seu número de celular\n<0>Lançamos uma experiência aprimorada do Supercharge. Reconecte o seu número de celular para continuar ganhando recompensas com {{token}}.</0>",
-  "superchargeMinimumBalance": "Adicione um saldo mínimo de {{amount}} {{token}}",
+  "superchargeMinimumBalance": "Adicionar um saldo mínimo de {{amount}} {{token}}",
   "superchargeDisclaimer": "Isso não afetará seu saldo ou ganhos anteriores.",
   "superchargeDisclaimerMaxRewards": "Isso não afetará seu saldo ou ganhos anteriores.",
   "superchargeDisclaimerDayLimit": "Isso não afetará seu saldo ou ganhos anteriores. <0>Saiba mais</0>",
   "superchargeTokenDetailsDialog": {
-    "title": "Quais ativos recebem recompensas de Supercharge?",
-    "body": "Você receberá recompensas semanalmente na sua stablecoin de Celo com o maior saldo (cEUR, cUSD, cREAL).",
+    "title": "Quais ativos eu posso cobrar?",
+    "body": "Você será recompensado semanalmente na sua stablecoin Celo com o maior valor (cEUR, cUSD, cREAL).",
     "dismiss": "Ignorar"
   },
   "superchargingTitle": "Atualização do app necessária",
   "superchargingDescription": "Atualize o app da {{appName}} para continuar recebendo recompensas do Supercharge semanalmente.",
   "superchargingTitleV1_54": "O Supercharge está acabando",
   "superchargingDescriptionV1_54": "Você poderá resgatar as recompensas semanais até terça-feira, 28 de maio, às 23h59 UTC. A partir de 29 de maio, não será mais possível resgatar as recompensas do Supercharge.",
-  "superchargeRewardsAvailable": "Você tem {{amount}} {{token}} disponíveis para resgatar!",
-  "superchargeRewardsAvailableMultipleTokens": "Você tem {{amounts}} disponíveis para resgatar!",
+  "superchargeRewardsAvailable": "Você tem {{amount}} {{token}} disponíveis para coletar!",
+  "superchargeRewardsAvailableMultipleTokens": "Você tem {{amounts}} disponíveis para coletar!",
   "superchargeClaimText": "Resgate suas recompensas até terça-feira, 28 de maio, às 23h59 UTC. A partir de 29 de maio, você não poderá mais resgatar as recompensas do Supercharge.",
-  "superchargeClaimButton": "Resgatar recompensas",
-  "superchargeFetchRewardsFailed": "Ocorreu um erro ao resgatar recompensas de Supercharge pendentes. Tente novamente mais tarde.",
-  "superchargeClaimSuccess": "Suas recompensas de Supercharge foram adicionadas ao seu saldo total.",
-  "superchargeClaimFailure": "Ocorreu um erro ao resgatar suas recompensas de Supercharge.",
+  "superchargeClaimButton": "Reivindicar Recompensas",
+  "superchargeFetchRewardsFailed": "Erro ao obter recompensas de Supercobrança pendentes. Por favor, tente novamente mais tarde.",
+  "superchargeClaimSuccess": "Suas recompensas Super foram adicionadas ao seu Saldo Total.",
+  "superchargeClaimFailure": "Ocorreu um erro ao reivindicar sua recompensa Super-tarifa.",
   "superchargeNotificationBody": "As suas recompensas Supercharge chegaram! Resgate-as agora mesmo",
   "superchargeNotificationStart": "Resgatar recompensas",
-  "superchargingNotificationBody": "Você está recebendo recompensas com Supercharge ⚡",
+  "superchargingNotificationBody": "Você está recebendo 25% de recompensas com Supercharge ⚡",
   "superchargingNotificationBodyV1_33": "Você está recebendo {{apy}}% em recompensas com Supercharge ⚡",
   "superchargingNotificationStart": "Saiba mais",
   "startSuperchargingNotificationBody": "Ganhe recompensas semanalmente. Entre no Supercharge!",
   "startSuperchargingNotificationStart": "Ganhe recompensas",
-  "cashIn": "Adicionar {{currency}}",
+  "cashIn": "Adicione {{currency}}",
   "connectNumber": "Conectar número",
   "connectToWallet": "Conectar a {{dappName}}",
   "confirmTransaction": "Confirmar transacção",
@@ -333,8 +333,8 @@
   "transaction": {
     "operation": "Operação",
     "data": "Dados",
-    "signTX": "Transação",
-    "details": "Detalhes"
+    "signTX": "Assinar transação",
+    "details": "Mostrar detalhes"
   },
   "shareInfo": "Deve ligar a sua carteira para aprovar transações nesta dapp. Uma vez conectada, a dapp terá acesso ao endereço da sua carteira.",
   "connectWalletInfoDappkit": "Deve ligar a sua carteira para aprovar transações nesta dapp. Uma vez conectada, a dapp terá acesso ao endereço da sua carteira ao seu número de celular.",
@@ -343,7 +343,7 @@
   "learnMore": "Saiba mais",
   "equalToAmount": "Igual a <1></1>",
   "whatIsGold": "A {{appName}} permite que você compre e venda CELO",
-  "manageCelo": "Gerenciar Celo Dollars",
+  "manageCelo": "Gerenciar Celo Dólares",
   "exchangeRate": "Taxa de troca",
   "exchangeRateValue": "<0></0> : 1 {{takerTokenCode}}",
   "history": "Histórico",
@@ -368,13 +368,13 @@
   "securityFee": "Taxa de rede",
   "exchangeFee": "Taxa de troca",
   "edit": "Editar",
-  "notEnoughDollars": "Celo Dollars insuficientes para fazer a troca",
+  "notEnoughDollars": "Celo Dólares insuficientes para fazer a troca",
   "notEnoughGold": "CELO insuficientes para fazer a troca",
   "pending": "Pendente",
   "loadingExchangeRate": "Carregando taxa de troca...",
   "errorRefreshingRate": "Não foi possível atualizar a taxa de troca",
   "exchangeRateChange": "A taxa de troca mudou, tente novamente",
-  "feeExchangeEducation": "Ao trocar entre os ativos, uma pequena taxa adicional vai para a manutenção do valor das stablecoins Celo indexado ao ativo que eles rastreiam.\n\nPara saber mais, acesse as Perguntas frequentes.",
+  "feeExchangeEducation": "Ao realizar a troca entre ativos, uma pequena taxa é aplicada para manter o valor dos stablecoins Celo indexado ao ativo que acompanham. \n\nAcesse as Perguntas frequentes para saber mais.",
   "goldPrice": "Preço do CELO",
   "yourGoldBalance": "Seu saldo em CELO",
   "goldAmount": "Quantia de CELO",
@@ -401,7 +401,7 @@
   "cashOut": "Sacar Fundos",
   "cashOutSubtitle": "Adquira vales-presente, faça compras ou envie fundos para um exchange de criptomoedas.",
   "cashOutComingSoon": "Sacar fundos (em breve)",
-  "spend": "Gastar fundos",
+  "spend": "Gastos",
   "spendSubtitle": "Use seu saldo com comerciantes apoiadores",
   "amountCelo": "Quantia (CELO)",
   "onlyCeloDollars": "Somente cUSD",
@@ -413,7 +413,7 @@
   "ether": "Ether",
   "tapToCopyCeloDollarsAddress": "Toque para copiar seu endereço cUSD da {{appName}} ",
   "disclaimerFiat": "Os valores de {{currency}} são estimativos.",
-  "dollarsNotYetEnabledNote": "Os Celo Dollars ainda não estão disponíveis em nenhum fornecedor. Para obter Celo Dollars, adquira o CELO e troque por Celo Dollars na aba CELO.",
+  "dollarsNotYetEnabledNote": "Os Celo Dólares ainda não estão disponíveis em nenhum fornecedor. Para obter Celo Dólares, adquira o CELO e troque por Celo Dólares na aba CELO.",
   "selectDigitalCurrency": "Selecione um ativo",
   "selectPaymentMethod": "Selecionar método:",
   "payWithBank": "Conta bancária",
@@ -469,10 +469,10 @@
     "bodyWithoutProvider": "O fornecedor de serviços está processando seu pedido. Você deve receber seus fundos dentro de alguns dias."
   },
   "restrictedRegion": "Suporte limitado na região",
-  "unsupportedLocation": "A {{appName}} não está disponível na sua localização",
+  "unsupportedLocation": "Não há suporte para {{appName}} na sua localização",
   "unsupportedPaymentMethod": "Não é possível pagar com {{paymentMethod}} na sua região",
   "noProviders": "Não há fornecedores disponíveis para {{digitalAsset}} em sua região.",
-  "noPaymentMethods": "Não há métodos de pagamento disponíveis para {{digitalAsset}} em sua região.",
+  "noPaymentMethods": "Não existem métodos de pagamento disponíveis para {{digitalAsset}} em sua região.",
   "switchCurrency": "Trocar moeda",
   "accept": "Aceitar",
   "at": "em",
@@ -491,7 +491,7 @@
   "tip": "Dica: ",
   "warning": "Aviso ",
   "downloadRewards": "Baixar Recompensas Celo",
-  "wallet": "Carteira",
+  "wallet": "Conta",
   "send": "Enviar",
   "search": "Pesquisar",
   "namePhoneAddress": "Nome, celular ou endereço",
@@ -508,8 +508,8 @@
   "receivedNft": "NFT recebido",
   "sentNft": "NFT enviado",
   "getStarted": "Começar",
-  "manageCeloDollars": "Gerenciar Celo Dollars",
-  "sendCeloDollars": "Enviar Celo Dollars",
+  "manageCeloDollars": "Gerenciar Celo Dólares",
+  "sendCeloDollars": "Enviar Celo Dólares",
   "startEarning": "Comece a ganhar",
   "backToWallet": "Voltar para a conta",
   "exchangeForGold": "Tocar pelo CELO",
@@ -538,7 +538,7 @@
   "claimed": "Resgatada",
   "celoGold": "CELO",
   "celoEuros": "Celo Euros",
-  "balanceAvailable": "<0></0> disponíveis",
+  "balanceAvailable": "<0></0> disponível",
   "subtotal": "Subtotal",
   "total": "Total",
   "totalInDollars": "Celo Dólares @ <0></0>",
@@ -675,11 +675,11 @@
   "goldEducationSteps": [
     {
       "title": "O que é CELO?",
-      "text": "O CELO é uma moeda digital que mantém o Celo Dollar (cUSD) estável."
+      "text": "O CELO é uma moeda digital que mantém o Celo Dólar (cUSD) estável."
     },
     {
       "title": "Alterações de preço do CELO.",
-      "text": "Se mais pessoas usarem o Celo Dollar, o valor do CELO aumenta. Ao contrário do CELO, o valor do Celo Dollar não muda. "
+      "text": "Se mais pessoas usarem o Celo Dólar, o valor do CELO aumenta. Ao contrário do CELO, o valor do Celo Dólar não muda. "
     },
     {
       "title": "Molde a rede Celo",
@@ -695,8 +695,8 @@
   "whyReceiveFees": "Você recebeu cripto para confirmar sua conta",
   "inviteSent": "Convite enviado",
   "accountSetupFailed": "Falha ao criar sua conta",
-  "accountSetupFailedDescription": "Exclua a {{appName}} do seu dispositivo e tente novamente. Se você continuar tendo problemas, entre em contato com o suporte.",
-  "closeApp": "Fechar",
+  "accountSetupFailedDescription": "Exclua {{appName}} do seu dispositivo e tente novamente. Se continuar a ter problemas, entre em contato com o suporte.",
+  "closeApp": "Fechar aplicativo",
   "transferDollarsToAccount": "Fundos transferidos para sua conta!",
   "inviteAnyone": "Envie facilmente para seus amigos adicionando seus contatos",
   "inviteReceived": "Convite recebido",
@@ -710,7 +710,8 @@
     "title": "Indique um amigo e ganhe USDT",
     "body": "Depois que a pessoa conectar seu número à {{appName}}, vocês dois receberão 1 USDT."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "Convidar com SMS",
+  "inviteWithSmsMessage": {
     "title": "Convidar com SMS",
     "shareMessage": "Ei, inscreva-se na carteira {{appName}} . Eu a uso para aumentar minhas economias em dólares e criptomoedas, e você pode configurá-la em segundos com apenas um número de telefone: {{shareUrl}}."
   },
@@ -744,8 +745,8 @@
     "goldDisclaimer": "Ao criar uma \"conta\" na {{appName}}, você está criando uma carteira digital da qual somente você possui as chaves. Nenhuma outra pessoa, física ou jurídica, incluindo a {{appName}}, pode recuperar sua chave, alterar ou desfazer transações, ou recuperar fundos perdidos. Esteja ciente de que ativos digitais fazem parte de uma nova classe de ativos e apresentam risco de perda financeira. Considere cuidadosamente suas circunstâncias financeiras e sua tolerância a riscos financeiros antes de comprar qualquer ativo digital.",
     "goldDisclaimerWithPoints": "Ao criar uma \"conta\" na {{appName}}, você está criando uma carteira digital da qual somente você possui as chaves. Nenhuma outra pessoa, física ou jurídica, incluindo a {{appName}}, pode recuperar sua chave, alterar ou desfazer transações, ou recuperar fundos perdidos. A {{appName}} concede recompensas de fidelidade tokenizadas (\"Pontos\") aos Usuários por se envolverem em determinadas atividades no aplicativo. Os Pontos são itens colecionáveis na cadeia, intransferíveis e não resgatáveis. Não há garantias sobre a disponibilidade ou o valor dos Pontos. Esteja ciente de que ativos digitais fazem parte de uma nova classe de ativos e apresentam risco de perda financeira. Considere cuidadosamente suas circunstâncias financeiras e sua tolerância a riscos financeiros antes de comprar qualquer ativo digital."
   },
-  "fullNameOrPsuedonym": "Nome ou pseudônimo",
-  "namePlaceholder": "nome",
+  "fullNameOrPsuedonym": "Nome completo ou pseudônimo",
+  "namePlaceholder": "ex.: nome",
   "nameAndPicGuideCopyTitle": "Qual é o seu nome?",
   "nameAndPicGuideCopyContent": "Queremos saber como te chamar.",
   "important": "Importante",
@@ -828,7 +829,7 @@
   },
   "enableBiometry": {
     "title": "Proteja sua carteira",
-    "description": "{{biometryType}} protege sua conta e faz com que seja mais fácil usar {{appName}}",
+    "description": "{{biometryType}} protege sua carteira e faz com que seja mais fácil usar {{appName}}",
     "cta": "Ativar {{biometryType}}",
     "guideTitle": "Deseja ativar {{biometryType}}?",
     "guideDescription": "{{biometryType}} torna mais fácil, rápido e seguro conectar sua carteira aos dapps e assinar transações."
@@ -851,7 +852,7 @@
     "restoreWallet": "Restaurar carteira",
     "hasWallet": "Já tenho uma carteira",
     "hasWalletV1_88": "Eu tenho uma carteira",
-    "header": "Nossas boas-vindas! Vamos criar a sua carteira cripto.",
+    "header": "Nossas boas-vindas à {{appName}}! Vamos criar sua carteira cripto.",
     "getStarted": "Começar"
   },
   "accessContacts": {
@@ -882,7 +883,7 @@
     "label": "Código de convite",
     "codePlaceholder": "Insira o código de convite",
     "noCode": "Não tenho um código de convite",
-    "nodeCodeInviteLink": "Não tem um código de convite? Solicite um em <0>celo.org/developers/carteira</0> ou <1>continue sem</1>",
+    "nodeCodeInviteLink": "Não tem um código de convite? Solicite um em <0>celo.org/developers/wallet</0> ou <1>continue sem</1>",
     "loadingHeader": "Criando conta...",
     "loadingBody": "Isso pode levar até 90 segundos"
   },
@@ -913,12 +914,12 @@
   "phoneVerificationScreen": {
     "screenTitle": "Número de celular",
     "title": "Conecte seu número de celular à {{appName}}",
-    "description": "Isso vincula seu endereço de carteira ao seu número de celular, sendo fácil enviar cripto",
+    "description": "Isso vincula seu endereço de carteira ao seu número de celular, para enviar cripto de forma fácil",
     "startButtonLabel": "Conectar",
     "learnMore": {
       "buttonLabel": "Preciso conectar o número?",
       "title": "Preciso conectar o número?",
-      "body": "Conectar seu número de telefone permitirá que você envie dinheiro para amigos em seu catálogo de endereços e outros números de telefone. \n\nSe você optar por pular essa etapa, não poderá acessar seus contatos e só poderá enviar dinheiro por meio do código QR ou do endereço da carteira."
+      "body": "Conectar seu número de celular permitirá que você envie dinheiro para amigos em seu catálogo de endereços e outros números de celular. \n\nSe você optar por pular essa etapa, não poderá acessar seus contatos e só poderá enviar dinheiro por meio do código QR ou do endereço da carteira."
     },
     "skip": {
       "title": "Tem certeza?",
@@ -934,8 +935,8 @@
     "codeInputPlaceholder": "123456",
     "helpDialog": {
       "title": "Ajuda",
-      "body": "Enviamos um SMS para o seu número de telefone. Verifique suas mensagens de texto para encontrar o código de 6 dígitos. \n\nSe estiver com problemas para receber mensagens, você pode pular esta etapa por enquanto e tentar novamente mais tarde.",
-      "bodyCloudBackupOnboarding": "Enviamos um SMS para o seu número de telefone. Verifique suas mensagens de texto para encontrar o código de 6 dígitos. \n\nSe você estiver tendo problemas para receber mensagens, recomendamos fazer backup com uma frase de recuperação. Você pode tentar fazer login com seu e-mail e telefone mais tarde.",
+      "body": "Enviamos um SMS para o seu número de celular. Verifique suas mensagens de texto para encontrar o código de 6 dígitos. \n\nSe estiver com problemas para receber mensagens, você pode pular esta etapa por enquanto e tentar novamente mais tarde.",
+      "bodyCloudBackupOnboarding": "Enviamos um SMS para o seu número de celular. Verifique suas mensagens de texto para encontrar o código de 6 dígitos. \n\nSe você estiver tendo problemas para receber mensagens, recomendamos fazer backup com uma frase de recuperação. Você pode tentar fazer login com seu e-mail e telefone mais tarde.",
       "skip": "Pular",
       "dismiss": "Voltar",
       "useRecoveryPhrase": "Usar frase de recuperação"
@@ -1010,13 +1011,13 @@
   "verificationUnavailable": "A conexão do número de celular está indisponível no momento. Insira o seu número de celular e notificaremos quando for possível conectá-lo novamente.\n\nEnquanto isso, você pode continuar a usar o {{appName}} com códigos QR ou Endereços de conta. Não se preocupe, pois pagamentos enviados ao seu número de celular ficarão aguardando até você conectá-lo à sua conta.",
   "requests": "Solicitações",
   "empty": "Você não tem solicitações de pagamento",
-  "celoDollarBalance": "Saldo de Celo Dollars",
+  "celoDollarBalance": "Saldo de Celo Dólar ",
   "requestDeclined": "Solicitação recusada",
   "requestPaid": "Solicitação paga",
   "paymentRequestUpdateFailed": "Não é possível atualizar a solicitação de pagamento",
   "incomingPaymentRequestNotificationTitle": "{{name}} solicitou",
   "outgoingPaymentRequestNotificationTitle": "Esperando por {{name}} ",
-  "requesting": "Solicitar para",
+  "requesting": "Solicitando",
   "request": "Solicitar",
   "requestToken": "Solicitar {{token}}",
   "requestSent": "Solicitação enviada",
@@ -1145,18 +1146,18 @@
     "body": "Certifique-se de que este endereço suporta o ativo que você está tentando enviar. Seus fundos podem não ser recuperáveis se este endereço for inválido. Envie um pagamento teste primeiro para ter certeza de que este é o endereço correto.",
     "toggle": "Lembrar sempre"
   },
-  "loadingFromScan": "Escaneando",
-  "loadingFromDeeplink": "Conectando",
+  "loadingFromScan": "Alguns dapps estão enfrentando problemas de conexão. Verifique novamente amanhã.",
+  "loadingFromDeeplink": "Alguns dapps estão enfrentando problemas de conexão. Verifique novamente amanhã.",
   "action": {
-    "asking": "Este aplicativo está pedindo para executar a seguinte ação:",
-    "askingV1_35": "{{dappName}} está pedindo para executar a seguinte ação:",
+    "asking": "Este aplicativo está pedindo para executar a seguinte ação",
+    "askingV1_35": "{{dappName}} está pedindo para executar o seguinte:",
     "operation": "Operação",
     "data": "Dados",
-    "sign": "Assinar payload de dados",
+    "sign": "Assinar um payload de dados",
     "signTransaction": "Assinar uma transação",
     "sendTransaction": "Enviar uma transação",
-    "decrypt": "Descriptografar payload de dados",
-    "accounts": "Leia o seu Endereço de Conta da {{appName}}",
+    "decrypt": "Descriptografar um payload de dados",
+    "accounts": "Ler o seu Endereço de Conta da {{appName}}",
     "details": "Ver dados da transação",
     "computeSharedSecret": "Gerar segredos",
     "emptyMessage": "Mensagem vazia"
@@ -1551,7 +1552,7 @@
   "recentlyUsedDapps": "Dapps usados recentemente",
   "favoritedDapps": "Dapps favoritos",
   "allDapps": "Todos os dapps",
-  "rewards": "Recompensas",
+  "rewards": "Prêmios",
   "supercharge": "Super-carga",
   "others": "Outros",
   "nomSpaceRecipient": "Nomspace: {{name}}",
