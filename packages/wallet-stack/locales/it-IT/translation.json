@@ -710,9 +710,10 @@
     "title": "Invita gli amici e guadagni fino a 12 cUSD",
     "body": "Dopo che avranno collegato il loro numero e avranno depositato dei fondi su {{appName}}, riceverete entrambi 0,50 cUSD."
   },
-  "inviteWithSMS": {
-    "title": "Invita con SMS",
-    "shareMessage": "Ehi! Iscriviti a {{appName}} wallet. Io lo uso per far crescere i miei risparmi in USD e criptovalute, e tu puoi configurarlo in pochi secondi con un semplice numero di telefono: {{shareUrl}}."
+  "inviteWithSMS": "Invite with SMS",
+  "inviteWithSmsMessage": {
+    "title": "Invite with SMS",
+    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Invita un amico",

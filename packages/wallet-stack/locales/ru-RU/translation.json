@@ -710,9 +710,10 @@
     "title": "Пригласите друзей и получите до 12 cUSD",
     "body": "Как только они подключат свои номера и внесут средства в {{appName}}, вы получите по 0,50 cUSD."
   },
-  "inviteWithSMS": {
-    "title": "Пригласить с помощью SMS",
-    "shareMessage": "Привет! Зарегистрируйся на кошельке {{appName}} . Я использую его для приумножения своих сбережений в долларах и криптовалютах, а ты можешь настроить его за считанные секунды, указав лишь номер телефона: {{shareUrl}}."
+  "inviteWithSMS": "Invite with SMS",
+  "inviteWithSmsMessage": {
+    "title": "Invite with SMS",
+    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Пригласить друга",
