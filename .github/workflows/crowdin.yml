@@ -39,9 +39,10 @@ jobs:
           pull_request_title: 'chore(l10n): update translations from Crowdin'
           pull_request_base_branch_name: main
           config: crowdin.yml
+          base_url: https://valorainc.api.crowdin.com
+          project_id: 2
         env:
           GITHUB_TOKEN: ${{ steps.valora-actions-token.outputs.token }}
-          CROWDIN_PROJECT_ID: ${{ vars.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       # Ensure only non-base translation files are modified
