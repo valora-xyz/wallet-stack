@@ -2,7 +2,7 @@ name: Update translations from Crowdin
 
 on:
   push:
-    branches: [main]
+    branches: [main, alex/crowdin]
     paths:
       - 'packages/wallet-stack/locales/base/**'
   schedule:
