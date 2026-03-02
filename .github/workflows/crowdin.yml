@@ -1,0 +1,77 @@
+name: Update translations from Crowdin
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/wallet-stack/locales/base/**'
+  schedule:
+    # At 06:00 (UTC) daily (7AM CET / 11PM PT)
+    # https://crontab.guru/#0_6_*_*_*
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: crowdin
+  cancel-in-progress: false
+
+jobs:
+  crowdin:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Generate Valora Actions token
+        id: valora-actions-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ vars.VALORA_ACTIONS_APP_ID }}
+          private-key: ${{ secrets.VALORA_ACTIONS_PRIVATE_KEY }}
+
+      - name: Update translations from Crowdin
+        id: crowdin
+        uses: crowdin/github-action@8818ff65bfc4322384f983ea37e3926948c11745 # v2.15.0
+        with:
+          upload_sources: true
+          download_translations: true
+          create_pull_request: true
+          localization_branch_name: l10n/main
+          pull_request_title: 'chore(l10n): update translations from Crowdin'
+          pull_request_base_branch_name: main
+          config: crowdin.yml
+        env:
+          GITHUB_TOKEN: ${{ steps.valora-actions-token.outputs.token }}
+          CROWDIN_PROJECT_ID: ${{ vars.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      # Ensure only non-base translation files are modified
+      - name: Validate PR files
+        if: steps.crowdin.outputs.pull_request_number
+        run: |
+          CHANGED_FILES=$(gh pr diff "$PR" --name-only)
+          UNEXPECTED_FILES=$(echo "$CHANGED_FILES" | grep --invert-match --perl-regexp '^packages/wallet-stack/locales/(?!base/)[^/]+/translation\.json$' || true)
+          if [ -n "$UNEXPECTED_FILES" ]; then
+            echo "Crowdin PR contains unexpected files: $UNEXPECTED_FILES"
+            exit 1
+          fi
+        env:
+          PR: ${{ steps.crowdin.outputs.pull_request_number }}
+          GH_TOKEN: ${{ github.token }}
+
+      # Approve using github-actions (different identity from PR author)
+      - name: Approve PR
+        if: steps.crowdin.outputs.pull_request_number
+        run: gh pr review "$PR" --approve
+        env:
+          PR: ${{ steps.crowdin.outputs.pull_request_number }}
+          GH_TOKEN: ${{ github.token }}
+
+      # Enable auto-merge with valora-actions (PR author)
+      - name: Enable auto-merge
+        if: steps.crowdin.outputs.pull_request_number
+        run: gh pr merge "$PR" --squash --auto
+        env:
+          PR: ${{ steps.crowdin.outputs.pull_request_number }}
+          GH_TOKEN: ${{ steps.valora-actions-token.outputs.token }}
