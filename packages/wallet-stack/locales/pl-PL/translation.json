@@ -333,7 +333,7 @@
   "transaction": {
     "operation": "Operacja",
     "data": "Dane",
-    "signTX": "Transakcję",
+    "signTX": "Podpisz transakcję",
     "details": "Pokaż szczegóły"
   },
   "shareInfo": "Musisz podłączyć swój portfel, aby zatwierdzać transakcje w Dapp. Po połączeniu będzie mieć dostęp do adresu Twojego portfela.",
@@ -710,7 +710,8 @@
     "title": "Zaproś znajomych i zdobądź do 12 cUSD",
     "body": "Gdy połączą swój numer i dodadzą środki do {{appName}}, otrzymacie po 0,50 cUSD."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "Zaproś przez SMS",
+  "inviteWithSmsMessage": {
     "title": "Zaproś przez SMS",
     "shareMessage": "Zarejestruj się w portfelu {{appName}} . Używam go do powiększania moich oszczędności w USD i kryptowalutach, a możesz go skonfigurować w kilka sekund, podając tylko numer telefonu: {{shareUrl}}."
   },
@@ -2988,7 +2989,7 @@
     "confirmExit": {
       "title": "W trybie demonstracyjnym",
       "info": "Aktualnie przeglądasz aplikację w trybie demonstracyjnym",
-      "cta": "Exit Demo"
+      "cta": "Wyjdź z trybu demonstracyjnego"
     },
     "restrictedAccess": {
       "title": "W trybie demonstracyjnym",
