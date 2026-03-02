@@ -3,8 +3,6 @@ name: Update translations from Crowdin
 on:
   push:
     branches: [main, alex/crowdin]
-    paths:
-      - 'packages/wallet-stack/locales/base/**'
   schedule:
     # At 06:00 (UTC) daily (7AM CET / 11PM PT)
     # https://crontab.guru/#0_6_*_*_*
