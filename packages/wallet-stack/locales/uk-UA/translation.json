@@ -315,7 +315,7 @@
   "superchargeClaimFailure": "Виникла проблема із запитом ваших нагород за надбавку.",
   "superchargeNotificationBody": "Винагорода Supercharge вже тут! Отримай зараз",
   "superchargeNotificationStart": "Запит винагороди",
-  "superchargingNotificationBody": "Ви отримуєте 12% за Supercharge ⚡",
+  "superchargingNotificationBody": "Ви отримуєте 25% за Supercharge ⚡",
   "superchargingNotificationBodyV1_33": "Ви отримуєте {{apy}}% нагороди із Supercharge ⚡",
   "superchargingNotificationStart": "Дізнатися більше",
   "startSuperchargingNotificationBody": "Отримайте винагороду в криптовалюті. Почати дію Supercharge!",
@@ -333,7 +333,7 @@
   "transaction": {
     "operation": "Операція",
     "data": "Дані",
-    "signTX": "Транзакція",
+    "signTX": "Підписати операцію",
     "details": "Показати деталі"
   },
   "shareInfo": "Потрібно під’єднати свій гаманець, щоб схвалити транзакції в цьому dapp. Одразу після під’єднання цей застосунок отримає доступ до адреси гаманця.",
@@ -343,7 +343,7 @@
   "learnMore": "Дізнатися більше",
   "equalToAmount": "Дорівнює <1></1>",
   "whatIsGold": "{{appName}} дозволяє купувати та продавати CELO",
-  "manageCelo": "Керувати Celo Dollars",
+  "manageCelo": "Керувати доларами Celo",
   "exchangeRate": "Валютний курс",
   "exchangeRateValue": "<0></0> : 1 {{takerTokenCode}}",
   "history": "Історія",
@@ -368,7 +368,7 @@
   "securityFee": "Комісія за мережу",
   "exchangeFee": "Комісія за обмін",
   "edit": "Редагувати",
-  "notEnoughDollars": "Не вистачає Celo Dollars, щоб обміняти",
+  "notEnoughDollars": "Не вистачає доларів Celo, щоб обміняти",
   "notEnoughGold": "Не вистачає валюти Celo, щоб обміняти",
   "pending": "Очікує підтвердження",
   "loadingExchangeRate": "Завантаження валютного курсу...",
@@ -396,7 +396,7 @@
   "addFundsHeaderWithCurrency": "Додати {{token}}",
   "addFundsSubtitle": "Поповніть ваш рахунок {{appName}}",
   "exchanges": "Обмін валют",
-  "noExchanges": "В вашому регіоні немає доступних обмінів для {{digitalAsset}}.",
+  "noExchanges": "У вашому регіоні немає доступних бірж для обміну {{digitalAsset}}.",
   "buySellOnExchanges": "Купити/продати на біржі",
   "cashOut": "Вивести кошти",
   "cashOutSubtitle": "Витрачайте на подарункові картки та інші придбання або надішліть кошти на обмін криптовалюти",
@@ -413,7 +413,7 @@
   "ether": "Ether",
   "tapToCopyCeloDollarsAddress": "Натисніть, щоб скопіювати свою {{appName}} адресу CUSD",
   "disclaimerFiat": "Значення {{currency}} є оцінюваними.",
-  "dollarsNotYetEnabledNote": "Celo Dollars поки що не доступні ні для кого з постачальників. Щоб отримати Celo Dollars, придбайте CELO й обміняйте його на Celo Dollars у вкладці CELO.",
+  "dollarsNotYetEnabledNote": "Долари Celo поки що не доступні ні для кого з постачальників. Щоб отримати долари Celo, придбайте CELO й обміняйте його на долари Celo у вкладці CELO.",
   "selectDigitalCurrency": "Виберіть актив",
   "selectPaymentMethod": "Виберіть спосіб:",
   "payWithBank": "Банківський рахунок",
@@ -423,7 +423,7 @@
   "receiveOnAddress": "Адреса гаманця",
   "receiveWithBidali": "Подарункові карти та поповнення мобільного",
   "fundingEducationDialog": {
-    "title": "Поповнення {{appName}}",
+    "title": "Фінансування вашого {{appName}}",
     "body": "Щоб поповнити свій гаманець {{appName}}, придбайте актив, якому ви надаєте перевагу, в одного зі сторонніх провайдерів, доступних за вашим місцем перебування. Щоб отримати додаткову інформацію, перейдіть за посиланням <0>{{link}}</0>",
     "dismiss": "OK"
   },
@@ -501,15 +501,15 @@
   "notEnoughStableError": "Не вистачає {{token}}, щоб обміняти",
   "notEnoughGoldError": "Не вистачає валюти Celo, щоб обміняти",
   "exchangeFailed": "Обмін не вдався, спробуйте ще раз",
-  "transactionFailed": "Транзакція не вдалася, спробуйте ще раз",
+  "transactionFailed": "Операція не вдалася, спробуйте ще раз",
   "paste": "Вставити",
   "choose": "Вибрати",
   "receivedPayment": "Отриманий платіж",
   "receivedNft": "Отриманий NFT",
   "sentNft": "Надісланий NFT",
   "getStarted": "Почати роботу",
-  "manageCeloDollars": "Керувати Celo Dollars",
-  "sendCeloDollars": "Надіслати Celo Dollars",
+  "manageCeloDollars": "Керувати доларами Celo",
+  "sendCeloDollars": "Надіслати долари Celo",
   "startEarning": "Почати заробляти",
   "backToWallet": "Повернутися до гаманця",
   "exchangeForGold": "Біржа для CELO",
@@ -675,11 +675,11 @@
   "goldEducationSteps": [
     {
       "title": "Що таке CELO?",
-      "text": "CELO — це цифрова валюта, яка зберігає стабільним Celo Dollar (cUSD)."
+      "text": "CELO — це цифрова валюта, яка зберігає стабільним долар Celo (cUSD)."
     },
     {
       "title": "Зміна ціни CELO",
-      "text": "Якщо все більше людей використовують Celo Dollar, вартість CELO зростає. На відміну від CELO, вартість Celo Dollar не зміниться. "
+      "text": "Якщо все більше людей використовують долар Celo, вартість CELO зростає. На відміну від CELO, вартість долару Celo не зміниться. "
     },
     {
       "title": "Конфігурувати мережу Celo",
@@ -710,7 +710,8 @@
     "title": "Запрошуйте друзів і отримуйте до 12 cUSD",
     "body": "Щойно вони під’єднають свій номер і покладуть кошти у {{appName}}, кожен із вас отримає по 0,50 cUSD."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "Запросити з SMS",
+  "inviteWithSmsMessage": {
     "title": "Запросити з SMS",
     "shareMessage": "Привіт! Підписуйся на гаманець {{appName}} . Я використовую його для примноження своїх заощаджень у доларах та криптовалюті, а ви можете створити його за лічені секунди, маючи лише номер телефону: {{shareUrl}}."
   },
