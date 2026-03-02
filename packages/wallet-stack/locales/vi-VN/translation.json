@@ -322,7 +322,7 @@
   "startSuperchargingNotificationStart": "Nhận tiền thưởng",
   "cashIn": "Nạp {{currency}}",
   "connectNumber": "Kết nối số điện thoại",
-  "connectToWallet": "Kết nối với {{dappName}}",
+  "connectToWallet": "Kết nối đến {{dappName}}",
   "confirmTransaction": "Xác nhận giao dịch",
   "allow": "Cho phép",
   "address": "Địa chỉ ví",
@@ -336,8 +336,8 @@
     "signTX": "Ký xác nhận giao dịch",
     "details": "Hiển thị chi tiết"
   },
-  "shareInfo": "Bạn phải kết nối ví của mình để phê duyệt các giao dịch trong Dapp này. Sau khi kết nối, ứng dụng sẽ có quyền truy cập vào địa chỉ ví của bạn.",
-  "connectWalletInfoDappkit": "Bạn phải kết nối ví để phê duyệt các giao dịch trong Dapp này. Sau khi kết nối, ứng dụng sẽ có quyền truy cập vào địa chỉ ví và số điện thoại của bạn.",
+  "shareInfo": "Một số dapp đang gặp sự cố kết nối hôm nay, vui lòng kiểm tra lại vào ngày mai. Bạn phải kết nối ví của mình để phê duyệt các giao dịch trong dapp này.",
+  "connectWalletInfoDappkit": "Một số dapp đang gặp sự cố kết nối hôm nay, vui lòng kiểm tra lại vào ngày mai. Bạn phải kết nối ví của mình để phê duyệt các giao dịch trong dapp này.",
   "data": "Dữ liệu",
   "firebaseDisabled": "Firebase đang tắt, thông báo và tính năng tải nhật ký lên sẽ không hoạt động",
   "learnMore": "Tìm hiểu thêm",
@@ -704,13 +704,14 @@
   "sendAndInvite": "Gửi và mời",
   "inviteRewardsBanner": {
     "title": "Mời bạn bè và nhận NFT",
-    "body": "Sau khi họ thiết lập ví {{appName}} và kết nối số điện thoại, mỗi bạn sẽ nhận được một NFT độc quyền."
+    "body": "Sau khi thiết lập ví {{appName}} và kết nối số điện thoại, mỗi người sẽ nhận được một NFT độc quyền."
   },
   "inviteRewardsBannerCUSD": {
     "title": "Giới thiệu bạn bè và nhận USDT",
     "body": "Khi họ kết nối số điện thoại, cả hai bạn sẽ nhận được 1 USDT mỗi người."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "Mời bằng SMS",
+  "inviteWithSmsMessage": {
     "title": "Mời bằng SMS",
     "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
   },
@@ -744,8 +745,8 @@
     "goldDisclaimer": "Khi tạo \"tài khoản\" bằng {{appName}}, bạn sẽ tạo một ví kỹ thuật số mà chỉ bạn là người giữ mã khóa. Không cá nhân hoặc tổ chức nào khác, kể cả {{appName}}, có thể khôi phục mã khóa của bạn, thay đổi hoặc hủy giao dịch hoặc thu hồi số tiền đã mất. Xin lưu ý rằng tiền điện tử thuộc loại tài sản mới và luôn tiềm ẩn rủi ro thua lỗ về tài chính. Hãy cân nhắc kỹ tình hình tài chính của bạn cũng như khả năng chấp nhận rủi ro tài chính trước khi mua bất kỳ tài sản kỹ thuật số nào.",
     "goldDisclaimerWithPoints": "Khi tạo \"tài khoản\" với {{appName}}, bạn sẽ tạo một ví kỹ thuật số mà chỉ bạn là người nắm giữ mã khóa. Không cá nhân hoặc tổ chức nào khác, kể cả {{appName}}, có thể khôi phục mã khóa của bạn, thay đổi hoặc hoàn tác giao dịch hoặc lấy lại số tiền bị mất. {{appName}} cấp phần thưởng khách hàng thân thiết được mã hóa (\"Điểm\") cho Người dùng khi họ tham gia vào một số hoạt động nhất định trong ứng dụng. Điểm là vật phẩm sưu tầm trên chuỗi, không chuyển nhượng và không đổi được. Valora không đưa ra bất kỳ đảm bảo nào về tính sẵn có hoặc giá trị của Điểm. Cần lưu ý rằng tài sản kỹ thuật số là một phần của loại tài sản mới và luôn tiềm ẩn rủi ro thua lỗ về tài chính. Hãy cân nhắc cẩn thận tình hình tài chính và khả năng chấp nhận rủi ro tài chính của bạn trước khi mua bất kỳ tài sản kỹ thuật số nào."
   },
-  "fullNameOrPsuedonym": "Họ và tên hoặc biệt danh",
-  "namePlaceholder": "tên",
+  "fullNameOrPsuedonym": "Tên đầy đủ hoặc biệt danh",
+  "namePlaceholder": "tên cũ",
   "nameAndPicGuideCopyTitle": "Tên bạn là gì?",
   "nameAndPicGuideCopyContent": "Chúng tôi rất muốn biết tên bạn để tiện cho việc xưng hô.",
   "important": "Quan trọng",
@@ -851,7 +852,7 @@
     "restoreWallet": "Khôi phục ví",
     "hasWallet": "Tôi đã có ví",
     "hasWalletV1_88": "Tôi đã có ví",
-    "header": "Chào mừng bạn đến với {{appName}}! Hãy tạo ví tiền điện tử của bạn.",
+    "header": "Chào mừng đến với {{appName}}! Hãy tạo ví tiền điện tử của bạn.",
     "getStarted": "Bắt đầu"
   },
   "accessContacts": {
@@ -871,7 +872,7 @@
     "changePIN": "Thay đổi mã PIN",
     "pinsDontMatch": "Mã PIN không khớp",
     "invalidPin": "Vui lòng sử dụng mã PIN mạnh hơn",
-    "onboardingTitle": "Chọn mã PIN 6 chữ số",
+    "onboardingTitle": "Chọn mã PIN gồm 6 chữ số",
     "onboardingConfirm": "Nhập lại mã PIN của bạn",
     "onboardingSubtitle": "Mã PIN là cách bảo mật ví của bạn",
     "pin": "Mã PIN"
@@ -913,7 +914,7 @@
   "phoneVerificationScreen": {
     "screenTitle": "Số điện thoại",
     "title": "Kết nối số điện thoại của bạn với {{appName}}",
-    "description": "Điều này liên kết địa chỉ ví của bạn với số điện thoại của bạn, vì vậy việc gửi tiền điện tử rất dễ dàng",
+    "description": "Khi bạn kết nối, địa chỉ ví sẽ liên kết với số điện thoại của bạn nên bạn có thể dễ dàng gửi tiền điện tử",
     "startButtonLabel": "Kết nối",
     "learnMore": {
       "buttonLabel": "Tôi có cần kết nối không?",
@@ -942,16 +943,16 @@
     },
     "verificationFailure": "Rất tiếc! Đã xảy ra lỗi, vui lòng thử lại sau.",
     "resendButtonNotYetAvailable": "Có thể gửi lại trong {{secondsRemaining}} giây nữa",
-    "resendButton": "Didn nhận được mã?"
+    "resendButton": "Bạn không nhận được mã?"
   },
   "importExistingKey": {
     "keyPlaceholder": "ngựa báo chó khỉ...",
     "header": "Khôi phục ví",
     "title": "Nhập cụm từ khôi phục của bạn",
-    "description": "Sử dụng cụm từ 12 hoặc 24 từ mà bạn đã lưu khi bạn thiết lập ví của mình để khôi phục.",
+    "description": "Hãy sử dụng cụm từ dài gồm 12 hoặc 24 từ mà bạn đã lưu khi thiết lập ví để khôi phục.",
     "descriptionV1_90": "Cụm từ khôi phục là cụm từ gồm 12 hoặc 24 từ mà bạn đã viết ra và lưu lại khi thiết lập ví. Vui lòng nhập cụm từ đó vào đây để khôi phục ví của bạn.",
     "emptyWalletDialog": {
-      "description": "Ví khoản này không có tiền. Bạn vẫn muốn sử dụng chứ?",
+      "description": "Ví này không có tiền. Bạn vẫn muốn sử dụng chứ?",
       "action": "Sử dụng ví",
       "title": "Số dư\n<0></0>"
     }
