@@ -1,6 +1,6 @@
 {
   "invite": "Einladen",
-  "celoRewards": "Celo-Rewards",
+  "celoRewards": "Celo-Belohnungen",
   "languageSettings": "Sprache",
   "localCurrencySetting": "Währung",
   "licenses": "Lizenzen",
@@ -14,7 +14,7 @@
     "buttonLabel": "Weiter",
     "buttonLabelRevokingPhoneNumber": "Verknüpfung der Telefonnummer wird aufgehoben ..."
   },
-  "legal": "Rechtshinweisen",
+  "legal": "Rechtshinweise",
   "appPreferences": "App-Einstellungen",
   "preferences": "Präferenzen",
   "security": "Sicherheit",
@@ -192,13 +192,13 @@
   "support": "Support",
   "contact": "Kontakt",
   "faq": "Häufig gestellte Fragen",
-  "raiseLimit": "Konto-Sendelimit erhöhen",
+  "raiseLimit": "Konto Sendelimit erhöhen",
   "forum": "Forum",
   "contactText": "Findest du nicht das, wonach du suchst?",
   "contactMessagePlaceholder": "Bitte gib deine Nachricht hier ein...",
   "attachLogs": "Protokolle anhängen",
   "supportLegalCheckbox": "Durch das Versenden stimme ich zu, die obigen Informationen und alle angehängten Anmeldeprotokolldaten mit {{appName}} Support zu teilen.",
-  "contactSuccess": "Dein Problem wurde erfolgreich gemeldet! Wir werden in Kürze per E-Mail antworten.",
+  "contactSuccess": "Dein Problem wurde erfolgreich gemeldet! Erwarte in Kürze eine E-Mail-Antwort!",
   "namePictureSaved": "Dein Name und Bild wurden erfolgreich gespeichert.",
   "nameSaved": "Dein Name wurde erfolgreich gespeichert.",
   "addPhoto": "Foto hinzufügen",
@@ -215,7 +215,7 @@
   "shakeForSupport": "Dieses Menü erscheint, wenn du dein Gerät schüttelst.",
   "contactSupport": "Support kontaktieren",
   "tapToCopy": "Zum Kopieren antippen",
-  "headerTitle": "Wiederherstellungsphrase",
+  "headerTitle": "Wiederherstellung",
   "introBackUpPhrase": "Wiederherstellungsphrase sichern",
   "introCompleteQuiz": "Schließe unser Backup-Quiz ab, um zu überprüfen, ob dein Wallet wiederhergestellt werden kann.\n\nWenn du es falsch geschrieben hast, dann hast du keinen Zugang auf dein Wallet, wenn etwas mit deinem Gerät passieren sollte.",
   "postSetupTitle": "Deine Wiederherstellungsphrase",
@@ -710,7 +710,8 @@
     "title": "Lade deine Freunde ein und erhalte bis zu 12 cUSD",
     "body": "Sobald sie ihre Nummer verknüpfen und Guthaben zu {{appName}} hinzufügen, erhaltet ihr beide 0,50 cUSD."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "Per SMS einladen",
+  "inviteWithSmsMessage": {
     "title": "Per SMS einladen",
     "shareMessage": "Hey! Melde dich bei {{appName}} wallet an. Ich nutze sie, um meine Ersparnisse in USD und Krypto zu vermehren, und du kannst sie in Sekundenschnelle mit nur einer Telefonnummer einrichten: {{shareUrl}}."
   },
