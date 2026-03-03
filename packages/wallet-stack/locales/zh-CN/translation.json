@@ -712,8 +712,8 @@
   },
   "inviteWithSMS": "通过短信邀请",
   "inviteWithSmsMessage": {
-    "title": "Invite with SMS",
-    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
+    "title": "通过短信邀请",
+    "shareMessage": "嘿！注册 {{appName}} 钱包。我用它来增加我的美元和加密货币储蓄，你只需一个电话号码就可以在几秒钟内设置好： {{shareUrl}}。"
   },
   "inviteWithUrl": {
     "title": "邀请朋友",
