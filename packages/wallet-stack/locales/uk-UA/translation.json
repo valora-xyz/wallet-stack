@@ -712,8 +712,8 @@
   },
   "inviteWithSMS": "Запросити з SMS",
   "inviteWithSmsMessage": {
-    "title": "Invite with SMS",
-    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
+    "title": "Запросити з SMS",
+    "shareMessage": "Привіт! Підписуйся на гаманець {{appName}} . Я використовую його для примноження своїх заощаджень у доларах та криптовалюті, а ви можете створити його за лічені секунди, маючи лише номер телефону: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Запросити друга",
