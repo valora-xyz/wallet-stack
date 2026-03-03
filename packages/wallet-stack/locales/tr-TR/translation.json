@@ -712,8 +712,8 @@
   },
   "inviteWithSMS": "SMS ile davet et",
   "inviteWithSmsMessage": {
-    "title": "Invite with SMS",
-    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
+    "title": "SMS ile davet et",
+    "shareMessage": "Hey! {{appName}} cüzdanına kaydolun. Birikimlerimi USD ve kripto olarak artırmak için kullanıyorum ve siz de sadece bir telefon numarasıyla saniyeler içinde kurabilirsiniz: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Arkadaşını davet et",
