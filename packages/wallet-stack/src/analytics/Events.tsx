@@ -451,6 +451,7 @@ export enum PerformanceEvents {
 
 export enum NavigationEvents {
   navigator_not_ready = 'navigator_not_ready',
+  screen_viewed = 'screen_viewed',
 }
 
 export enum WalletConnectEvents {

@@ -11,6 +11,7 @@ import { PathReporter } from 'io-ts/lib/PathReporter'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
 import { LocalCurrencyCode } from 'src/localCurrency/consts'
 import { AddressType, E164PhoneNumberType } from 'src/utils/io'
+import { sanitizeProperties } from 'src/utils/serialization'
 import { parse } from 'url'
 
 export const UriDataType = ioType({
@@ -36,10 +37,7 @@ enum UriMethod {
   pay = 'pay',
 }
 
-// removes undefined parameters for serialization
-export const stripUndefined = (obj: object) => JSON.parse(JSON.stringify(obj))
-
 export const urlFromUriData = (data: Partial<UriData>, method: UriMethod = UriMethod.pay) => {
-  const params = new URLSearchParams(stripUndefined(data))
+  const params = new URLSearchParams(sanitizeProperties(data))
   return encodeURI(`${DEEP_LINK_URL_SCHEME}://wallet/${method.toString()}?${params.toString()}`)
 }

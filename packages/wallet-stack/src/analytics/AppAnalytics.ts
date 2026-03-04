@@ -2,12 +2,12 @@ import { createClient, SegmentClient } from '@segment/analytics-react-native'
 import { AdjustPlugin } from '@segment/analytics-react-native-plugin-adjust'
 import { DestinationFiltersPlugin } from '@segment/analytics-react-native-plugin-destination-filters'
 import { FirebasePlugin } from '@segment/analytics-react-native-plugin-firebase'
-import _ from 'lodash'
+import { Mixpanel } from 'mixpanel-react-native'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import { AsyncStoragePersistor } from 'src/analytics/AsyncStoragePersistor'
-import { AppEvents } from 'src/analytics/Events'
+import { AppEvents, NavigationEvents } from 'src/analytics/Events'
 import { InjectTraits } from 'src/analytics/InjectTraits'
 import { AnalyticsPropertiesList } from 'src/analytics/Properties'
 import { getCurrentUserTraits } from 'src/analytics/selectors'
@@ -15,6 +15,9 @@ import {
   DEFAULT_TESTNET,
   FIREBASE_ENABLED,
   isE2EEnv,
+  MIXPANEL_API_HOST,
+  MIXPANEL_ENABLED,
+  MIXPANEL_TOKEN,
   SEGMENT_API_KEY,
   STATSIG_ENABLED,
   STATSIG_ENV,
@@ -23,6 +26,7 @@ import { store } from 'src/redux/store'
 import StatsigClientSingleton from 'src/statsig/client'
 import { ensureError } from 'src/utils/ensureError'
 import Logger from 'src/utils/Logger'
+import { sanitizeProperties } from 'src/utils/serialization'
 import { sha256 } from 'viem'
 
 const TAG = 'AppAnalytics'
@@ -94,6 +98,7 @@ class AppAnalytics {
   private currentScreenId: string | undefined
   private prevScreenId: string | undefined
   private segmentClient: SegmentClient | undefined
+  private mixpanelClient: Mixpanel | undefined
 
   async init() {
     let uniqueID
@@ -153,6 +158,26 @@ class AppAnalytics {
     } else {
       Logger.info(TAG, 'Statsig is not enabled, skipping setup')
     }
+
+    if (MIXPANEL_ENABLED && MIXPANEL_TOKEN) {
+      try {
+        const trackLegacyAutomaticEvents = false
+        const useNative = true
+        this.mixpanelClient = new Mixpanel(MIXPANEL_TOKEN, trackLegacyAutomaticEvents, useNative)
+
+        const optOutTrackingDefault = !this.isEnabled()
+        const superProperties = undefined
+        const serverURL = MIXPANEL_API_HOST
+        await this.mixpanelClient.init(optOutTrackingDefault, superProperties, serverURL)
+
+        Logger.info(TAG, 'Mixpanel initialized!')
+      } catch (err) {
+        const error = ensureError(err)
+        Logger.error(TAG, `Mixpanel setup error: ${error.message}\n`, error)
+      }
+    } else {
+      Logger.info(TAG, 'Mixpanel token not present, skipping setup')
+    }
   }
 
   isEnabled() {
@@ -178,6 +203,16 @@ class AppAnalytics {
     return this.sessionId
   }
 
+  setAnalyticsEnabled(enabled: boolean) {
+    if (this.mixpanelClient) {
+      if (enabled) {
+        this.mixpanelClient.optInTracking()
+      } else {
+        this.mixpanelClient.optOutTracking()
+      }
+    }
+  }
+
   track<EventName extends keyof AnalyticsPropertiesList>(
     ...args: undefined extends AnalyticsPropertiesList[EventName]
       ? [EventName] | [EventName, AnalyticsPropertiesList[EventName]]
@@ -190,15 +225,10 @@ class AppAnalytics {
       return
     }
 
-    if (!this.segmentClient) {
-      Logger.debug(TAG, `segmentClient undefined, not tracking event ${eventName}`)
-      return
-    }
-
-    const props: {} = {
+    const props = sanitizeProperties({
       ...this.getSuperProps(),
       ...eventProperties,
-    }
+    })
 
     if (__DEV__) {
       Logger.debug(TAG, `Tracking event ${eventName} with properties:`, props)
@@ -206,9 +236,17 @@ class AppAnalytics {
       Logger.info(TAG, `Tracking event ${eventName}`)
     }
 
-    this.segmentClient.track(eventName, props).catch((err) => {
-      Logger.error(TAG, `Failed to track event ${eventName}`, err)
-    })
+    // Track to Segment
+    if (this.segmentClient) {
+      this.segmentClient.track(eventName, props).catch((err) => {
+        Logger.error(TAG, `Failed to track event ${eventName} to Segment`, err)
+      })
+    }
+
+    // Track to Mixpanel
+    if (this.mixpanelClient) {
+      this.mixpanelClient.track(eventName, props)
+    }
   }
 
   identify(userID: string | null, traits: {}) {
@@ -222,17 +260,27 @@ class AppAnalytics {
       return
     }
 
-    if (!this.segmentClient) {
-      Logger.debug(TAG, `segmentClient is undefined, not tracking user ${userID}`)
-      return
-    }
-    // The firebase segment plugin can't handle null or undefined values
-    const safeTraits = _.omitBy(traits, _.isNil)
+    const safeTraits = sanitizeProperties(traits)
 
-    this.segmentClient.identify(userID, safeTraits).catch((err) => {
-      Logger.error(TAG, `Failed to identify user ${userID}`, err)
-      throw err
-    })
+    // Identify in Segment
+    if (this.segmentClient) {
+      this.segmentClient.identify(userID, safeTraits).catch((err) => {
+        Logger.error(TAG, `Failed to identify user ${userID} in Segment`, err)
+        throw err
+      })
+    }
+
+    // Identify in Mixpanel
+    if (this.mixpanelClient) {
+      this.mixpanelClient
+        .identify(userID)
+        .then(() => {
+          this.mixpanelClient!.getPeople().set(safeTraits)
+        })
+        .catch((err) => {
+          Logger.error(TAG, `Failed to identify user ${userID} in Mixpanel`, err)
+        })
+    }
   }
 
   page(screenId: string, eventProperties = {}) {
@@ -241,36 +289,47 @@ class AppAnalytics {
       return
     }
 
-    if (!this.segmentClient) {
-      Logger.debug(TAG, `segmentClient is undefined, not tracking screen ${screenId}`)
-      return
-    }
-
     if (screenId !== this.currentScreenId) {
       this.prevScreenId = this.currentScreenId
       this.currentScreenId = screenId
     }
 
-    const props: {} = {
+    const props = sanitizeProperties({
       ...this.getSuperProps(),
       ...eventProperties,
+    })
+
+    // Track screen in Segment
+    if (this.segmentClient) {
+      this.segmentClient.screen(screenId, props).catch((err) => {
+        Logger.error(TAG, 'Error tracking page in Segment', err)
+      })
     }
 
-    this.segmentClient.screen(screenId, props).catch((err) => {
-      Logger.error(TAG, 'Error tracking page', err)
-    })
+    // Track screen in Mixpanel
+    if (this.mixpanelClient) {
+      this.mixpanelClient.track(NavigationEvents.screen_viewed, {
+        screen_name: screenId,
+        ...props,
+      })
+    }
   }
 
   async reset() {
-    if (!this.segmentClient) {
-      Logger.debug(TAG, `segmentClient is undefined, not resetting`)
-      return
+    // Reset Segment
+    if (this.segmentClient) {
+      try {
+        await this.segmentClient.flush()
+        await this.segmentClient.reset()
+      } catch (error) {
+        Logger.error(TAG, 'Error resetting Segment analytics', error)
+      }
     }
-    try {
-      await this.segmentClient.flush()
-      await this.segmentClient.reset()
-    } catch (error) {
-      Logger.error(TAG, 'Error resetting analytics', error)
+
+    // Reset Mixpanel
+    if (this.mixpanelClient) {
+      this.mixpanelClient.flush()
+      this.mixpanelClient.reset()
     }
   }
 

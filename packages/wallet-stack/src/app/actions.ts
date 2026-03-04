@@ -54,7 +54,7 @@ interface DeepLinkDeferred {
   isSecureOrigin: boolean
 }
 
-interface SetAnalyticsEnabled {
+export interface SetAnalyticsEnabled {
   type: Actions.SET_ANALYTICS_ENABLED
   enabled: boolean
 }

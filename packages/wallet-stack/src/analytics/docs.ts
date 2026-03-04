@@ -430,6 +430,7 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [ContractKitEvents.init_contractkit_finish]: ``,
   [PerformanceEvents.redux_store_size]: ``,
   [NavigationEvents.navigator_not_ready]: ``,
+  [NavigationEvents.screen_viewed]: `When a screen is viewed in the app`,
 
   // Events related to Points program
   [PointsEvents.points_discover_press]: `when points card is pressed in the discover tab`,

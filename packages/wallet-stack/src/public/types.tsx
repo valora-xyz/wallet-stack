@@ -169,6 +169,10 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     segment?: {
       apiKey: string
     }
+    mixpanel?: {
+      token: string
+      apiHost?: string
+    }
   }
 
   /**

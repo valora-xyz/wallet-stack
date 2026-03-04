@@ -21,7 +21,7 @@ import Logger from 'src/utils/Logger'
 import { ViemKeychainAccount } from 'src/viem/keychainAccountToAccount'
 import { getKeychainAccounts } from 'src/web3/contracts'
 import networkConfig from 'src/web3/networkConfig'
-import { UnlockResult, getOrCreateAccount, unlockAccount } from 'src/web3/saga'
+import { UnlockResult, createAccount, unlockAccount } from 'src/web3/saga'
 import { walletAddressSelector } from 'src/web3/selectors'
 import { initializeAccountSuccess, saveSignedMessage } from './actions'
 
@@ -140,6 +140,33 @@ describe('initializeAccount', () => {
     mockFetch.resetMocks()
   })
 
+  it('should call createAccount when not restoring', async () => {
+    await expectSaga(initializeAccountSaga)
+      .provide([
+        [select(choseToRestoreAccountSelector), false],
+        [call(createAccount), undefined],
+        [call(generateSignedMessage), undefined],
+      ])
+      .call(createAccount)
+      .put(initializeAccountSuccess())
+      .run()
+  })
+
+  it('should skip createAccount when restoring', async () => {
+    mockFetch.mockResponse(JSON.stringify({ data: { phoneNumbers: [] } }))
+
+    await expectSaga(initializeAccountSaga)
+      .provide([
+        [select(choseToRestoreAccountSelector), true],
+        [call(generateSignedMessage), undefined],
+        [call(retrieveSignedMessage), 'some signed message'],
+        [select(walletAddressSelector), '0xabc'],
+      ])
+      .not.call.fn(createAccount)
+      .put(initializeAccountSuccess())
+      .run()
+  })
+
   it('should handle the last previously verified phone number', async () => {
     mockFetch.mockResponse(
       JSON.stringify({ data: { phoneNumbers: ['+1302123456', '+31619123456'] } })
@@ -147,9 +174,8 @@ describe('initializeAccount', () => {
 
     await expectSaga(initializeAccountSaga)
       .provide([
-        [call(getOrCreateAccount), undefined],
-        [call(generateSignedMessage), undefined],
         [select(choseToRestoreAccountSelector), true],
+        [call(generateSignedMessage), undefined],
         [call(retrieveSignedMessage), 'some signed message'],
         [select(walletAddressSelector), '0xabc'],
       ])
@@ -176,9 +202,8 @@ describe('initializeAccount', () => {
 
     await expectSaga(initializeAccountSaga)
       .provide([
-        [call(getOrCreateAccount), undefined],
-        [call(generateSignedMessage), undefined],
         [select(choseToRestoreAccountSelector), true],
+        [call(generateSignedMessage), undefined],
         [call(retrieveSignedMessage), 'some signed message'],
         [select(walletAddressSelector), '0xabc'],
       ])
@@ -194,9 +219,8 @@ describe('initializeAccount', () => {
 
     await expectSaga(initializeAccountSaga)
       .provide([
-        [call(getOrCreateAccount), undefined],
-        [call(generateSignedMessage), undefined],
         [select(choseToRestoreAccountSelector), true],
+        [call(generateSignedMessage), undefined],
         [call(retrieveSignedMessage), 'some signed message'],
         [select(walletAddressSelector), '0xabc'],
       ])

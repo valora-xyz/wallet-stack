@@ -97,6 +97,9 @@ export const ALCHEMY_API_KEY = experimentalConfig.alchemyApiKey
 export const STATSIG_API_KEY = appConfig.features?.statsig?.apiKey
 export const STATSIG_ENABLED = !isE2EEnv && !!STATSIG_API_KEY
 export const SEGMENT_API_KEY = appConfig.features?.segment?.apiKey
+export const MIXPANEL_TOKEN = appConfig.features?.mixpanel?.token
+export const MIXPANEL_API_HOST = appConfig.features?.mixpanel?.apiHost
+export const MIXPANEL_ENABLED = !isE2EEnv && !!MIXPANEL_TOKEN
 export const AUTH0_CLIENT_ID =
   DEFAULT_TESTNET === 'mainnet'
     ? 'FS2sPfMvDBKy0udOoCbc4ao8HakvAR6b'

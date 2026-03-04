@@ -126,11 +126,15 @@ const SecuritySubmenu = ({ route, navigation }: Props) => {
     return onPressContinueWithAccountRemoval()
   }
 
-  const handleToggleAnalytics = (value: boolean) => {
-    dispatch(setAnalyticsEnabled(value))
-    AppAnalytics.track(SettingsEvents.settings_analytics, {
-      enabled: value,
-    })
+  const handleToggleAnalytics = (enabled: boolean) => {
+    // Fire analytics event either before or after dispatch -- to ensure it is not skipped
+    if (enabled) {
+      dispatch(setAnalyticsEnabled(enabled))
+      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled })
+    } else {
+      AppAnalytics.track(SettingsEvents.settings_analytics, { enabled })
+      dispatch(setAnalyticsEnabled(enabled))
+    }
   }
 
   const handleRequirePinToggle = (value: boolean) => {
