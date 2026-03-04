@@ -1,5 +1,5 @@
-import { WebView as RNWebView, WebViewProps } from '@interaxyz/react-native-webview'
-import { WebViewErrorEvent } from '@interaxyz/react-native-webview/lib/WebViewTypes'
+import { WebView as RNWebView, WebViewProps } from '@valora/react-native-webview'
+import { WebViewErrorEvent } from '@valora/react-native-webview/lib/WebViewTypes'
 import React from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import Logger from 'src/utils/Logger'

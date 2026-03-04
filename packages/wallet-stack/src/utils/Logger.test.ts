@@ -25,7 +25,7 @@ const mockData = [
   },
 ]
 
-jest.mock('@divvi/react-native-fs', () => {
+jest.mock('@valora/react-native-fs', () => {
   return {
     exists: jest.fn(),
     mkdir: jest.fn(),
