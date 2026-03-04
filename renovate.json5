@@ -1,8 +1,16 @@
 {
-  // Temporarily disable Renovate in this repo until it's ready to be the main source of development
-  // to avoid conflicts and duplicated PRs, while still syncing from the wallet repo
-  enabled: false,
   extends: ['github>valora-xyz/renovate-config:default.json5', ':disableDigestUpdates'],
+
+  // Disable all dependency updates for now.
+  // Only vulnerability alerts are enabled (see below).
+  enabled: false,
+
+  vulnerabilityAlerts: {
+    enabled: true,
+    labels: ['security'],
+    schedule: ['at any time'],
+    minimumReleaseAge: null,
+  },
 
   // Restrict semantic commit type to "chore"
   // See: https://docs.renovatebot.com/presets-default/#semanticprefixfixdepschoreothers
