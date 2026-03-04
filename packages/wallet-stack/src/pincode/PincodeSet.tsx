@@ -89,9 +89,9 @@ export class PincodeSet extends React.Component<Props, State> {
             changePin || route.params?.choseToRestoreAccount
               ? undefined
               : i18n.t('registrationSteps', {
-                step: route.params?.registrationStep?.step,
-                totalSteps: route.params?.registrationStep?.totalSteps,
-              })
+                  step: route.params?.registrationStep?.step,
+                  totalSteps: route.params?.registrationStep?.totalSteps,
+                })
           }
         />
       ),
