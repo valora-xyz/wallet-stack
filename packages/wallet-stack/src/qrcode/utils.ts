@@ -1,4 +1,4 @@
-import * as RNFS from '@divvi/react-native-fs'
+import * as RNFS from '@valora/react-native-fs'
 import { useMemo } from 'react'
 import Share from 'react-native-share'
 import { showError, showMessage } from 'src/alert/actions'

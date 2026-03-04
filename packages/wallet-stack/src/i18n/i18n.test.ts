@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 
-jest.mock('@divvi/react-native-fs', () => {
+jest.mock('@valora/react-native-fs', () => {
   return {
     exists: jest.fn().mockResolvedValue(true),
     readFile: jest.fn().mockResolvedValue('{"en-US":{"someKey":"Hello!"}}'),

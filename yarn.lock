@@ -1115,26 +1115,6 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@divvi/cookies@^6.2.3":
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/@divvi/cookies/-/cookies-6.2.3.tgz#1cf922bcf499bf78ed64d91494967fdf54899336"
-  integrity sha512-XSDEXNy002b9vZ3h+tKMbP82lYOGOPqbnreQh5HeRvXLdGyunvgHNztFuVtSoW2hInIoiXo1dMoBVTfwEhKnzQ==
-  dependencies:
-    invariant "^2.2.4"
-
-"@divvi/react-native-fs@^2.20.1":
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/@divvi/react-native-fs/-/react-native-fs-2.20.1.tgz#00a75f6780a3de64aa2e05f50d9c1ddbcabd8935"
-  integrity sha512-g3k5YOBO74lKVrHczto1QYfZpD41M2uh2eiXis+HU5kFfSRuIgCV7pIpCXlYkMcTLNF8sKBF6xZZHm5XcXbJaA==
-  dependencies:
-    base-64 "^0.1.0"
-    utf8 "^3.0.0"
-
-"@divvi/react-native-keychain@^10.0.0-divvi.1":
-  version "10.0.0-divvi.1"
-  resolved "https://registry.yarnpkg.com/@divvi/react-native-keychain/-/react-native-keychain-10.0.0-divvi.1.tgz#33c0464880d248af0bc69f44b0f2e6f95b032ff3"
-  integrity sha512-3UuNLwnsNuDUm5N5318a/B1MBpyCdoJl9ZR7ehqEQukGRMvGvd3jAjisWSF1H6pnc96ly5fC/H0Z7gbjIdudlg==
-
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
@@ -1864,27 +1844,27 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.1.tgz#b9da6a878a371829a0502c9b6c1c143ef6663f4d"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
 
-"@fiatconnect/fiatconnect-sdk@^0.5.74":
-  version "0.5.74"
-  resolved "https://registry.yarnpkg.com/@fiatconnect/fiatconnect-sdk/-/fiatconnect-sdk-0.5.74.tgz#4641f9e4dd74feea3410848d47e194513af8c2cd"
-  integrity sha512-vfNVaoDPgdrnwiWoz/w43AyEnrv4ZZfWTGrhLLIfQgi28kiI6jJHj9VVrECCXDE9j414tYVpZv9+IFCgJ0dLbQ==
+"@fiatconnect/fiatconnect-sdk@^0.5.163":
+  version "0.5.163"
+  resolved "https://registry.yarnpkg.com/@fiatconnect/fiatconnect-sdk/-/fiatconnect-sdk-0.5.163.tgz#f39ee56cf28ddf5a1a21b8eacf15bd009023242c"
+  integrity sha512-opYGBFalbEw2zK6IsrQrjDVAJlerhw0jUS7Oi+glEqyzVMhixatgzQyaZVh3QNiAp8pdQ/ASplEMAgP3xwPlAA==
   dependencies:
     "@badrap/result" "^0.2.13"
-    "@fiatconnect/fiatconnect-types" "^13.3.11"
+    "@fiatconnect/fiatconnect-types" "^13.3.50"
     cross-fetch "^4.1.0"
-    ethers "^6.13.5"
+    ethers "^6.16.0"
     fetch-cookie "^3.0.1"
     siwe "^3.0.0"
-    tough-cookie "^5.1.1"
+    tough-cookie "^6.0.0"
     tslib "^2.8.1"
-    zod "^3.24.2"
+    zod "^3.25.76"
 
-"@fiatconnect/fiatconnect-types@^13.3.11":
-  version "13.3.11"
-  resolved "https://registry.yarnpkg.com/@fiatconnect/fiatconnect-types/-/fiatconnect-types-13.3.11.tgz#0d212347aa98d499ef26c3e494ca8b7cfc95bf78"
-  integrity sha512-wOk81WBvEYFywM+8wqxU993s3gFX90RpcQB+I16ap6f2tF/zyp8xTC6eK//T+Fgpj3Dtmi1oeAjpTPRgXTPYuA==
+"@fiatconnect/fiatconnect-types@^13.3.50":
+  version "13.3.50"
+  resolved "https://registry.yarnpkg.com/@fiatconnect/fiatconnect-types/-/fiatconnect-types-13.3.50.tgz#b6476ff46be89e5cc2c8a86e9d91225cce744519"
+  integrity sha512-0ehS4ipUIZoS0/iGLM0G3LUcuts18CcL8qXucn/o0kyn21VGDdsAakscgHNUlzSI3EhYwSTPV2lnAjDiY7Pp1w==
   dependencies:
-    zod "^3.24.2"
+    zod "^3.25.73"
 
 "@firebase/ai@1.4.1":
   version "1.4.1"
@@ -2347,14 +2327,6 @@
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
-
-"@interaxyz/react-native-webview@^13.13.4":
-  version "13.13.4"
-  resolved "https://registry.yarnpkg.com/@interaxyz/react-native-webview/-/react-native-webview-13.13.4.tgz#a0528e4515e305edd3395e286b19c335ec08a90d"
-  integrity sha512-/TdnLQGbQ7ajYTc7KaTJ0DKPlmdIEv23IGdFpdsAf5A3nyGjsFelTapyMttRsKyqpsS6DRdUHwrUvZScaiFGIw==
-  dependencies:
-    escape-string-regexp "^4.0.0"
-    invariant "2.2.4"
 
 "@interaxyz/react-navigation-bottom-sheet@^0.3.2":
   version "0.3.2"
@@ -6013,6 +5985,34 @@
   dependencies:
     "@typescript-eslint/parser" "^5.62.0"
 
+"@valora/react-native-cookies@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/@valora/react-native-cookies/-/react-native-cookies-6.2.3.tgz#227968c16f869e70729b3a551c57f7bc43902a6a"
+  integrity sha512-CjaVmb17KUc22zSJUwR35p0GtdiTJP14uPVhICfU53RbpU1ky4OE4DT/D0UsIx4v5Hm67kDWUui3tjN50FrWMw==
+  dependencies:
+    invariant "^2.2.4"
+
+"@valora/react-native-fs@^2.20.1":
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/@valora/react-native-fs/-/react-native-fs-2.20.1.tgz#fd540a3dd9cd9c762942ef9fb4d21b7bd5e582fd"
+  integrity sha512-panBdX0V1zAK2xBPbpcO20GFf9dqogsLokyI76sjlghH8jnskH4s46XQ2YwOuTBMyxuwoUKzeeGf5mgCI8FpKA==
+  dependencies:
+    base-64 "^0.1.0"
+    utf8 "^3.0.0"
+
+"@valora/react-native-keychain@^10.0.0-valora.1":
+  version "10.0.0-valora.1"
+  resolved "https://registry.yarnpkg.com/@valora/react-native-keychain/-/react-native-keychain-10.0.0-valora.1.tgz#6719e787ce3f195f9da7b12444cd860b54c64ca6"
+  integrity sha512-PB8/lD5SVk03ItEu6EGuyDl4CHkA46bdNyBpeaEVY8IhjnTtKR6wJASFjH2lklTmu01G3eYSD8nGERq+bQIaEQ==
+
+"@valora/react-native-webview@^13.13.4":
+  version "13.13.4"
+  resolved "https://registry.yarnpkg.com/@valora/react-native-webview/-/react-native-webview-13.13.4.tgz#8a5b6a1d9612086bd8adaccba0dd01c0eba5ed4a"
+  integrity sha512-SziG+MNtJPJW0t1ENzWfdgq7FdHmH4epI2EoFC5u1IQgYk9F0NuKdE4P8P6fsNkeADFN4WCwTmaByrU8AqFboQ==
+  dependencies:
+    escape-string-regexp "^4.0.0"
+    invariant "2.2.4"
+
 "@walletconnect/core@2.19.0", "@walletconnect/core@2.21.9", "@walletconnect/core@^2.21.9":
   version "2.21.9"
   resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.21.9.tgz#456cb999b4fd33b2ce0fe64feda8f4eb08c21a9c"
@@ -8940,10 +8940,10 @@ ethers@^5.7.2:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^6.13.5:
-  version "6.13.5"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.5.tgz#8c1d6ac988ac08abc3c1d8fabbd4b8b602851ac4"
-  integrity sha512-+knKNieu5EKRThQJWwqaJ10a6HE9sSehGeqWN65//wE7j47ZpFhKAnHB/JJFibwwg61I/koxaPsXbXpD/skNOQ==
+ethers@^6.16.0:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.16.0.tgz#fff9b4f05d7a359c774ad6e91085a800f7fccf65"
+  integrity sha512-U1wulmetNymijEhpSEQ7Ct/P/Jw9/e7R1j5XIbPRydgV2DjLVMsULDlNksq3RQnFgKoLlZf88ijYtWEXcPa07A==
   dependencies:
     "@adraffy/ens-normalize" "1.10.1"
     "@noble/curves" "1.2.0"
@@ -16144,17 +16144,17 @@ tinyglobby@^0.2.12, tinyglobby@^0.2.14:
     fdir "^6.5.0"
     picomatch "^4.0.3"
 
-tldts-core@^6.1.44:
-  version "6.1.44"
-  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-6.1.44.tgz#9d42548e332daa064248e02d1a9fa8fbeaf9aa29"
-  integrity sha512-DMOTcn8pGmuY65zDPH+M1xAOVtBj7Phrah0HxuspKEu33hOArCDmk3R4UEVymtuN+HveeUlVgX0+RNf4mFkoAw==
+tldts-core@^7.0.24:
+  version "7.0.24"
+  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-7.0.24.tgz#ffc93642720e4dd708fc7b68dfd7d630fec43403"
+  integrity sha512-pj7yygNMoMRqG7ML2SDQ0xNIOfN3IBDUcPVM2Sg6hP96oFNN2nqnzHreT3z9xLq85IWJyNTvD38O002DdOrPMw==
 
-tldts@^6.1.32:
-  version "6.1.44"
-  resolved "https://registry.yarnpkg.com/tldts/-/tldts-6.1.44.tgz#a50ca6e6707a914b397e19862000a7a7606dd31f"
-  integrity sha512-Id5Kq3vy4fAHgrMasofrYZ4ghMa9rX64BfstBFgnGN+CAPdXYeZ0xWA2BXk3F+VgS+/jJ9PdYEQrP8LEZvGrCw==
+tldts@^7.0.5:
+  version "7.0.24"
+  resolved "https://registry.yarnpkg.com/tldts/-/tldts-7.0.24.tgz#11785c58333ef50afdf1ed42f571efc8808ebb1f"
+  integrity sha512-1r6vQTTt1rUiJkI5vX7KG8PR342Ru/5Oh13kEQP2SMbRSZpOey9SrBe27IDxkoWulx8ShWu4K6C0BkctP8Z1bQ==
   dependencies:
-    tldts-core "^6.1.44"
+    tldts-core "^7.0.24"
 
 tmp@^0.0.33:
   version "0.0.33"
@@ -16224,12 +16224,12 @@ tough-cookie@^4.0.0:
     universalify "^0.2.0"
     url-parse "^1.5.3"
 
-tough-cookie@^5.1.1:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-5.1.2.tgz#66d774b4a1d9e12dc75089725af3ac75ec31bed7"
-  integrity sha512-FVDYdxtnj0G6Qm/DhNPSb8Ju59ULcup3tuJxkFb5K8Bv2pUXILbf0xZWU8PX8Ov19OXljbUyveOFwRMwkXzO+A==
+tough-cookie@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-6.0.0.tgz#11e418b7864a2c0d874702bc8ce0f011261940e5"
+  integrity sha512-kXuRi1mtaKMrsLUxz3sQYvVl37B0Ns6MzfrtV5DvJceE9bPyspOqk9xxv7XbZWcfLWbFmm997vl83qUWVJA64w==
   dependencies:
-    tldts "^6.1.32"
+    tldts "^7.0.5"
 
 tr46@~0.0.3:
   version "0.0.3"
@@ -17837,7 +17837,12 @@ zod@3.22.4:
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
   integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
 
-zod@^3.21.4, zod@^3.24.2:
+zod@^3.21.4:
   version "3.24.2"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.2.tgz#8efa74126287c675e92f46871cfc8d15c34372b3"
   integrity sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==
+
+zod@^3.25.73, zod@^3.25.76:
+  version "3.25.76"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.76.tgz#26841c3f6fd22a6a2760e7ccb719179768471e34"
+  integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==

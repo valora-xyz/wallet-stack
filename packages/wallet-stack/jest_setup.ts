@@ -26,7 +26,7 @@ jest.mock('react-native/Libraries/Animated/components/AnimatedView.js', () => ({
 jest.mock('react-native/Libraries/Animated/components/AnimatedScrollView.js', () => ({
   default: 'RCTScrollView',
 }))
-jest.mock('@interaxyz/react-native-webview', () => {
+jest.mock('@valora/react-native-webview', () => {
   const { View } = require('react-native')
   return {
     default: View,
