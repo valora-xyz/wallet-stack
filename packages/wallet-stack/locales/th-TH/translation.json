@@ -710,7 +710,8 @@
     "title": "เชิญเพื่อนและรับสูงสุด 12 cUSD",
     "body": "เมื่อเพื่อนเชื่อมต่อเบอร์และเพิ่มเงินทุนลงใน {{appName}} คุณทั้งคู่จะได้รับ 0.50 cUSD"
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "เชิญด้วย SMS",
+  "inviteWithSmsMessage": {
     "title": "เชิญด้วย SMS",
     "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
   },

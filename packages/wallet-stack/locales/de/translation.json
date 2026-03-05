@@ -710,7 +710,8 @@
     "title": "Lade deine Freunde ein und erhalte bis zu 12 cUSD",
     "body": "Sobald sie ihre Nummer verknüpfen und Guthaben zu {{appName}} hinzufügen, erhaltet ihr beide 0,50 cUSD."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "Per SMS einladen",
+  "inviteWithSmsMessage": {
     "title": "Per SMS einladen",
     "shareMessage": "Hey! Melde dich bei {{appName}} wallet an. Ich nutze sie, um meine Ersparnisse in USD und Krypto zu vermehren, und du kannst sie in Sekundenschnelle mit nur einer Telefonnummer einrichten: {{shareUrl}}."
   },
