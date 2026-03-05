@@ -1,10 +1,6 @@
 {
   extends: ['github>valora-xyz/renovate-config:default.json5', ':disableDigestUpdates'],
 
-  // Disable all dependency updates for now.
-  // Only vulnerability alerts are enabled (see below).
-  enabled: false,
-
   vulnerabilityAlerts: {
     enabled: true,
     labels: ['security'],
@@ -42,6 +38,11 @@
   // in the sense that rules declared later (towards the end of the array)
   // overwrite values of an also-matching rule declared earlier.
   packageRules: [
+    {
+      // Disable all updates except vulnerability alerts (see vulnerabilityAlerts above).
+      matchPackagePatterns: ['*'],
+      enabled: false,
+    },
     {
       // set higher priority for node dependencies
       matchManagers: ['npm'],
