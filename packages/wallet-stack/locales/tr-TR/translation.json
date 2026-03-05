@@ -710,7 +710,8 @@
     "title": "Arkadaşlarınızı davet edin ve 12 cUSD'ye kadar kazanın",
     "body": "Numaralarını bağladıklarında ve {{appName}} uygulamasına fon eklediklerinde her ikiniz de 0,50 cUSD alacaksınız."
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "SMS ile davet et",
+  "inviteWithSmsMessage": {
     "title": "SMS ile davet et",
     "shareMessage": "Hey! {{appName}} cüzdanına kaydolun. Birikimlerimi USD ve kripto olarak artırmak için kullanıyorum ve siz de sadece bir telefon numarasıyla saniyeler içinde kurabilirsiniz: {{shareUrl}}."
   },

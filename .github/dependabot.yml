@@ -1,0 +1,20 @@
+# Dependabot is used exclusively for security vulnerability updates.
+# Version updates are disabled via open-pull-requests-limit: 0.
+#
+# Grouping avoids deadlocks when there's more than one vulnerability fix.
+
+version: 2
+updates:
+  # schedule and directory are required by the schema but have no effect on
+  # security updates -- those are triggered immediately by GitHub advisories.
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    # Disable version update PRs, only security updates will create PRs.
+    open-pull-requests-limit: 0
+    groups:
+      vulnerability-fixes:
+        applies-to: security-updates
+        patterns:
+          - '*'

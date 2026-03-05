@@ -710,7 +710,8 @@
     "title": "邀请朋友，最多可获得 12 cUSD",
     "body": "他们连接了自己的号码并将资金添加到 {{appName}} 后，你们都将收到 0.50 cUSD。"
   },
-  "inviteWithSMS": {
+  "inviteWithSMS": "通过短信邀请",
+  "inviteWithSmsMessage": {
     "title": "通过短信邀请",
     "shareMessage": "嘿！注册 {{appName}} 钱包。我用它来增加我的美元和加密货币储蓄，你只需一个电话号码就可以在几秒钟内设置好： {{shareUrl}}。"
   },
