@@ -1,5 +1,5 @@
-import { WebViewMessageEvent } from '@interaxyz/react-native-webview'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { WebViewMessageEvent } from '@valora/react-native-webview'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'

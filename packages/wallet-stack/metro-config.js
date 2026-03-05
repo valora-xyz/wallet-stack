@@ -18,7 +18,7 @@ function getDefaultConfig(...args) {
     // This is the crypto module we want to use moving forward (unless something better comes up).
     // It is implemented natively using OpenSSL.
     crypto: require.resolve('react-native-quick-crypto'),
-    fs: require.resolve('@divvi/react-native-fs'),
+    fs: require.resolve('@valora/react-native-fs'),
     stream: require.resolve('readable-stream'),
     buffer: require.resolve('@craftzdog/react-native-buffer'),
   }

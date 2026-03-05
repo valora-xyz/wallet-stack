@@ -10,7 +10,7 @@
  */
 
 const CROWDIN_BRANCH = 'l10n/main'
-const CROWDIN_PR_USER = 'divvi-bot-crowdin'
+const CROWDIN_PR_USER = 'valora-bot'
 
 const ALLOWED_UPDATED_FILE_MATCHER = new RegExp(
   `packages/wallet-stack/locales/.*/translation\\.json`

@@ -390,7 +390,7 @@ SOFTWARE.
 
 -----
 
-The following software may be included in this product: @divvi/cookies. A copy of the source code may be downloaded from git+https://github.com/divvixyz/cookies.git. This software contains the following license and notice below:
+The following software may be included in this product: @valora/react-native-cookies. A copy of the source code may be downloaded from git+https://github.com/valora-xyz/react-native-cookies.git. This software contains the following license and notice below:
 
 MIT License
 
@@ -416,7 +416,7 @@ SOFTWARE.
 
 -----
 
-The following software may be included in this product: @divvi/react-native-fs, react-native-fs. A copy of the source code may be downloaded from git+https@https://github.com/divvixyz/react-native-fs.git (@divvi/react-native-fs), git@github.com:itinance/react-native-fs.git (react-native-fs). This software contains the following license and notice below:
+The following software may be included in this product: @valora/react-native-fs, react-native-fs. A copy of the source code may be downloaded from git+https@https://github.com/valora-xyz/react-native-fs.git (@valora/react-native-fs), git@github.com:itinance/react-native-fs.git (react-native-fs). This software contains the following license and notice below:
 
 The MIT License (MIT)
 
@@ -442,7 +442,7 @@ SOFTWARE.
 
 -----
 
-The following software may be included in this product: @divvi/react-native-keychain, react-native-animatable. A copy of the source code may be downloaded from git+https://github.com/mobilestack-xyz/react-native-keychain.git (@divvi/react-native-keychain), git://github.com/oblador/react-native-animatable.git (react-native-animatable). This software contains the following license and notice below:
+The following software may be included in this product: @valora/react-native-keychain, react-native-animatable. A copy of the source code may be downloaded from git+https://github.com/valora-xyz/react-native-keychain.git (@valora/react-native-keychain), git://github.com/oblador/react-native-animatable.git (react-native-animatable). This software contains the following license and notice below:
 
 The MIT License (MIT)
 
@@ -631,7 +631,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -----
 
-The following software may be included in this product: @interaxyz/react-native-webview, @react-native-community/netinfo, @react-native-masked-view/masked-view, @react-native-picker/picker. A copy of the source code may be downloaded from git+https://github.com/interaxyz/react-native-webview.git (@interaxyz/react-native-webview), https://github.com/react-native-netinfo/react-native-netinfo.git (@react-native-community/netinfo), git+https://github.com/react-native-masked-view/masked-view.git (@react-native-masked-view/masked-view), https://github.com/react-native-picker/picker.git (@react-native-picker/picker). This software contains the following license and notice below:
+The following software may be included in this product: @valora/react-native-webview, @react-native-community/netinfo, @react-native-masked-view/masked-view, @react-native-picker/picker. A copy of the source code may be downloaded from git+https://github.com/valora-xyz/react-native-webview.git (@valora/react-native-webview), https://github.com/react-native-netinfo/react-native-netinfo.git (@react-native-community/netinfo), git+https://github.com/react-native-masked-view/masked-view.git (@react-native-masked-view/masked-view), https://github.com/react-native-picker/picker.git (@react-native-picker/picker). This software contains the following license and notice below:
 
 MIT License
 

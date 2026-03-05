@@ -1,8 +1,8 @@
 /**
  * This is a reactnavigation SCREEN, which we use to set a PIN.
  */
-import { BIOMETRY_TYPE } from '@divvi/react-native-keychain'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { BIOMETRY_TYPE } from '@valora/react-native-keychain'
 import * as React from 'react'
 import { WithTranslation } from 'react-i18next'
 import { StyleSheet } from 'react-native'

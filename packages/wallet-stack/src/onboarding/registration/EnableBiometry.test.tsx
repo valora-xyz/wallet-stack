@@ -1,5 +1,5 @@
-import { BIOMETRY_TYPE } from '@divvi/react-native-keychain'
 import { act, fireEvent, render } from '@testing-library/react-native'
+import { BIOMETRY_TYPE } from '@valora/react-native-keychain'
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import { setPincodeSuccess } from 'src/account/actions'

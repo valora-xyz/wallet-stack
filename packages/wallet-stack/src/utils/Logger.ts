@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
-import * as RNFS from '@divvi/react-native-fs'
 import * as Sentry from '@sentry/react-native'
 import { SeverityLevel } from '@sentry/types'
+import * as RNFS from '@valora/react-native-fs'
 import { format } from 'date-fns'
 import { Platform } from 'react-native'
 import Toast from 'react-native-simple-toast'

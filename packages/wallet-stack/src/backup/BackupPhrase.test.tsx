@@ -1,5 +1,5 @@
-import * as Keychain from '@divvi/react-native-keychain'
 import { fireEvent, render } from '@testing-library/react-native'
+import * as Keychain from '@valora/react-native-keychain'
 import * as React from 'react'
 import 'react-native'
 import { Provider } from 'react-redux'

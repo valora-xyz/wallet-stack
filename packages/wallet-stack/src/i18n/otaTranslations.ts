@@ -1,4 +1,4 @@
-import * as RNFS from '@divvi/react-native-fs'
+import * as RNFS from '@valora/react-native-fs'
 import { Resource } from 'i18next'
 import { OTA_TRANSLATIONS_FILEPATH } from 'src/config'
 
