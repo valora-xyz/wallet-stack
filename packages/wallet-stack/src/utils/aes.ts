@@ -19,7 +19,7 @@ export function aesEncrypt(plainText: string, secret: string) {
   return Buffer.concat([
     Buffer.from('Salted__', 'utf8'),
     salt,
-    cipher.update(plainText),
+    cipher.update(plainText, 'utf-8'),
     cipher.final(),
   ]).toString('base64')
 }
