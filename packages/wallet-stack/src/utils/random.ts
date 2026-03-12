@@ -26,7 +26,7 @@ export function shuffle(array: any[], seed: string) {
 
 export function calculateSha256Hash(input: string) {
   const hash = crypto.createHash('sha256')
-  hash.update(input)
+  hash.update(input, 'utf8')
   return hash.digest('hex')
 }
 
