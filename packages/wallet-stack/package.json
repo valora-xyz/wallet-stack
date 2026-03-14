@@ -18,7 +18,7 @@
     "provenance": true
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.20.1"
   },
   "files": [
     "tsconfig.json",
