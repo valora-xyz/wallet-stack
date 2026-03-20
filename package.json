@@ -122,7 +122,8 @@
     "react-native-sms-retriever": "^1.1.1",
     "react-native-svg": "^15.7.1",
     "react-native-video": "^6.16.1",
-    "eslint-plugin-jsx-expressions/**/minimatch": "9.0.8"
+    "eslint-plugin-jsx-expressions/**/minimatch": "9.0.8",
+    "undici": ">=6.24.0"
   },
   "multi-release": {
     "deps": {
