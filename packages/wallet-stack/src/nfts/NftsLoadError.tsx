@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { NftEvents } from 'src/analytics/Events'
 import Touchable from 'src/components/Touchable'
