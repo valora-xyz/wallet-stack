@@ -1045,38 +1045,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chevrotain/cst-dts-gen@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/cst-dts-gen/-/cst-dts-gen-11.0.3.tgz#5e0863cc57dc45e204ccfee6303225d15d9d4783"
-  integrity sha512-BvIKpRLeS/8UbfxXxgC33xOumsacaeCKAjAeLyOn7Pcp95HiRbrpl14S+9vaZLolnbssPIUuiUd8IvgkRyt6NQ==
-  dependencies:
-    "@chevrotain/gast" "11.0.3"
-    "@chevrotain/types" "11.0.3"
-    lodash-es "4.17.21"
-
-"@chevrotain/gast@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/gast/-/gast-11.0.3.tgz#e84d8880323fe8cbe792ef69ce3ffd43a936e818"
-  integrity sha512-+qNfcoNk70PyS/uxmj3li5NiECO+2YKZZQMbmjTqRI3Qchu8Hig/Q9vgkHpI3alNjr7M+a2St5pw5w5F6NL5/Q==
-  dependencies:
-    "@chevrotain/types" "11.0.3"
-    lodash-es "4.17.21"
-
-"@chevrotain/regexp-to-ast@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/regexp-to-ast/-/regexp-to-ast-11.0.3.tgz#11429a81c74a8e6a829271ce02fc66166d56dcdb"
-  integrity sha512-1fMHaBZxLFvWI067AVbGJav1eRY7N8DDvYCTwGBiE/ytKBgP8azTdgyrKyWZ9Mfh09eHWb5PgTSO8wi7U824RA==
-
-"@chevrotain/types@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/types/-/types-11.0.3.tgz#f8a03914f7b937f594f56eb89312b3b8f1c91848"
-  integrity sha512-gsiM3G8b58kZC2HaWR50gu6Y1440cHiJ+i3JUvcp/35JchYejb2+5MVeJK0iKThYpAa/P2PYFV4hoi44HD+aHQ==
-
-"@chevrotain/utils@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/utils/-/utils-11.0.3.tgz#e39999307b102cff3645ec4f5b3665f5297a2224"
-  integrity sha512-YslZMgtJUyuMbZ+aKvfF3x1f5liK4mWNxghFRv7jqRR9C3R3fAOGTTKvxXDa2Y1s9zSbcpuO0cAxDYsc9SrXoQ==
-
 "@colors/colors@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
@@ -6239,9 +6207,9 @@
   integrity sha512-/34lM25AfmHNMLOeEIhfKVnx2YZyn5VHC/R4Bs1uXQ2B+Yg0JbxAfvfXA3xqxBsdYqrYImILPO3Ih0c5UzoNxw==
 
 "@xmldom/xmldom@^0.8.8":
-  version "0.8.10"
-  resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.10.tgz#a1337ca426aa61cef9fe15b5b28e340a72f6fa99"
-  integrity sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==
+  version "0.8.12"
+  resolved "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.12.tgz"
+  integrity sha512-9k/gHF6n/pAi/9tqr3m3aqkuiNosYTurLLUtc7xQ9sxB/wm7WPygCv8GYa6mS0fLJEHhqMC1ATYhz++U/lRHqg==
 
 "@yarnpkg/lockfile@^1.1.0":
   version "1.1.0"
@@ -7276,25 +7244,6 @@ char-regex@^1.0.2:
   resolved "https://registry.yarnpkg.com/char-regex/-/char-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
   integrity sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==
 
-chevrotain-allstar@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/chevrotain-allstar/-/chevrotain-allstar-0.3.1.tgz#b7412755f5d83cc139ab65810cdb00d8db40e6ca"
-  integrity sha512-b7g+y9A0v4mxCW1qUhf3BSVPg+/NvGErk/dOkrDaHA0nQIQGAtrOjlX//9OQtRlSCy+x9rfB5N8yC71lH1nvMw==
-  dependencies:
-    lodash-es "^4.17.21"
-
-chevrotain@11.0.3:
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-11.0.3.tgz#88ffc1fb4b5739c715807eaeedbbf200e202fc1b"
-  integrity sha512-ci2iJH6LeIkvP9eJW6gpueU8cnZhv85ELY8w8WiFtNjMHA5ad6pQLaJo9mEly/9qUyCpvqX8/POVUTf18/HFdw==
-  dependencies:
-    "@chevrotain/cst-dts-gen" "11.0.3"
-    "@chevrotain/gast" "11.0.3"
-    "@chevrotain/regexp-to-ast" "11.0.3"
-    "@chevrotain/types" "11.0.3"
-    "@chevrotain/utils" "11.0.3"
-    lodash-es "4.17.21"
-
 chokidar@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.6.0.tgz#197c6cc669ef2a8dc5e7b4d97ee4e092c3eb0d5b"
@@ -8085,9 +8034,9 @@ define-properties@^1.1.3, define-properties@^1.1.4, define-properties@^1.2.0:
     object-keys "^1.1.1"
 
 defu@^6.1.4:
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/defu/-/defu-6.1.4.tgz#4e0c9cf9ff68fe5f3d7f2765cc1a012dfdcb0479"
-  integrity sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==
+  version "6.1.5"
+  resolved "https://registry.npmjs.org/defu/-/defu-6.1.5.tgz"
+  integrity sha512-pwdBJxJuJXmqrLO6s0VBmfbRz+G7FUzkjldAsdi9Yrv86mPyzq0ll1o8+8gB4Gsr6GJHbK1Lh3ngllgTInDCjA==
 
 delaunator@^4.0.0:
   version "4.0.1"
@@ -10891,15 +10840,6 @@ jake@^10.8.5:
     filelist "^1.0.4"
     minimatch "^3.1.2"
 
-java-parser@2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/java-parser/-/java-parser-2.3.2.tgz#9a930dfb397a9ada0bb1e8a18a9086eb65f2adf8"
-  integrity sha512-/O42UbEHy3VVJw8W0ruHkQjW75oWvQx4QisoUDRIGir6q3/IZ4JslDMPMYEqp7LU56PYJkH5uXdQiBaCXt/Opw==
-  dependencies:
-    chevrotain "11.0.3"
-    chevrotain-allstar "0.3.1"
-    lodash "4.17.21"
-
 java-properties@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/java-properties/-/java-properties-1.0.2.tgz#ccd1fa73907438a5b5c38982269d0e771fe78211"
@@ -11887,10 +11827,10 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
-lodash-es@4.17.21, lodash-es@^4.17.21:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
-  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+lodash-es@^4.17.21:
+  version "4.18.1"
+  resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.18.1.tgz"
+  integrity sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==
 
 lodash.camelcase@^4.3.0:
   version "4.3.0"
@@ -11962,15 +11902,10 @@ lodash.uniqby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
   integrity sha512-e/zcLx6CSbmaEgFHCA7BnoQKyCtKMxnuWrJygbwPs/AIn+IMKl66L8/s+wBUn5LRw2pZx3bUHibiV1b6aTWIww==
 
-lodash@4.17.21:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
-
 lodash@^4.17.11, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.17.23:
-  version "4.17.23"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.23.tgz#f113b0378386103be4f6893388c73d0bde7f2c5a"
-  integrity sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==
+  version "4.18.1"
+  resolved "https://registry.npmjs.org/lodash/-/lodash-4.18.1.tgz"
+  integrity sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==
 
 log-symbols@^2.2.0:
   version "2.2.0"
@@ -12837,9 +12772,9 @@ node-fetch@^2.6.7, node-fetch@^2.7.0:
     whatwg-url "^5.0.0"
 
 node-forge@^1.2.1, node-forge@^1.3.1:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.3.3.tgz#0ad80f6333b3a0045e827ac20b7f735f93716751"
-  integrity sha512-rLvcdSyRCyouf6jcOIPe/BgwG/d7hKjzMKOas33/pHEr6gbq18IK9zV7DiPvzsz0oBJPme6qr6H6kGZuI9/DZg==
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/node-forge/-/node-forge-1.4.0.tgz"
+  integrity sha512-LarFH0+6VfriEhqMMcLX2F7SwSXeWwnEAJEsYm5QKWchiVYVvJyV9v7UDvUv+w5HO23ZpQTXDv/GxdDdMyOuoQ==
 
 node-gyp@^11.0.0:
   version "11.0.0"
@@ -13803,19 +13738,19 @@ picocolors@^1.1.0, picocolors@^1.1.1:
   integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
 
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.3, picomatch@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
-  integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.2.tgz"
+  integrity sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==
 
 picomatch@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-3.0.1.tgz#817033161def55ec9638567a2f3bbc876b3e7516"
-  integrity sha512-I3EurrIQMlRc9IaAZnqRR044Phh2DXY+55o7uJ0V+hYZAcQYSuFWsc9q5PvyDHUSCe1Qxn/iBz+78s86zWnGag==
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/picomatch/-/picomatch-3.0.2.tgz"
+  integrity sha512-cfDHL6LStTEKlNilboNtobT/kEa30PtAf2Q1OgszfrG/rpVl1xaFWT9ktfkS306GmHgmnad1Sw4wabhlvFtsTw==
 
 picomatch@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.3.tgz#796c76136d1eead715db1e7bad785dedd695a042"
-  integrity sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==
+  version "4.0.4"
+  resolved "https://registry.npmjs.org/picomatch/-/picomatch-4.0.4.tgz"
+  integrity sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==
 
 pify@^3.0.0:
   version "3.0.0"
@@ -13926,20 +13861,6 @@ prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
-
-prettier-plugin-java@^2.6.4:
-  version "2.6.4"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-java/-/prettier-plugin-java-2.6.4.tgz#29716b084f0c90b0c08b33088dc59a934032793b"
-  integrity sha512-57iGIFM4xSCqzHc4G6RLeC0DJk+i6Vd1JDj5xcIe7GsWZjRSl8WWkpL0f4BB0gZ+jDZ8R1uJaxtnMgnRtzjLDQ==
-  dependencies:
-    java-parser "2.3.2"
-    lodash "4.17.21"
-    prettier "3.2.5"
-
-prettier@3.2.5:
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.2.5.tgz#e52bc3090586e824964a8813b09aba6233b28368"
-  integrity sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==
 
 prettier@3.3.3:
   version "3.3.3"
