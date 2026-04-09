@@ -252,7 +252,7 @@ export default function FiatConnectReviewScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.content}>
+    <SafeAreaView style={styles.content} edges={['bottom']}>
       <Dialog
         testID="expiredQuoteDialog"
         isVisible={showingExpiredQuoteDialog}

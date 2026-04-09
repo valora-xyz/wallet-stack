@@ -270,7 +270,7 @@ export default function FiatConnectTransferStatusScreen({ route, navigation }: P
         ),
       })
       return (
-        <SafeAreaView style={styles.content}>
+        <SafeAreaView style={styles.content} edges={['bottom']}>
           <FailureSection flow={flow} normalizedQuote={normalizedQuote} fiatAccount={fiatAccount} />
         </SafeAreaView>
       )
@@ -283,7 +283,7 @@ export default function FiatConnectTransferStatusScreen({ route, navigation }: P
     // intentionally falls thru since TxProcessing and Completed use the same component
     case SendingTransferStatus.TxProcessing:
       return (
-        <SafeAreaView style={styles.content}>
+        <SafeAreaView style={styles.content} edges={['bottom']}>
           <SuccessOrProcessingSection
             status={fiatConnectTransfer.status}
             flow={flow}

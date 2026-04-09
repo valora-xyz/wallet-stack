@@ -106,7 +106,7 @@ function LinkAccountSection(props: {
   }
 
   return (
-    <SafeAreaView style={styles.content}>
+    <SafeAreaView style={styles.content} edges={['bottom']}>
       <Text style={styles.title}>{t(bodyTitle)}</Text>
       <Text testID="descriptionText" style={styles.description}>
         <Trans i18nKey={description} values={{ providerName: quote.getProviderName() }}>

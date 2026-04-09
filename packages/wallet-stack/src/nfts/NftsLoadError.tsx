@@ -32,7 +32,7 @@ export default function NftsLoadError({ testID }: Props) {
   }, [])
 
   return (
-    <SafeAreaView style={styles.safeArea} testID={testID}>
+    <SafeAreaView style={styles.safeArea} testID={testID} edges={['bottom']}>
       <ScrollView
         contentContainerStyle={styles.contentContainerStyle}
         style={styles.scrollContainer}

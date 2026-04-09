@@ -55,7 +55,7 @@ function Spend(props: Props) {
 
   return (
     <ScrollView style={styles.container}>
-      <SafeAreaView>
+      <SafeAreaView edges={['bottom']}>
         <Text style={styles.pleaseSelectProvider}>{t('useBalanceWithMerchants')}</Text>
         <View>
           {merchants

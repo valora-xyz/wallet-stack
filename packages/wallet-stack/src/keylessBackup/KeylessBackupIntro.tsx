@@ -34,7 +34,7 @@ function KeylessBackupIntro({ route }: Props) {
   const { t } = useTranslation()
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView style={styles.scrollContainer}>
         {isSetup && <Text style={styles.title}>{t('keylessBackupIntro.setup.title')}</Text>}
         <Text

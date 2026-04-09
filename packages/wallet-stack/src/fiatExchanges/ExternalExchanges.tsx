@@ -56,7 +56,7 @@ function ExternalExchanges({ route }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <Text style={styles.pleaseSelectExchange}>
         {t('youCanTransferOut', {
           digitalAsset: tokenInfo?.symbol,
