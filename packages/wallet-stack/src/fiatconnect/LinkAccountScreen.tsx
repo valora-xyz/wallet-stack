@@ -3,7 +3,8 @@ import { RouteProp } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { SafeAreaView, StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { FiatExchangeEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
@@ -105,7 +106,7 @@ function LinkAccountSection(props: {
   }
 
   return (
-    <SafeAreaView style={styles.content}>
+    <SafeAreaView style={styles.content} edges={['bottom']}>
       <Text style={styles.title}>{t(bodyTitle)}</Text>
       <Text testID="descriptionText" style={styles.description}>
         <Trans i18nKey={description} values={{ providerName: quote.getProviderName() }}>

@@ -1,7 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect, useState, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { FiatExchangeEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
@@ -269,7 +270,7 @@ export default function FiatConnectTransferStatusScreen({ route, navigation }: P
         ),
       })
       return (
-        <SafeAreaView style={styles.content}>
+        <SafeAreaView style={styles.content} edges={['bottom']}>
           <FailureSection flow={flow} normalizedQuote={normalizedQuote} fiatAccount={fiatAccount} />
         </SafeAreaView>
       )
@@ -282,7 +283,7 @@ export default function FiatConnectTransferStatusScreen({ route, navigation }: P
     // intentionally falls thru since TxProcessing and Completed use the same component
     case SendingTransferStatus.TxProcessing:
       return (
-        <SafeAreaView style={styles.content}>
+        <SafeAreaView style={styles.content} edges={['bottom']}>
           <SuccessOrProcessingSection
             status={fiatConnectTransfer.status}
             flow={flow}

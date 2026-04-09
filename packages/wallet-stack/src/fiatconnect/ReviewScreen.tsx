@@ -5,7 +5,8 @@ import BigNumber from 'bignumber.js'
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useAsync } from 'react-async-hook'
 import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, BackHandler, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, BackHandler, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { FiatExchangeEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
@@ -251,7 +252,7 @@ export default function FiatConnectReviewScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.content}>
+    <SafeAreaView style={styles.content} edges={['bottom']}>
       <Dialog
         testID="expiredQuoteDialog"
         isVisible={showingExpiredQuoteDialog}
