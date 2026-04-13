@@ -115,7 +115,8 @@ describe('Fetch Addresses Saga', () => {
         .put(
           updateE164PhoneNumberAddresses(
             { [mockE164Number]: ['0xabc'] },
-            { '0xabc': mockE164Number }
+            { '0xabc': mockE164Number },
+            {}
           )
         )
         .run()
@@ -151,7 +152,45 @@ describe('Fetch Addresses Saga', () => {
         .put(
           updateE164PhoneNumberAddresses(
             { [mockE164Number]: ['0xabc', '0xdef'] },
-            { '0xabc': mockE164Number, '0xdef': mockE164Number }
+            { '0xabc': mockE164Number, '0xdef': mockE164Number },
+            {}
+          )
+        )
+        .put(requireSecureSend(mockE164Number, AddressValidationType.PARTIAL))
+        .run()
+    })
+
+    it('uses verifiedAddresses as source of truth when present', async () => {
+      const mockE164NumberToAddress = {
+        [mockE164Number]: [mockAccount.toLowerCase()],
+      }
+      // addresses only contains DB-verified addresses (backward compat),
+      // verifiedAddresses contains all (DB + SC) and is the source of truth
+      mockFetch.mockResponseOnce(
+        JSON.stringify({
+          data: {
+            addresses: ['0xAbC'],
+            verifiedAddresses: [
+              { address: '0xAbC', verifiedBy: 'valora' },
+              { address: '0xDef', verifiedBy: 'minipay' },
+            ],
+          },
+        })
+      )
+
+      await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
+        .provide([
+          [select(e164NumberToAddressSelector), mockE164NumberToAddress],
+          [select(walletAddressSelector), mockAccount],
+          [call(retrieveSignedMessage), 'some signed message'],
+          [select(secureSendPhoneNumberMappingSelector), {}],
+        ])
+        .put(updateE164PhoneNumberAddresses({ [mockE164Number]: undefined }, {}))
+        .put(
+          updateE164PhoneNumberAddresses(
+            { [mockE164Number]: ['0xabc', '0xdef'] },
+            { '0xabc': mockE164Number, '0xdef': mockE164Number },
+            { '0xabc': 'valora', '0xdef': 'minipay' }
           )
         )
         .put(requireSecureSend(mockE164Number, AddressValidationType.PARTIAL))

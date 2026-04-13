@@ -159,10 +159,22 @@ export function* fetchAddressesAndValidateSaga({
     // Clear existing entries for those numbers so our mapping consumers know new status is pending.
     yield* put(updateE164PhoneNumberAddresses({ [e164Number]: undefined }, {}))
 
-    const walletAddresses: string[] = yield* call(fetchWalletAddresses, e164Number)
+    const { addresses, verifiedAddresses } = yield* call(fetchWalletAddresses, e164Number)
+
+    // When `verifiedAddresses` is present, use it as source of truth:
+    // it includes addresses verified by both CPV and SocialConnect.
+    // The `addresses` field is used for backward compatibility.
+    const walletAddresses = verifiedAddresses ? verifiedAddresses.map((v) => v.address) : addresses
 
     const e164NumberToAddressUpdates: E164NumberToAddressType = {}
     const addressToE164NumberUpdates: AddressToE164NumberType = {}
+    const addressToVerifiedByUpdates: Record<string, string> = {}
+
+    if (verifiedAddresses) {
+      for (const { address, verifiedBy } of verifiedAddresses) {
+        addressToVerifiedByUpdates[address] = verifiedBy
+      }
+    }
 
     if (!walletAddresses.length) {
       Logger.debug(TAG + '@fetchAddressesAndValidate', `No addresses for number`)
@@ -197,7 +209,11 @@ export function* fetchAddressesAndValidateSaga({
       yield* put(requireSecureSend(e164Number, addressValidationType))
     }
     yield* put(
-      updateE164PhoneNumberAddresses(e164NumberToAddressUpdates, addressToE164NumberUpdates)
+      updateE164PhoneNumberAddresses(
+        e164NumberToAddressUpdates,
+        addressToE164NumberUpdates,
+        addressToVerifiedByUpdates
+      )
     )
     yield* put(endFetchingAddresses(e164Number, true))
     AppAnalytics.track(IdentityEvents.phone_number_lookup_complete)
@@ -265,9 +281,22 @@ function* fetchWalletAddresses(e164Number: string) {
       throw new Error(`Failed to look up phone number: ${response.status} ${response.statusText}`)
     }
 
-    const { data }: { data: { addresses: string[] } } = yield* call([response, 'json'])
+    const {
+      data,
+    }: {
+      data: {
+        addresses: string[]
+        verifiedAddresses?: Array<{ address: string; verifiedBy: string }>
+      }
+    } = yield* call([response, 'json'])
 
-    return data.addresses.map((address) => address.toLowerCase())
+    return {
+      addresses: data.addresses.map((address) => address.toLowerCase()),
+      verifiedAddresses: data.verifiedAddresses?.map((v) => ({
+        ...v,
+        address: v.address.toLowerCase(),
+      })),
+    }
   } catch (error) {
     Logger.debug(`${TAG}/fetchWalletAddresses`, 'Unable to look up phone number', error)
     throw new Error('Unable to fetch wallet address for this phone number')

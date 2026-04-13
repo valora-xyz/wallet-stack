@@ -42,6 +42,7 @@ interface StateProps {
   validationSuccessful: boolean
   error?: ErrorMessages | null
   validatedAddress?: string
+  isMiniPayRecipient: boolean
 }
 
 interface State {
@@ -77,6 +78,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => {
     secureSendPhoneNumberMapping
   )
   const validatedAddress = getSecureSendAddress(recipient, secureSendPhoneNumberMapping)
+  const isMiniPayRecipient =
+    !!validatedAddress && state.identity.addressToVerifiedBy?.[validatedAddress] === 'minipay'
 
   return {
     recipient,
@@ -84,6 +87,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => {
     addressValidationType,
     error,
     validatedAddress,
+    isMiniPayRecipient,
   }
 }
 
@@ -121,6 +125,7 @@ export class ValidateRecipientAccount extends React.Component<Props, State> {
         isFromScan: false,
         forceTokenId: route.params.forceTokenId,
         defaultTokenIdOverride: route.params.defaultTokenIdOverride,
+        isMiniPayRecipient: this.props.isMiniPayRecipient,
       })
     }
 

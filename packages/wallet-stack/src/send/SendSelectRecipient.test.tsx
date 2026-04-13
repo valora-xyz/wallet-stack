@@ -243,6 +243,7 @@ describe('SendSelectRecipient', () => {
       forceTokenId: undefined,
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
+      isMiniPayRecipient: false,
     })
   })
   it('navigates to send amount when address recipient is pressed', async () => {
@@ -280,6 +281,7 @@ describe('SendSelectRecipient', () => {
       forceTokenId: undefined,
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
+      isMiniPayRecipient: false,
     })
   })
 
@@ -522,6 +524,54 @@ describe('SendSelectRecipient', () => {
         recipientType: 'PhoneNumber',
       },
       origin: SendOrigin.AppSendFlow,
+      isMiniPayRecipient: false,
+    })
+  })
+  it('navigates to send amount with isMiniPayRecipient when address is verified by minipay', async () => {
+    jest
+      .mocked(getRecipientVerificationStatus)
+      .mockReturnValue(RecipientVerificationStatus.VERIFIED)
+
+    const store = createMockStore({
+      ...storeWithPhoneVerified,
+      identity: {
+        secureSendPhoneNumberMapping: {
+          [mockE164Number3]: { addressValidationType: AddressValidationType.NONE },
+        },
+        e164NumberToAddress: { [mockE164Number3]: [mockAccount3] },
+        addressToVerifiedBy: { [mockAccount3]: 'minipay' },
+      },
+    })
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <SendSelectRecipient {...mockScreenProps({})} />
+      </Provider>
+    )
+    const searchInput = getByTestId('SendSelectRecipientSearchInput')
+
+    await act(() => {
+      fireEvent.changeText(searchInput, mockE164Number3)
+    })
+    await act(() => {
+      fireEvent.press(getByTestId('RecipientItem'))
+    })
+    await act(() => {
+      fireEvent.press(getByTestId('SendOrInviteButton'))
+    })
+
+    expect(navigate).toHaveBeenCalledWith(Screens.SendEnterAmount, {
+      isFromScan: false,
+      defaultTokenIdOverride: undefined,
+      forceTokenId: undefined,
+      recipient: {
+        address: mockAccount3,
+        displayNumber: '(415) 555-0123',
+        e164PhoneNumber: mockE164Number3,
+        recipientType: 'PhoneNumber',
+      },
+      origin: SendOrigin.AppSendFlow,
+      isMiniPayRecipient: true,
     })
   })
   it('navigates to secure send flow when phone number recipient with multiple addresses, first time seeing it', async () => {
@@ -631,6 +681,7 @@ describe('SendSelectRecipient', () => {
         recipientType: 'PhoneNumber',
       },
       origin: SendOrigin.AppSendFlow,
+      isMiniPayRecipient: false,
     })
   })
   it.each([{ searchAddress: mockAccount2 }, { searchAddress: mockAccount3 }])(
@@ -694,6 +745,7 @@ describe('SendSelectRecipient', () => {
           thumbnailPath: undefined,
         },
         origin: SendOrigin.AppSendFlow,
+        isMiniPayRecipient: false,
       })
     }
   )
@@ -759,6 +811,7 @@ describe('SendSelectRecipient', () => {
           thumbnailPath: undefined,
         },
         origin: SendOrigin.AppSendFlow,
+        isMiniPayRecipient: false,
       })
     }
   )

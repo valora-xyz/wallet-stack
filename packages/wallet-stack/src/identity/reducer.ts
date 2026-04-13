@@ -54,6 +54,10 @@ export interface AddressToVerificationStatus {
   [address: string]: boolean | undefined
 }
 
+export interface AddressToVerifiedByType {
+  [address: string]: string | undefined
+}
+
 interface State {
   addressToE164Number: AddressToE164NumberType
   // Note: Do not access values in this directly, use the `getAddressFromPhoneNumber` helper in contactMapping
@@ -67,6 +71,8 @@ interface State {
   secureSendPhoneNumberMapping: SecureSendPhoneNumberMapping
   // Mapping of address to verification status; undefined entries represent a loading state
   addressToVerificationStatus: AddressToVerificationStatus
+  // Mapping of address to the entity that verified it (e.g. "valora", "minipay")
+  addressToVerifiedBy: AddressToVerifiedByType
   lastSavedContactsHash: string | null
   shouldRefreshStoredPasswordHash: boolean
 }
@@ -83,6 +89,7 @@ const initialState: State = {
   },
   secureSendPhoneNumberMapping: {},
   addressToVerificationStatus: {},
+  addressToVerifiedBy: {},
   lastSavedContactsHash: null,
   shouldRefreshStoredPasswordHash: false,
 }
@@ -113,6 +120,10 @@ export const reducer = (
         e164NumberToAddress: {
           ...state.e164NumberToAddress,
           ...action.e164NumberToAddress,
+        },
+        addressToVerifiedBy: {
+          ...state.addressToVerifiedBy,
+          ...action.addressToVerifiedBy,
         },
       }
     case Actions.UPDATE_KNOWN_ADDRESSES:

@@ -21,6 +21,7 @@ import { getAddressFromPhoneNumber } from 'src/identity/contactMapping'
 import { AddressValidationType } from 'src/identity/reducer'
 import { getAddressValidationType } from 'src/identity/secureSend'
 import {
+  addressToVerifiedBySelector,
   e164NumberToAddressSelector,
   secureSendPhoneNumberMappingSelector,
 } from 'src/identity/selectors'
@@ -215,6 +216,7 @@ function SendSelectRecipient({ route }: Props) {
   const dispatch = useDispatch()
   const secureSendPhoneNumberMapping = useSelector(secureSendPhoneNumberMappingSelector)
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
+  const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
   const shareUrl = getAppConfig().experimental?.inviteFriends?.shareUrl ?? null
 
   const forceTokenId = route.params?.forceTokenId
@@ -314,6 +316,7 @@ function SendSelectRecipient({ route }: Props) {
         address,
       },
       origin: SendOrigin.AppSendFlow,
+      isMiniPayRecipient: addressToVerifiedBy?.[address] === 'minipay',
     })
   }
 

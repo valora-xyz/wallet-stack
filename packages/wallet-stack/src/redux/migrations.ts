@@ -2070,4 +2070,11 @@ export const migrations = {
     ...state,
     home: _.omit(state.home, 'hasSeenDivviBottomSheet'),
   }),
+  255: (state: any) => ({
+    ...state,
+    identity: {
+      ...state.identity,
+      addressToVerifiedBy: {},
+    },
+  }),
 }

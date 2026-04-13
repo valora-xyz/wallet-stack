@@ -9,7 +9,7 @@ import {
   addressToVerificationStatusSelector,
   e164NumberToAddressSelector,
 } from 'src/identity/selectors'
-import Logo from 'src/images/Logo'
+import Checkmark from 'src/icons/Checkmark'
 import {
   Recipient,
   RecipientType,
@@ -63,12 +63,13 @@ function RecipientItem({ recipient, onSelectRecipient, loading, selected }: Prop
             DefaultIcon={() => renderDefaultIcon(recipient)} // no need to honor color props here since the color we need match the defaults
           />
           {!!showAppIcon && (
-            <Logo
-              color={Colors.contentSecondary}
-              style={styles.appIcon}
-              size={ICON_SIZE}
-              testID="RecipientItem/AppIcon"
-            />
+            <View style={styles.appIcon} testID="RecipientItem/AppIcon">
+              <Checkmark
+                color={Colors.contentTertiary}
+                height={ICON_SIZE}
+                width={ICON_SIZE}
+              />
+            </View>
           )}
         </View>
         <View style={styles.contentContainer}>
@@ -129,13 +130,8 @@ const styles = StyleSheet.create({
     top: 22,
     left: 22,
     backgroundColor: Colors.accent,
-    padding: 4,
     borderRadius: 100,
-    // To override the default shadow props on the logo
-    shadowColor: undefined,
-    shadowOpacity: undefined,
-    shadowRadius: undefined,
-    shadowOffset: undefined,
+    padding: 2,
   },
 })
 
