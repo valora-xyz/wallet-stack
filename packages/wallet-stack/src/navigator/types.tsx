@@ -42,6 +42,7 @@ type SendEnterAmountParams = {
   origin: SendOrigin
   forceTokenId?: boolean
   defaultTokenIdOverride?: string
+  isMiniPayRecipient?: boolean
 }
 
 interface ValidateRecipientParams {

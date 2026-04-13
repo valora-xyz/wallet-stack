@@ -17,6 +17,7 @@ import TokenBottomSheet, {
   TokenBottomSheetProps,
   TokenPickerOrigin,
 } from 'src/components/TokenBottomSheet'
+import { FilterChip } from 'src/components/FilterChipsCarousel'
 import TokenEnterAmount, {
   FETCH_UPDATED_TRANSACTIONS_DEBOUNCE_TIME_MS,
   useEnterAmount,
@@ -66,6 +67,7 @@ interface Props {
   children?: React.ReactNode
   ProceedComponent: ComponentType<ProceedComponentProps>
   disableBalanceCheck?: boolean
+  filterChips?: FilterChip<TokenBalance>[]
 }
 
 export const SendProceed = ({
@@ -107,6 +109,7 @@ export default function EnterAmount({
   children,
   ProceedComponent,
   disableBalanceCheck = false,
+  filterChips,
 }: Props) {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
@@ -325,6 +328,7 @@ export default function EnterAmount({
         tokens={tokens}
         title={t('sendEnterAmountScreen.selectToken')}
         titleStyle={styles.title}
+        filterChips={filterChips}
       />
     </SafeAreaView>
   )

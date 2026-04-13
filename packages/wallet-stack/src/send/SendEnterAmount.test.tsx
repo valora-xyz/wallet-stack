@@ -10,6 +10,7 @@ import { Screens } from 'src/navigator/Screens'
 import { RecipientType } from 'src/recipients/recipient'
 import SendEnterAmount from 'src/send/SendEnterAmount'
 import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
+import { getDynamicConfigParams } from 'src/statsig'
 import { getSerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
 import { PreparedTransactionsPossible } from 'src/viem/prepareTransactions'
 import MockedNavigator from 'test/MockedNavigator'
@@ -28,6 +29,10 @@ import {
 
 jest.mock('src/statsig')
 jest.mock('src/send/usePrepareSendTransactions')
+
+jest.mocked(getDynamicConfigParams).mockReturnValue({
+  miniPayTokenIds: [],
+})
 
 const mockPrepareTransactionsResultPossible: PreparedTransactionsPossible = {
   type: 'possible',
@@ -164,6 +169,7 @@ describe('SendEnterAmount', () => {
       underlyingTokenAddress: mockCeloAddress,
       underlyingTokenSymbol: 'CELO',
       amountEnteredIn: 'token',
+      isMiniPayRecipient: false,
     })
     expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmation, {
       origin: params.origin,

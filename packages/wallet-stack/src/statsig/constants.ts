@@ -164,6 +164,12 @@ export const DynamicConfigs = {
       inviteRewardsVersion: 'none',
     },
   },
+  [StatsigDynamicConfigs.SEND_CONFIG]: {
+    configName: StatsigDynamicConfigs.SEND_CONFIG,
+    defaultValues: {
+      miniPayTokenIds: [] as string[],
+    },
+  },
 } satisfies {
   [key in StatsigDynamicConfigs]: {
     configName: key

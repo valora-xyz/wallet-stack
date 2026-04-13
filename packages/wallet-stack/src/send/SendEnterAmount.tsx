@@ -11,6 +11,7 @@ import { useSelector } from 'src/redux/hooks'
 import EnterAmount, { ProceedArgs, SendProceed } from 'src/send/EnterAmount'
 import { lastUsedTokenIdSelector } from 'src/send/selectors'
 import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
+import useSendFilterChips from 'src/send/useSendFilterChips'
 import { sortedTokensWithBalanceOrShowZeroBalanceSelector } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
@@ -22,18 +23,23 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SendEnterAmount>
 const TAG = 'SendEnterAmount'
 
 function SendEnterAmount({ route }: Props) {
-  const { defaultTokenIdOverride, origin, recipient, isFromScan, forceTokenId } = route.params
+  const { defaultTokenIdOverride, origin, recipient, isFromScan, forceTokenId, isMiniPayRecipient } =
+    route.params
   // explicitly allow zero state tokens to be shown for exploration purposes for
   // new users with no balance
   const tokens = useSelector(sortedTokensWithBalanceOrShowZeroBalanceSelector)
   const lastUsedTokenId = useSelector(lastUsedTokenIdSelector)
+  const { filterChips, miniPayTokenIds } = useSendFilterChips(isMiniPayRecipient)
 
   const defaultToken = useMemo(() => {
-    const defaultToken = tokens.find((token) => token.tokenId === defaultTokenIdOverride)
-    const lastUsedToken = tokens.find((token) => token.tokenId === lastUsedTokenId)
+    const eligibleTokens = miniPayTokenIds
+      ? tokens.filter((token) => miniPayTokenIds.includes(token.tokenId))
+      : tokens
+    const defaultToken = eligibleTokens.find((token) => token.tokenId === defaultTokenIdOverride)
+    const lastUsedToken = eligibleTokens.find((token) => token.tokenId === lastUsedTokenId)
 
-    return defaultToken ?? lastUsedToken ?? tokens[0]
-  }, [tokens, defaultTokenIdOverride, lastUsedTokenId])
+    return defaultToken ?? lastUsedToken ?? eligibleTokens[0]
+  }, [tokens, miniPayTokenIds, defaultTokenIdOverride, lastUsedTokenId])
 
   const localCurrencyCode = useSelector(getLocalCurrencyCode)
   const localCurrencyExchangeRate = useSelector(usdToLocalCurrencyRateSelector)
@@ -72,6 +78,7 @@ function SendEnterAmount({ route }: Props) {
       amountEnteredIn,
       tokenId: token.tokenId,
       networkId: token.networkId,
+      isMiniPayRecipient: isMiniPayRecipient ?? false,
     })
   }
 
@@ -116,6 +123,7 @@ function SendEnterAmount({ route }: Props) {
       tokenSelectionDisabled={!!forceTokenId}
       onPressProceed={handleReviewSend}
       ProceedComponent={SendProceed}
+      filterChips={filterChips}
     />
   )
 }
