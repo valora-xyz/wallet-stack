@@ -314,6 +314,7 @@ function SendSelectRecipient({ route }: Props) {
         address,
       },
       origin: SendOrigin.AppSendFlow,
+      isMiniPayRecipient: true, // TODO: remove, for visual debugging only
     })
   }
 

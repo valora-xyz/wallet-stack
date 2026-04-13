@@ -167,7 +167,12 @@ export const DynamicConfigs = {
   [StatsigDynamicConfigs.SEND_CONFIG]: {
     configName: StatsigDynamicConfigs.SEND_CONFIG,
     defaultValues: {
-      miniPayTokenIds: [] as string[],
+      // TODO: remove hardcoded defaults before merging, these are for visual debugging only
+      miniPayTokenIds: [
+        'celo-mainnet:0x765de816845861e75a25fca122bb6898b8b1282a', // cUSD
+        'celo-mainnet:0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e', // USDT
+        'celo-mainnet:0xceba9300f2b948710d2653dd7b07f33a8b32118c', // USDC
+      ],
     },
   },
 } satisfies {
