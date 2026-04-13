@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useMemo } from 'react'
+import React from 'react'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { getLocalCurrencyCode, usdToLocalCurrencyRateSelector } from 'src/localCurrency/selectors'
@@ -35,17 +35,12 @@ function SendEnterAmount({ route }: Props) {
   // new users with no balance
   const tokens = useSelector(sortedTokensWithBalanceOrShowZeroBalanceSelector)
   const lastUsedTokenId = useSelector(lastUsedTokenIdSelector)
-  const { filterChips, miniPayTokenIds } = useSendFilterChips(isMiniPayRecipient)
-
-  const defaultToken = useMemo(() => {
-    const eligibleTokens = miniPayTokenIds
-      ? tokens.filter((token) => miniPayTokenIds.includes(token.tokenId))
-      : tokens
-    const defaultToken = eligibleTokens.find((token) => token.tokenId === defaultTokenIdOverride)
-    const lastUsedToken = eligibleTokens.find((token) => token.tokenId === lastUsedTokenId)
-
-    return defaultToken ?? lastUsedToken ?? eligibleTokens[0]
-  }, [tokens, miniPayTokenIds, defaultTokenIdOverride, lastUsedTokenId])
+  const { filterChips, defaultToken } = useSendFilterChips({
+    isMiniPayRecipient,
+    tokens,
+    defaultTokenIdOverride,
+    lastUsedTokenId,
+  })
 
   const localCurrencyCode = useSelector(getLocalCurrencyCode)
   const localCurrencyExchangeRate = useSelector(usdToLocalCurrencyRateSelector)
