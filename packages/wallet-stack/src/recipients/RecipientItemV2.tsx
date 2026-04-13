@@ -64,11 +64,7 @@ function RecipientItem({ recipient, onSelectRecipient, loading, selected }: Prop
           />
           {!!showAppIcon && (
             <View style={styles.appIcon} testID="RecipientItem/AppIcon">
-              <Checkmark
-                color={Colors.contentTertiary}
-                height={ICON_SIZE}
-                width={ICON_SIZE}
-              />
+              <Checkmark color={Colors.contentTertiary} height={ICON_SIZE} width={ICON_SIZE} />
             </View>
           )}
         </View>
