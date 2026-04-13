@@ -23,8 +23,14 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SendEnterAmount>
 const TAG = 'SendEnterAmount'
 
 function SendEnterAmount({ route }: Props) {
-  const { defaultTokenIdOverride, origin, recipient, isFromScan, forceTokenId, isMiniPayRecipient } =
-    route.params
+  const {
+    defaultTokenIdOverride,
+    origin,
+    recipient,
+    isFromScan,
+    forceTokenId,
+    isMiniPayRecipient,
+  } = route.params
   // explicitly allow zero state tokens to be shown for exploration purposes for
   // new users with no balance
   const tokens = useSelector(sortedTokensWithBalanceOrShowZeroBalanceSelector)

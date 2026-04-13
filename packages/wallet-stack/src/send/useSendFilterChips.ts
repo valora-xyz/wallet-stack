@@ -11,8 +11,7 @@ export default function useSendFilterChips(isMiniPayRecipient?: boolean): {
   const { miniPayTokenIds: configTokenIds } = getDynamicConfigParams(
     DynamicConfigs[StatsigDynamicConfigs.SEND_CONFIG]
   )
-  const miniPayTokenIds =
-    isMiniPayRecipient && configTokenIds.length > 0 ? configTokenIds : null
+  const miniPayTokenIds = isMiniPayRecipient && configTokenIds.length > 0 ? configTokenIds : null
 
   const filterChips: BooleanFilterChip<TokenBalance>[] = miniPayTokenIds
     ? [
