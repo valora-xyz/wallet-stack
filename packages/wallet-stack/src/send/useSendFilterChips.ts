@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { BooleanFilterChip } from 'src/components/FilterChipsCarousel'
 import { getDynamicConfigParams } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
@@ -13,16 +14,20 @@ export default function useSendFilterChips(isMiniPayRecipient?: boolean): {
   )
   const miniPayTokenIds = isMiniPayRecipient && configTokenIds.length > 0 ? configTokenIds : null
 
-  const filterChips: BooleanFilterChip<TokenBalance>[] = miniPayTokenIds
-    ? [
-        {
-          id: 'minipay',
-          name: 'MiniPay',
-          filterFn: (token: TokenBalance) => miniPayTokenIds.includes(token.tokenId),
-          isSelected: true,
-        },
-      ]
-    : []
+  const filterChips: BooleanFilterChip<TokenBalance>[] = useMemo(
+    () =>
+      miniPayTokenIds
+        ? [
+            {
+              id: 'minipay',
+              name: 'MiniPay',
+              filterFn: (token: TokenBalance) => miniPayTokenIds.includes(token.tokenId),
+              isSelected: true,
+            },
+          ]
+        : [],
+    [miniPayTokenIds]
+  )
 
   return { filterChips, miniPayTokenIds }
 }
