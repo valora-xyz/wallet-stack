@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react-native'
+import { fireEvent, render, waitFor, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -237,5 +237,75 @@ describe('SendEnterAmount', () => {
 
     expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD', { exact: false })
     expect(getByTestId('SendEnterAmount/TokenSelect')).toBeDisabled()
+  })
+
+  describe('MiniPay filter', () => {
+    const miniPayTokenIds = [mockCusdTokenId, mockCeurTokenId]
+
+    beforeEach(() => {
+      jest.mocked(getDynamicConfigParams).mockReturnValue({
+        miniPayTokenIds,
+      })
+    })
+
+    it('should show MiniPay chip pre-selected and only MiniPay tokens when isMiniPayRecipient is true', () => {
+      const { getAllByTestId, getByText } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      expect(getByText('MiniPay')).toBeTruthy()
+
+      const tokenBottomSheet = getAllByTestId('TokenBottomSheet')[0]
+      const tokens = within(tokenBottomSheet).getAllByTestId('TokenBalanceItem')
+      expect(tokens).toHaveLength(2)
+      expect(tokens[0]).toHaveTextContent('cEUR', { exact: false })
+      expect(tokens[1]).toHaveTextContent('cUSD', { exact: false })
+    })
+
+    it('should select default token from MiniPay list', () => {
+      const { getByTestId } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      // cEUR has highest balance (100) among MiniPay tokens, not CELO (which is excluded)
+      expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cEUR', { exact: false })
+    })
+
+    it('should show all tokens when MiniPay chip is toggled off', () => {
+      const { getAllByTestId, getByText } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      fireEvent.press(getByText('MiniPay'))
+
+      const tokenBottomSheet = getAllByTestId('TokenBottomSheet')[0]
+      const tokens = within(tokenBottomSheet).getAllByTestId('TokenBalanceItem')
+      expect(tokens).toHaveLength(3)
+    })
+
+    it('should not show MiniPay chip when isMiniPayRecipient is not set', () => {
+      const { queryByText } = render(
+        <Provider store={store}>
+          <MockedNavigator component={SendEnterAmount} params={params} />
+        </Provider>
+      )
+
+      expect(queryByText('MiniPay')).toBeFalsy()
+    })
   })
 })
