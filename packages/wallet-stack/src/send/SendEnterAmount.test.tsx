@@ -240,7 +240,7 @@ describe('SendEnterAmount', () => {
   })
 
   describe('MiniPay filter', () => {
-    const miniPayTokenIds = [mockCusdTokenId, mockCeurTokenId]
+    const miniPayTokenIds = [mockCusdTokenId, mockUSDCTokenId]
 
     beforeEach(() => {
       jest.mocked(getDynamicConfigParams).mockReturnValue({
@@ -262,9 +262,9 @@ describe('SendEnterAmount', () => {
 
       const tokenBottomSheet = getAllByTestId('TokenBottomSheet')[0]
       const tokens = within(tokenBottomSheet).getAllByTestId('TokenBalanceItem')
-      expect(tokens).toHaveLength(2)
-      expect(tokens[0]).toHaveTextContent('cEUR', { exact: false })
-      expect(tokens[1]).toHaveTextContent('cUSD', { exact: false })
+      // only cUSD visible (USDC is on a different network and filtered by selector)
+      expect(tokens).toHaveLength(1)
+      expect(tokens[0]).toHaveTextContent('cUSD', { exact: false })
     })
 
     it('should select default token from MiniPay list', () => {
@@ -277,8 +277,8 @@ describe('SendEnterAmount', () => {
         </Provider>
       )
 
-      // cEUR has highest balance (100) among MiniPay tokens, not CELO (which is excluded)
-      expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cEUR', { exact: false })
+      // cUSD is the only MiniPay token with balance, not CELO (which is excluded)
+      expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD', { exact: false })
     })
 
     it('should show all tokens when MiniPay chip is toggled off', () => {
@@ -306,6 +306,37 @@ describe('SendEnterAmount', () => {
       )
 
       expect(queryByText('MiniPay')).toBeFalsy()
+    })
+
+    it('should include isMiniPayRecipient in send_amount_continue analytics', async () => {
+      jest.mocked(usePrepareSendTransactions).mockReturnValue({
+        prepareTransactionsResult: mockPrepareTransactionsResultPossible,
+        prepareTransactionLoading: false,
+        refreshPreparedTransactions: jest.fn(),
+        clearPreparedTransactions: jest.fn(),
+        prepareTransactionError: undefined,
+      })
+      const { getByTestId, getByText } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      fireEvent.changeText(getByTestId('SendEnterAmount/TokenAmountInput'), '8')
+
+      await waitFor(() => expect(getByText('review')).not.toBeDisabled())
+      fireEvent.press(getByText('review'))
+
+      await waitFor(() => expect(AppAnalytics.track).toHaveBeenCalledTimes(1))
+      expect(AppAnalytics.track).toHaveBeenCalledWith(
+        SendEvents.send_amount_continue,
+        expect.objectContaining({
+          isMiniPayRecipient: true,
+        })
+      )
     })
   })
 })
