@@ -11,6 +11,7 @@ export enum StatsigDynamicConfigs {
   DEMO_MODE_CONFIG = 'demo_mode_config',
   FIAT_CONNECT_CONFIG = 'fiat_connect_config',
   INVITE_REWARDS_CONFIG = 'invite_rewards_config',
+  SEND_CONFIG = 'send_config',
 }
 
 export enum StatsigFeatureGates {
