@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { BooleanFilterChip } from 'src/components/FilterChipsCarousel'
 import { getDynamicConfigParams } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
@@ -24,30 +23,24 @@ export default function useSendFilterChips({
   )
   const miniPayTokenIds = isMiniPayRecipient && configTokenIds.length > 0 ? configTokenIds : null
 
-  const filterChips: BooleanFilterChip<TokenBalance>[] = useMemo(
-    () =>
-      miniPayTokenIds
-        ? [
-            {
-              id: 'minipay',
-              name: 'MiniPay',
-              filterFn: (token: TokenBalance) => miniPayTokenIds.includes(token.tokenId),
-              isSelected: true,
-            },
-          ]
-        : [],
-    [miniPayTokenIds]
-  )
+  const filterChips: BooleanFilterChip<TokenBalance>[] = miniPayTokenIds
+    ? [
+        {
+          id: 'minipay',
+          name: 'MiniPay',
+          filterFn: (token: TokenBalance) => miniPayTokenIds.includes(token.tokenId),
+          isSelected: true,
+        },
+      ]
+    : []
 
-  const defaultToken = useMemo(() => {
-    const eligibleTokens = miniPayTokenIds
-      ? tokens.filter((token) => miniPayTokenIds.includes(token.tokenId))
-      : tokens
-    const defaultToken = eligibleTokens.find((token) => token.tokenId === defaultTokenIdOverride)
-    const lastUsedToken = eligibleTokens.find((token) => token.tokenId === lastUsedTokenId)
-
-    return defaultToken ?? lastUsedToken ?? eligibleTokens[0]
-  }, [tokens, miniPayTokenIds, defaultTokenIdOverride, lastUsedTokenId])
+  const eligibleTokens = miniPayTokenIds
+    ? tokens.filter((token) => miniPayTokenIds.includes(token.tokenId))
+    : tokens
+  const defaultToken =
+    eligibleTokens.find((token) => token.tokenId === defaultTokenIdOverride) ??
+    eligibleTokens.find((token) => token.tokenId === lastUsedTokenId) ??
+    eligibleTokens[0]
 
   return { filterChips, defaultToken }
 }
