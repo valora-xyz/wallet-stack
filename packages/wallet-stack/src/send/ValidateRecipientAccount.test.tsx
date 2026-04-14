@@ -176,6 +176,7 @@ describe('ValidateRecipientAccount', () => {
         ...mockInvitableRecipient2,
         address: mockAccountInvite,
       },
+      isMiniPayRecipient: false,
     })
   })
 })

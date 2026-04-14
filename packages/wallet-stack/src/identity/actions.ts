@@ -1,6 +1,7 @@
 import {
   AddressToDisplayNameType,
   AddressToE164NumberType,
+  AddressToVerifiedByType,
   AddressValidationType,
   E164NumberToAddressType,
 } from 'src/identity/reducer'
@@ -31,6 +32,7 @@ export interface UpdateE164PhoneNumberAddressesAction {
   type: Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES
   e164NumberToAddress: E164NumberToAddressType
   addressToE164Number: AddressToE164NumberType
+  addressToVerifiedBy: AddressToVerifiedByType
 }
 
 export interface UpdateKnownAddressesAction {
@@ -162,11 +164,13 @@ export const endFetchingAddresses = (
 
 export const updateE164PhoneNumberAddresses = (
   e164NumberToAddress: E164NumberToAddressType,
-  addressToE164Number: AddressToE164NumberType
+  addressToE164Number: AddressToE164NumberType,
+  addressToVerifiedBy: AddressToVerifiedByType = {}
 ): UpdateE164PhoneNumberAddressesAction => ({
   type: Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES,
   e164NumberToAddress,
   addressToE164Number,
+  addressToVerifiedBy,
 })
 
 export const updateKnownAddresses = (

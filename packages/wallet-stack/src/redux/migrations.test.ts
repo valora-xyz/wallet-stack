@@ -67,6 +67,7 @@ import {
   v235Schema,
   v251Schema,
   v253Schema,
+  v254Schema,
   v28Schema,
   v2Schema,
   v35Schema,
@@ -1936,5 +1937,13 @@ describe('Redux persist migrations', () => {
     const expectedSchema: any = _.cloneDeep(oldSchema)
     expectedSchema.home = _.omit(oldSchema.home, 'hasSeenDivviBottomSheet')
     expect(migratedSchema).toStrictEqual(expectedSchema)
+  })
+
+  it('works from 254 to 255', () => {
+    const oldSchema = {
+      ...v254Schema,
+    }
+    const migratedSchema = migrations[255](oldSchema)
+    expect(migratedSchema.identity.addressToVerifiedBy).toStrictEqual({})
   })
 })

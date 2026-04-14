@@ -4,6 +4,7 @@ export const e164NumberToAddressSelector = (state: RootState) => state.identity.
 export const addressToVerificationStatusSelector = (state: RootState) =>
   state.identity.addressToVerificationStatus
 export const addressToE164NumberSelector = (state: RootState) => state.identity.addressToE164Number
+export const addressToVerifiedBySelector = (state: RootState) => state.identity.addressToVerifiedBy
 export const secureSendPhoneNumberMappingSelector = (state: RootState) =>
   state.identity.secureSendPhoneNumberMapping
 export const importContactsProgressSelector = (state: RootState) =>
