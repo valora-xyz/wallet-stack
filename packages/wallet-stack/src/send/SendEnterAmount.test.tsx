@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react-native'
+import { fireEvent, render, waitFor, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -10,6 +10,7 @@ import { Screens } from 'src/navigator/Screens'
 import { RecipientType } from 'src/recipients/recipient'
 import SendEnterAmount from 'src/send/SendEnterAmount'
 import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
+import { getDynamicConfigParams } from 'src/statsig'
 import { getSerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
 import { PreparedTransactionsPossible } from 'src/viem/prepareTransactions'
 import MockedNavigator from 'test/MockedNavigator'
@@ -28,6 +29,10 @@ import {
 
 jest.mock('src/statsig')
 jest.mock('src/send/usePrepareSendTransactions')
+
+jest.mocked(getDynamicConfigParams).mockReturnValue({
+  miniPayTokenIds: [],
+})
 
 const mockPrepareTransactionsResultPossible: PreparedTransactionsPossible = {
   type: 'possible',
@@ -164,6 +169,7 @@ describe('SendEnterAmount', () => {
       underlyingTokenAddress: mockCeloAddress,
       underlyingTokenSymbol: 'CELO',
       amountEnteredIn: 'token',
+      isMiniPayRecipient: false,
     })
     expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmation, {
       origin: params.origin,
@@ -231,5 +237,106 @@ describe('SendEnterAmount', () => {
 
     expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD', { exact: false })
     expect(getByTestId('SendEnterAmount/TokenSelect')).toBeDisabled()
+  })
+
+  describe('MiniPay filter', () => {
+    const miniPayTokenIds = [mockCusdTokenId, mockUSDCTokenId]
+
+    beforeEach(() => {
+      jest.mocked(getDynamicConfigParams).mockReturnValue({
+        miniPayTokenIds,
+      })
+    })
+
+    it('should show MiniPay chip pre-selected and only MiniPay tokens when isMiniPayRecipient is true', () => {
+      const { getAllByTestId, getByText } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      expect(getByText('MiniPay')).toBeTruthy()
+
+      const tokenBottomSheet = getAllByTestId('TokenBottomSheet')[0]
+      const tokens = within(tokenBottomSheet).getAllByTestId('TokenBalanceItem')
+      // only cUSD visible (USDC is on a different network and filtered by selector)
+      expect(tokens).toHaveLength(1)
+      expect(tokens[0]).toHaveTextContent('cUSD', { exact: false })
+    })
+
+    it('should select default token from MiniPay list', () => {
+      const { getByTestId } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      // cUSD is the only MiniPay token with balance, not CELO (which is excluded)
+      expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD', { exact: false })
+    })
+
+    it('should show all tokens when MiniPay chip is toggled off', () => {
+      const { getAllByTestId, getByText } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      fireEvent.press(getByText('MiniPay'))
+
+      const tokenBottomSheet = getAllByTestId('TokenBottomSheet')[0]
+      const tokens = within(tokenBottomSheet).getAllByTestId('TokenBalanceItem')
+      expect(tokens).toHaveLength(3)
+    })
+
+    it('should not show MiniPay chip when isMiniPayRecipient is not set', () => {
+      const { queryByText } = render(
+        <Provider store={store}>
+          <MockedNavigator component={SendEnterAmount} params={params} />
+        </Provider>
+      )
+
+      expect(queryByText('MiniPay')).toBeFalsy()
+    })
+
+    it('should include isMiniPayRecipient in send_amount_continue analytics', async () => {
+      jest.mocked(usePrepareSendTransactions).mockReturnValue({
+        prepareTransactionsResult: mockPrepareTransactionsResultPossible,
+        prepareTransactionLoading: false,
+        refreshPreparedTransactions: jest.fn(),
+        clearPreparedTransactions: jest.fn(),
+        prepareTransactionError: undefined,
+      })
+      const { getByTestId, getByText } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      fireEvent.changeText(getByTestId('SendEnterAmount/TokenAmountInput'), '8')
+
+      await waitFor(() => expect(getByText('review')).not.toBeDisabled())
+      fireEvent.press(getByText('review'))
+
+      await waitFor(() => expect(AppAnalytics.track).toHaveBeenCalledTimes(1))
+      expect(AppAnalytics.track).toHaveBeenCalledWith(
+        SendEvents.send_amount_continue,
+        expect.objectContaining({
+          isMiniPayRecipient: true,
+        })
+      )
+    })
   })
 })

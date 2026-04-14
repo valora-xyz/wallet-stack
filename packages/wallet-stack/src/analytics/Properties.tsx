@@ -493,6 +493,7 @@ interface SendEventsProperties {
     amountEnteredIn: AmountEnteredIn
     tokenId: string | null
     networkId: string | null
+    isMiniPayRecipient: boolean
   }
   [SendEvents.send_confirm_back]: undefined
   [SendEvents.send_confirm_send]:

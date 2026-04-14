@@ -10,6 +10,7 @@ import BackButton from 'src/components/BackButton'
 import { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
 import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
+import { FilterChip } from 'src/components/FilterChipsCarousel'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
 import { ReviewDetailsItem } from 'src/components/ReviewTransaction'
@@ -66,6 +67,7 @@ interface Props {
   children?: React.ReactNode
   ProceedComponent: ComponentType<ProceedComponentProps>
   disableBalanceCheck?: boolean
+  filterChips?: FilterChip<TokenBalance>[]
 }
 
 export const SendProceed = ({
@@ -107,6 +109,7 @@ export default function EnterAmount({
   children,
   ProceedComponent,
   disableBalanceCheck = false,
+  filterChips,
 }: Props) {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
@@ -325,6 +328,7 @@ export default function EnterAmount({
         tokens={tokens}
         title={t('sendEnterAmountScreen.selectToken')}
         titleStyle={styles.title}
+        filterChips={filterChips}
       />
     </SafeAreaView>
   )
