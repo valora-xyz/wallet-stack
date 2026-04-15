@@ -2269,7 +2269,8 @@
     "insufficientBalanceWarning": {
       "title": "You need more {{tokenSymbol}}",
       "description": "Insufficient {{tokenSymbol}} balance. Try a smaller amount or choose a different asset."
-    }
+    },
+    "miniPayFilterChip": "MiniPay supported"
   },
   "jumpstartIntro": {
     "title": "Share crypto like a text",
