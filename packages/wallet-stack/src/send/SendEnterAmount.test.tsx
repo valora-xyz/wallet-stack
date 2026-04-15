@@ -258,7 +258,7 @@ describe('SendEnterAmount', () => {
         </Provider>
       )
 
-      expect(getByText('MiniPay')).toBeTruthy()
+      expect(getByText('sendEnterAmountScreen.miniPayFilterChip')).toBeTruthy()
 
       const tokenBottomSheet = getAllByTestId('TokenBottomSheet')[0]
       const tokens = within(tokenBottomSheet).getAllByTestId('TokenBalanceItem')
@@ -291,7 +291,7 @@ describe('SendEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.press(getByText('MiniPay'))
+      fireEvent.press(getByText('sendEnterAmountScreen.miniPayFilterChip'))
 
       const tokenBottomSheet = getAllByTestId('TokenBottomSheet')[0]
       const tokens = within(tokenBottomSheet).getAllByTestId('TokenBalanceItem')
@@ -305,7 +305,7 @@ describe('SendEnterAmount', () => {
         </Provider>
       )
 
-      expect(queryByText('MiniPay')).toBeFalsy()
+      expect(queryByText('sendEnterAmountScreen.miniPayFilterChip')).toBeFalsy()
     })
 
     it('should include isMiniPayRecipient in send_amount_continue analytics', async () => {
