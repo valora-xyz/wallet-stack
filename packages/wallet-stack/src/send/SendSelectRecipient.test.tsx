@@ -367,8 +367,16 @@ describe('SendSelectRecipient', () => {
       .mocked(getRecipientVerificationStatus)
       .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)
 
-    let resolveShare: (value: { success: boolean; dismissedAction: boolean }) => void = () => {}
-    const sharePromise = new Promise<{ success: boolean; dismissedAction: boolean }>((resolve) => {
+    let resolveShare!: (value: {
+      success: boolean
+      dismissedAction: boolean
+      message: string
+    }) => void
+    const sharePromise = new Promise<{
+      success: boolean
+      dismissedAction: boolean
+      message: string
+    }>((resolve) => {
       resolveShare = resolve
     })
     jest.mocked(Share.open).mockReturnValueOnce(sharePromise)
@@ -410,7 +418,7 @@ describe('SendSelectRecipient', () => {
     expect(navigate).not.toHaveBeenCalled()
 
     await act(async () => {
-      resolveShare({ success: true, dismissedAction: false })
+      resolveShare({ success: true, dismissedAction: false, message: '' })
       await sharePromise
     })
   })
