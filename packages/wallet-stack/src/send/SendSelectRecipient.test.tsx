@@ -2,6 +2,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
+import Share from 'react-native-share'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
@@ -349,6 +350,69 @@ describe('SendSelectRecipient', () => {
     expect(store.getActions()).toEqual([fetchAddressesAndValidate(mockE164Number2Invite)])
     expect(queryByTestId('UnknownAddressInfo')).toBeFalsy()
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
+  })
+
+  it('opens the platform share sheet and tracks the press analytic before awaiting when inviting an unverified phone number', async () => {
+    const shareUrl = 'https://example.test/invite'
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      experimental: {
+        phoneNumberVerification: true,
+        inviteFriends: { shareUrl },
+      },
+    })
+    jest
+      .mocked(getRecipientVerificationStatus)
+      .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)
+
+    let resolveShare: (value: { success: boolean; dismissedAction: boolean }) => void = () => {}
+    const sharePromise = new Promise<{ success: boolean; dismissedAction: boolean }>((resolve) => {
+      resolveShare = resolve
+    })
+    jest.mocked(Share.open).mockReturnValueOnce(sharePromise)
+
+    const store = createMockStore(storeWithPhoneVerified)
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <SendSelectRecipient {...mockScreenProps({})} />
+      </Provider>
+    )
+
+    const searchInput = getByTestId('SendSelectRecipientSearchInput')
+    await act(() => {
+      fireEvent.changeText(searchInput, mockE164Number2Invite)
+    })
+    await act(() => {
+      fireEvent.press(getByTestId('RecipientItem'))
+    })
+
+    const button = getByTestId('SendOrInviteButton')
+    expect(button).toHaveTextContent('sendSelectRecipient.buttons.invite', { exact: false })
+
+    await act(() => {
+      fireEvent.press(button)
+    })
+
+    // Analytics fires synchronously on tap, before the share sheet resolves
+    expect(AppAnalytics.track).toHaveBeenCalledWith(SendEvents.send_select_recipient_invite_press, {
+      recipientType: RecipientType.PhoneNumber,
+    })
+    expect(Share.open).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining(shareUrl),
+        url: shareUrl,
+        failOnCancel: false,
+      })
+    )
+    expect(navigate).not.toHaveBeenCalled()
+
+    await act(async () => {
+      resolveShare({ success: true, dismissedAction: false })
+      await sharePromise
+    })
   })
 
   it('shows unknown address info text when searching for unknown address after making address verification request', async () => {
