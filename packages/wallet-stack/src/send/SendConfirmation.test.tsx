@@ -171,6 +171,34 @@ describe('SendConfirmation', () => {
     expect(getByTestId('ConfirmButton')).toHaveTextContent('send', { exact: false })
   })
 
+  it('shows the unknown address warning when the recipient address is not a known app user', () => {
+    const { getByTestId } = renderScreen(mockSendConfirmationProps, {
+      identity: {
+        addressToVerificationStatus: { [mockAccount]: false },
+      },
+    })
+
+    expect(getByTestId('UnknownAddressInfo')).toBeTruthy()
+  })
+
+  it('does not show the unknown address warning when the recipient address is verified', () => {
+    const { queryByTestId } = renderScreen(mockSendConfirmationProps, {
+      identity: {
+        addressToVerificationStatus: { [mockAccount]: true },
+      },
+    })
+
+    expect(queryByTestId('UnknownAddressInfo')).toBeNull()
+  })
+
+  it('does not show the unknown address warning when the address has not been looked up yet', () => {
+    const { queryByTestId } = renderScreen(mockSendConfirmationProps, {
+      identity: { addressToVerificationStatus: {} },
+    })
+
+    expect(queryByTestId('UnknownAddressInfo')).toBeNull()
+  })
+
   it('does not prepare a transaction on load by default', () => {
     renderScreen(mockSendConfirmationProps)
     expect(mockUsePrepareSendTransactionsOutput.clearPreparedTransactions).not.toHaveBeenCalled()

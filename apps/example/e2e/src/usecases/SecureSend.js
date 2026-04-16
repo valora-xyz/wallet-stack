@@ -85,8 +85,6 @@ export default SecureSend = () => {
       )
       await element(by.id('RecipientItem')).tap()
 
-      await waitForElementById('SendOrInviteButton', { timeout: 30_000, tap: true })
-
       // Use the last digits of the account to confirm the sender.
       await waitForElementById('confirmAccountButton', { timeout: 30_000, tap: true })
       for (let index = 0; index < 4; index++) {
