@@ -95,7 +95,7 @@ export default function SendConfirmation({ route: { params } }: Props) {
   const showUnknownAddressInfo =
     recipient.recipientType === RecipientType.Address &&
     !!recipient.address &&
-    addressToVerificationStatus[recipient.address.toLowerCase()] === false
+    addressToVerificationStatus[recipient.address] === false
 
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, tokenInfo!.networkId))
   const {
