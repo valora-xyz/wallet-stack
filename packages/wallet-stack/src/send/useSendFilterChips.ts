@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { BooleanFilterChip } from 'src/components/FilterChipsCarousel'
 import { getDynamicConfigParams } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
@@ -18,6 +19,8 @@ export default function useSendFilterChips({
   filterChips: BooleanFilterChip<TokenBalance>[]
   defaultToken: TokenBalance | undefined
 } {
+  const { t } = useTranslation()
+
   const { miniPayTokenIds: configTokenIds } = getDynamicConfigParams(
     DynamicConfigs[StatsigDynamicConfigs.SEND_CONFIG]
   )
@@ -27,7 +30,7 @@ export default function useSendFilterChips({
     ? [
         {
           id: 'minipay',
-          name: 'MiniPay',
+          name: t('sendEnterAmountScreen.miniPayFilterChip'),
           filterFn: (token: TokenBalance) => miniPayTokenIds.includes(token.tokenId),
           isSelected: true,
         },
