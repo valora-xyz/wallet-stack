@@ -8,7 +8,6 @@ import {
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { Recipient, RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import Logger from 'src/utils/Logger'
 
 const useFetchRecipientVerificationStatus = () => {
   const [recipient, setRecipient] = useState<Recipient | null>(null)
@@ -27,11 +26,6 @@ const useFetchRecipientVerificationStatus = () => {
   }
 
   const setSelectedRecipient = (selectedRecipient: Recipient) => {
-    Logger.info('useFetchRecipientVerificationStatus/setSelectedRecipient', 'called', {
-      recipientType: selectedRecipient.recipientType,
-      e164: selectedRecipient.e164PhoneNumber,
-      address: selectedRecipient.address,
-    })
     setRecipient(selectedRecipient)
     setRecipientVerificationStatus(RecipientVerificationStatus.UNKNOWN)
 
@@ -56,21 +50,9 @@ const useFetchRecipientVerificationStatus = () => {
     if (recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN) {
       // e164NumberToAddress is updated after a successful phone number lookup,
       // addressToVerificationStatus is updated after a successful address lookup
-      const resolved = getRecipientVerificationStatus(
-        recipient,
-        e164NumberToAddress,
-        addressToVerificationStatus
+      setRecipientVerificationStatus(
+        getRecipientVerificationStatus(recipient, e164NumberToAddress, addressToVerificationStatus)
       )
-      Logger.info('useFetchRecipientVerificationStatus/reconcile', 'recomputing status', {
-        recipientType: recipient.recipientType,
-        e164: recipient.e164PhoneNumber,
-        e164ToAddressEntry:
-          recipient.e164PhoneNumber !== undefined
-            ? e164NumberToAddress[recipient.e164PhoneNumber]
-            : undefined,
-        resolved,
-      })
-      setRecipientVerificationStatus(resolved)
     }
   }, [e164NumberToAddress, addressToVerificationStatus, recipient, recipientVerificationStatus])
 
