@@ -208,7 +208,7 @@ function SendSelectRecipient({ route }: Props) {
 
     if (isUnverifiedPhone) {
       if (shareUrl) {
-        navigate(Screens.SendInvite, { recipient })
+        navigate(Screens.SendInvite, { recipient, shareUrl })
       }
       // Without shareUrl there's no invite flow and no send flow for an
       // unverified phone — stay on the picker so the user can pick someone else.

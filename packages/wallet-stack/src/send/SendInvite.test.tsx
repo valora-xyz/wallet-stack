@@ -6,7 +6,6 @@ import { showError } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
-import { getAppConfig } from 'src/appConfig'
 import { Screens } from 'src/navigator/Screens'
 import { RecipientType } from 'src/recipients/recipient'
 import SendInvite from 'src/send/SendInvite'
@@ -16,20 +15,14 @@ import { mockInvitableRecipient3 } from 'test/values'
 const shareUrl = 'https://example.test/invite'
 
 const mockScreenProps = () =>
-  getMockStackScreenProps(Screens.SendInvite, { recipient: mockInvitableRecipient3 })
+  getMockStackScreenProps(Screens.SendInvite, {
+    recipient: mockInvitableRecipient3,
+    shareUrl,
+  })
 
 describe('SendInvite', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    jest.mocked(getAppConfig).mockReturnValue({
-      displayName: 'Test App',
-      deepLinkUrlScheme: 'testapp',
-      registryName: 'test',
-      experimental: {
-        phoneNumberVerification: true,
-        inviteFriends: { shareUrl },
-      },
-    })
   })
 
   it('opens the share sheet, tracks the press analytic, and stays on the screen after the sheet closes', async () => {
@@ -98,6 +91,7 @@ describe('SendInvite', () => {
     }
     const screenProps = getMockStackScreenProps(Screens.SendInvite, {
       recipient: namelessRecipient,
+      shareUrl,
     })
     const store = createMockStore({})
     const { getByText } = render(

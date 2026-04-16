@@ -8,7 +8,6 @@ import { showError } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
-import { getAppConfig } from 'src/appConfig'
 import Button, { BtnSizes } from 'src/components/Button'
 import { inviteModal } from 'src/images/Images'
 import { headerWithBackButton } from 'src/navigator/Headers'
@@ -25,16 +24,10 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SendInvite>
 function SendInvite({ route }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { recipient } = route.params
-  const shareUrl = getAppConfig().experimental?.inviteFriends?.shareUrl ?? null
+  const { recipient, shareUrl } = route.params
   const contact = getDisplayName(recipient, t)
 
   const handleShareInvite = async () => {
-    if (!shareUrl) {
-      Logger.warn('SendInvite', 'No share URL configured for invite')
-      return
-    }
-
     AppAnalytics.track(SendEvents.send_select_recipient_invite_press, {
       recipientType: recipient.recipientType,
     })

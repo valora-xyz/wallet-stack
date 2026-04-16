@@ -366,6 +366,7 @@ describe('SendSelectRecipient', () => {
         e164PhoneNumber: mockE164Number2Invite,
         recipientType: RecipientType.PhoneNumber,
       }),
+      shareUrl,
     })
 
     // Search text is preserved so the user can return to the same picker state.
