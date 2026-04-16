@@ -216,10 +216,18 @@ export function* fetchAddressesAndValidateSaga({
       )
     )
     yield* put(endFetchingAddresses(e164Number, true))
+    Logger.info(TAG + '@fetchAddressesAndValidate', 'success', {
+      e164Number,
+      stored: e164NumberToAddressUpdates[e164Number],
+      walletAddressesCount: walletAddresses.length,
+    })
     AppAnalytics.track(IdentityEvents.phone_number_lookup_complete)
   } catch (err) {
     const error = ensureError(err)
-    Logger.debug(TAG + '@fetchAddressesAndValidate', `Error fetching addresses`, error)
+    Logger.info(TAG + '@fetchAddressesAndValidate', 'error path', {
+      e164Number,
+      errorMessage: error.message,
+    })
     yield* put(showErrorOrFallback(error, ErrorMessages.ADDRESS_LOOKUP_FAILURE))
     yield* put(endFetchingAddresses(e164Number, false))
     AppAnalytics.track(IdentityEvents.phone_number_lookup_error, {

@@ -197,6 +197,13 @@ function SendSelectRecipient({ route }: Props) {
     useFetchRecipientVerificationStatus()
 
   useEffect(() => {
+    Logger.info('SendSelectRecipient/autoNav', 'effect fired', {
+      recipientType: recipient?.recipientType,
+      e164: recipient?.e164PhoneNumber,
+      address: recipient?.address,
+      status: recipientVerificationStatus,
+      hasShareUrl: !!shareUrl,
+    })
     // Auto-navigate once verification resolves. The picker stays mounted so the
     // user's search text and selection are preserved when they come back.
     if (!recipient || recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN) {
@@ -209,6 +216,7 @@ function SendSelectRecipient({ route }: Props) {
 
     if (isUnverifiedPhone) {
       if (shareUrl) {
+        Logger.info('SendSelectRecipient/autoNav', 'navigating to SendInvite')
         navigate(Screens.SendInvite, { recipient, shareUrl })
       } else {
         Logger.warn('SendSelectRecipient', 'No share URL found for invite')
@@ -216,6 +224,9 @@ function SendSelectRecipient({ route }: Props) {
       return
     }
 
+    Logger.info('SendSelectRecipient/autoNav', 'navigating via nextScreen', {
+      status: recipientVerificationStatus,
+    })
     AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
       recipientType: recipient.recipientType,
     })
