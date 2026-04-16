@@ -261,6 +261,7 @@ export type StackParamList = {
       fiat: number
     }
   }
+  [Screens.SendInvite]: { recipient: Recipient }
   [Screens.SendSelectRecipient]:
     | {
         forceTokenId?: boolean
