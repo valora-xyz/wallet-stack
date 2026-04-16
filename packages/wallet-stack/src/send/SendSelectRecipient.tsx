@@ -39,6 +39,7 @@ import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
+import Logger from 'src/utils/Logger'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendSelectRecipient>
 
@@ -209,9 +210,9 @@ function SendSelectRecipient({ route }: Props) {
     if (isUnverifiedPhone) {
       if (shareUrl) {
         navigate(Screens.SendInvite, { recipient, shareUrl })
+      } else {
+        Logger.warn('SendSelectRecipient', 'No share URL found for invite')
       }
-      // Without shareUrl there's no invite flow and no send flow for an
-      // unverified phone — stay on the picker so the user can pick someone else.
       return
     }
 
