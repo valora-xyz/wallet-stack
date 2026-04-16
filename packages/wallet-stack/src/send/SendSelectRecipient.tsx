@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import { getFontScaleSync } from 'react-native-device-info'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Share, { ShareSingleOptions, Social } from 'react-native-share'
+import Share from 'react-native-share'
 import { isAddressFormat } from 'src/account/utils'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
@@ -326,21 +326,23 @@ function SendSelectRecipient({ route }: Props) {
     // Invites
     if (shouldInviteRecipient) {
       if (!shareUrl) {
-        Logger.warn('SendSelectRecipient', 'No share URL found for invite with SMS')
+        Logger.warn('SendSelectRecipient', 'No share URL found for invite')
         return
       }
-
-      const shareOptions: ShareSingleOptions = {
-        social: Social.Sms,
-        recipient: recipient.e164PhoneNumber,
-        message: t('inviteWithSmsMessage.shareMessage', { shareUrl }),
-      }
-
-      await Share.shareSingle(shareOptions)
 
       AppAnalytics.track(SendEvents.send_select_recipient_invite_press, {
         recipientType: recipient.recipientType,
       })
+
+      try {
+        await Share.open({
+          message: t('inviteWithSmsMessage.shareMessage', { shareUrl }),
+          url: shareUrl,
+          failOnCancel: false,
+        })
+      } catch (error) {
+        Logger.warn('SendSelectRecipient', 'Share sheet failed', error)
+      }
 
       return
     }
