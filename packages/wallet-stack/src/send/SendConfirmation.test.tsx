@@ -174,7 +174,7 @@ describe('SendConfirmation', () => {
   it('shows the unknown address warning when the recipient address is not a known app user', () => {
     const { getByTestId } = renderScreen(mockSendConfirmationProps, {
       identity: {
-        addressToVerificationStatus: { [mockAccount.toLowerCase()]: false },
+        addressToVerificationStatus: { [mockAccount]: false },
       },
     })
 
@@ -184,7 +184,7 @@ describe('SendConfirmation', () => {
   it('does not show the unknown address warning when the recipient address is verified', () => {
     const { queryByTestId } = renderScreen(mockSendConfirmationProps, {
       identity: {
-        addressToVerificationStatus: { [mockAccount.toLowerCase()]: true },
+        addressToVerificationStatus: { [mockAccount]: true },
       },
     })
 
