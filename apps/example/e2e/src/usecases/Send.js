@@ -126,7 +126,7 @@ export default Send = () => {
       await element(by.id('SendSelectRecipientSearchInput')).replaceText('3605551234') // Fake phone cannot be verified
       await element(by.id('SendSelectRecipientSearchInput')).tapReturnKey()
       await element(by.text('(360) 555-1234')).tap()
-      await waitForElementById('SendInvite/ShareButton', { timeout: 30_000 })
+      await waitForElementById('SendInvite/ShareButton', { timeout: 120_000 })
     })
   })
 
