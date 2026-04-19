@@ -1,40 +1,18 @@
 import * as RNFS from '@valora/react-native-fs'
 import { useMemo } from 'react'
 import Share from 'react-native-share'
-import { showError, showMessage } from 'src/alert/actions'
+import { showError } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
-import { QrScreenEvents, SendEvents } from 'src/analytics/Events'
-import {
-  HooksEnablePreviewOrigin,
-  SendOrigin,
-  WalletConnectPairingOrigin,
-} from 'src/analytics/types'
+import { QrScreenEvents } from 'src/analytics/Events'
+import { HooksEnablePreviewOrigin, WalletConnectPairingOrigin } from 'src/analytics/types'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
-import { validateRecipientAddressSuccess } from 'src/identity/actions'
-import { E164NumberToAddressType } from 'src/identity/reducer'
-import { getSecureSendAddress } from 'src/identity/secureSend'
-import {
-  e164NumberToAddressSelector,
-  secureSendPhoneNumberMappingSelector,
-} from 'src/identity/selectors'
-import { navigate } from 'src/navigator/NavigationService'
-import { Screens } from 'src/navigator/Screens'
 import { handleEnableHooksPreviewDeepLink } from 'src/positions/saga'
 import { allowHooksPreviewSelector } from 'src/positions/selectors'
 import { UriData, uriDataFromUrl } from 'src/qrcode/schema'
-import {
-  Recipient,
-  RecipientInfo,
-  getRecipientFromAddress,
-  recipientHasNumber,
-} from 'src/recipients/recipient'
+import { RecipientInfo, getRecipientFromAddress } from 'src/recipients/recipient'
 import { recipientInfoSelector } from 'src/recipients/reducer'
-import {
-  HandleQRCodeDetectedAction,
-  HandleQRCodeDetectedSecureSendAction,
-  SVG,
-} from 'src/send/actions'
+import { HandleQRCodeDetectedAction, SVG } from 'src/send/actions'
 import { QrCode } from 'src/send/types'
 import { handleSendPaymentData } from 'src/send/utils'
 import Logger from 'src/utils/Logger'
@@ -83,48 +61,6 @@ export async function shareSVGImage(svg: SVG) {
     type: 'image/png',
     failOnCancel: false, // don't throw if user cancels share
   })
-}
-
-export function* handleSecureSend(
-  address: string,
-  e164NumberToAddress: E164NumberToAddressType,
-  recipient: Recipient,
-  requesterAddress?: string
-) {
-  if (!recipientHasNumber(recipient)) {
-    throw Error('Invalid recipient type for Secure Send, has no mobile number')
-  }
-
-  const userScannedAddress = address.toLowerCase()
-  const { e164PhoneNumber } = recipient
-  const possibleReceivingAddresses = e164NumberToAddress[e164PhoneNumber]
-  // This should never happen. Secure Send is triggered when there are
-  // multiple addresses for a given phone number
-  if (!possibleReceivingAddresses) {
-    throw Error("No addresses associated with recipient's phone number")
-  }
-
-  // Need to add the requester address to the option set in the event
-  // a request is coming from an unverified account
-  if (requesterAddress && !possibleReceivingAddresses.includes(requesterAddress)) {
-    possibleReceivingAddresses.push(requesterAddress)
-  }
-  const possibleReceivingAddressesFormatted = possibleReceivingAddresses.map((addr) =>
-    addr.toLowerCase()
-  )
-  if (!possibleReceivingAddressesFormatted.includes(userScannedAddress)) {
-    const error = ErrorMessages.QR_FAILED_INVALID_RECIPIENT
-    AppAnalytics.track(SendEvents.send_secure_incorrect, {
-      confirmByScan: true,
-      error,
-    })
-    yield* put(showMessage(error))
-    return false
-  }
-
-  AppAnalytics.track(SendEvents.send_secure_complete, { confirmByScan: true })
-  yield* put(validateRecipientAddressSuccess(e164PhoneNumber, userScannedAddress))
-  return true
 }
 
 function* extractQRAddressData(qrCode: QrCode) {
@@ -184,47 +120,3 @@ export function* handleQRCodeDefault({
   })
 }
 
-export function* handleQRCodeSecureSend({
-  qrCode,
-  requesterAddress,
-  recipient,
-  forceTokenId,
-  defaultTokenIdOverride,
-}: HandleQRCodeDetectedSecureSendAction) {
-  const e164NumberToAddress = yield* select(e164NumberToAddressSelector)
-  AppAnalytics.track(QrScreenEvents.qr_scanned, qrCode)
-
-  const qrData = yield* call(extractQRAddressData, qrCode)
-  if (!qrData) {
-    return
-  }
-
-  const success: boolean = yield* call(
-    handleSecureSend,
-    qrData.address,
-    e164NumberToAddress,
-    recipient,
-    requesterAddress
-  )
-  if (!success) {
-    return
-  }
-
-  const secureSendPhoneNumberMapping = yield* select(secureSendPhoneNumberMappingSelector)
-  const address = getSecureSendAddress(recipient, secureSendPhoneNumberMapping)
-  if (!address) {
-    // should never happen b/c if handleSecureSend succeeds then address should be there
-    Logger.error(TAG, `No secure send address found for recipient ${recipient}`)
-    return
-  }
-  navigate(Screens.SendEnterAmount, {
-    origin: SendOrigin.AppSendFlow,
-    recipient: {
-      ...recipient,
-      address,
-    },
-    isFromScan: true,
-    forceTokenId,
-    defaultTokenIdOverride,
-  })
-}

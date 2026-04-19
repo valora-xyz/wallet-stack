@@ -2,26 +2,18 @@ import {
   AddressToDisplayNameType,
   AddressToE164NumberType,
   AddressToVerifiedByType,
-  AddressValidationType,
   E164NumberToAddressType,
 } from 'src/identity/reducer'
 import { ImportContactsStatus } from 'src/identity/types'
-import { Recipient } from 'src/recipients/recipient'
-import { type E164Number } from 'src/utils/io'
 
 export enum Actions {
   UPDATE_E164_PHONE_NUMBER_ADDRESSES = 'IDENTITY/UPDATE_E164_PHONE_NUMBER_ADDRESSES',
   UPDATE_KNOWN_ADDRESSES = 'IDENTITY/UPDATE_KNOWN_ADDRESSES',
   FETCH_ADDRESSES_AND_VALIDATION_STATUS = 'IDENTITY/FETCH_ADDRESSES_AND_VALIDATION_STATUS',
-  END_FETCHING_ADDRESSES = 'IDENTITY/END_FETCHING_ADDRESSES',
   IMPORT_CONTACTS = 'IDENTITY/IMPORT_CONTACTS',
   UPDATE_IMPORT_CONTACT_PROGRESS = 'IDENTITY/UPDATE_IMPORT_CONTACT_PROGRESS',
   CANCEL_IMPORT_CONTACTS = 'IDENTITY/CANCEL_IMPORT_CONTACTS',
   END_IMPORT_CONTACTS = 'IDENTITY/END_IMPORT_CONTACTS',
-  VALIDATE_RECIPIENT_ADDRESS = 'IDENTITY/VALIDATE_RECIPIENT_ADDRESS',
-  VALIDATE_RECIPIENT_ADDRESS_SUCCESS = 'IDENTITY/VALIDATE_RECIPIENT_ADDRESS_SUCCESS',
-  VALIDATE_RECIPIENT_ADDRESS_RESET = 'IDENTITY/VALIDATE_RECIPIENT_ADDRESS_RESET',
-  REQUIRE_SECURE_SEND = 'IDENTITY/REQUIRE_SECURE_SEND',
   FETCH_ADDRESS_VERIFICATION_STATUS = 'IDENTITY/FETCH_ADDRESS_VERIFICATION_STATUS',
   ADDRESS_VERIFICATION_STATUS_RECEIVED = 'IDENTITY/ADDRESS_VERIFICATION_STATUS_RECEIVED',
   CONTACTS_SAVED = 'IDENTITY/CONTACTS_SAVED',
@@ -43,13 +35,6 @@ export interface UpdateKnownAddressesAction {
 export interface FetchAddressesAndValidateAction {
   type: Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS
   e164Number: string
-  requesterAddress?: string
-}
-
-export interface EndFetchingAddressesAction {
-  type: Actions.END_FETCHING_ADDRESSES
-  e164Number: string
-  lastFetchSuccessful: boolean
 }
 
 export interface ImportContactsAction {
@@ -66,31 +51,6 @@ export interface UpdateImportContactProgress {
 export interface EndImportContactsAction {
   type: Actions.END_IMPORT_CONTACTS
   success: boolean
-}
-
-export interface ValidateRecipientAddressAction {
-  type: Actions.VALIDATE_RECIPIENT_ADDRESS
-  userInputOfFullAddressOrLastFourDigits: string
-  addressValidationType: AddressValidationType
-  recipient: Recipient
-  requesterAddress?: string
-}
-
-export interface ValidateRecipientAddressSuccessAction {
-  type: Actions.VALIDATE_RECIPIENT_ADDRESS_SUCCESS
-  e164Number: string
-  validatedAddress: string
-}
-
-export interface ValidateRecipientAddressResetAction {
-  type: Actions.VALIDATE_RECIPIENT_ADDRESS_RESET
-  e164Number: string
-}
-
-export interface RequireSecureSendAction {
-  type: Actions.REQUIRE_SECURE_SEND
-  e164Number: E164Number
-  addressValidationType: AddressValidationType
 }
 
 export interface FetchAddressVerificationAction {
@@ -119,24 +79,17 @@ export type ActionTypes =
   | ImportContactsAction
   | UpdateImportContactProgress
   | EndImportContactsAction
-  | ValidateRecipientAddressAction
-  | ValidateRecipientAddressSuccessAction
-  | ValidateRecipientAddressResetAction
-  | RequireSecureSendAction
   | FetchAddressesAndValidateAction
-  | EndFetchingAddressesAction
   | FetchAddressVerificationAction
   | AddressVerificationStatusReceivedAction
   | ContactsSavedAction
   | StoredPasswordRefreshedAction
 
 export const fetchAddressesAndValidate = (
-  e164Number: string,
-  requesterAddress?: string
+  e164Number: string
 ): FetchAddressesAndValidateAction => ({
   type: Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS,
   e164Number,
-  requesterAddress,
 })
 
 export const addressVerificationStatusReceived = (
@@ -151,15 +104,6 @@ export const addressVerificationStatusReceived = (
 export const fetchAddressVerification = (address: string): FetchAddressVerificationAction => ({
   type: Actions.FETCH_ADDRESS_VERIFICATION_STATUS,
   address,
-})
-
-export const endFetchingAddresses = (
-  e164Number: string,
-  lastFetchSuccessful: boolean
-): EndFetchingAddressesAction => ({
-  type: Actions.END_FETCHING_ADDRESSES,
-  e164Number,
-  lastFetchSuccessful,
 })
 
 export const updateE164PhoneNumberAddresses = (
@@ -198,44 +142,6 @@ export const updateImportContactsProgress = (
 export const endImportContacts = (success: boolean): EndImportContactsAction => ({
   type: Actions.END_IMPORT_CONTACTS,
   success,
-})
-
-export const validateRecipientAddress = (
-  userInputOfFullAddressOrLastFourDigits: string,
-  addressValidationType: AddressValidationType,
-  recipient: Recipient,
-  requesterAddress?: string
-): ValidateRecipientAddressAction => ({
-  type: Actions.VALIDATE_RECIPIENT_ADDRESS,
-  userInputOfFullAddressOrLastFourDigits,
-  addressValidationType,
-  recipient,
-  requesterAddress,
-})
-
-export const validateRecipientAddressSuccess = (
-  e164Number: E164Number,
-  validatedAddress: string
-): ValidateRecipientAddressSuccessAction => ({
-  type: Actions.VALIDATE_RECIPIENT_ADDRESS_SUCCESS,
-  e164Number,
-  validatedAddress,
-})
-
-export const validateRecipientAddressReset = (
-  e164Number: E164Number
-): ValidateRecipientAddressResetAction => ({
-  type: Actions.VALIDATE_RECIPIENT_ADDRESS_RESET,
-  e164Number,
-})
-
-export const requireSecureSend = (
-  e164Number: E164Number,
-  addressValidationType: AddressValidationType
-): RequireSecureSendAction => ({
-  type: Actions.REQUIRE_SECURE_SEND,
-  e164Number,
-  addressValidationType,
 })
 
 export const contactsSaved = (hash: string): ContactsSavedAction => ({
