@@ -68,6 +68,7 @@ import {
   v251Schema,
   v253Schema,
   v254Schema,
+  v255Schema,
   v28Schema,
   v2Schema,
   v35Schema,
@@ -1945,5 +1946,17 @@ describe('Redux persist migrations', () => {
     }
     const migratedSchema = migrations[255](oldSchema)
     expect(migratedSchema.identity.addressToVerifiedBy).toStrictEqual({})
+  })
+
+  it('works from 255 to 256', () => {
+    const oldSchema = {
+      ...v255Schema,
+      identity: {
+        ...v255Schema.identity,
+        secureSendPhoneNumberMapping: { '+14155550000': {} },
+      },
+    }
+    const migratedSchema = migrations[256](oldSchema)
+    expect(migratedSchema.identity.secureSendPhoneNumberMapping).toBeUndefined()
   })
 })

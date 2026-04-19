@@ -16,7 +16,6 @@ import {
   contactsSaved,
   fetchAddressVerification,
   fetchAddressesAndValidate,
-  requireSecureSend,
   updateE164PhoneNumberAddresses,
 } from 'src/identity/actions'
 import {
@@ -25,12 +24,9 @@ import {
   fetchAddressesAndValidateSaga,
   saveContacts,
 } from 'src/identity/contactMapping'
-import { AddressValidationType } from 'src/identity/reducer'
 import {
   addressToVerificationStatusSelector,
-  e164NumberToAddressSelector,
   lastSavedContactsHashSelector,
-  secureSendPhoneNumberMappingSelector,
 } from 'src/identity/selectors'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
 import { contactsToRecipients } from 'src/recipients/recipient'
@@ -98,18 +94,13 @@ describe('Fetch Addresses Saga', () => {
     })
 
     it('fetches and caches addresses correctly', async () => {
-      const mockE164NumberToAddress = {
-        [mockE164Number]: [mockAccount.toLowerCase()],
-      }
       const updatedAccount = '0xAbC'
       mockFetch.mockResponseOnce(JSON.stringify({ data: { addresses: [updatedAccount] } }))
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
-          [select(e164NumberToAddressSelector), mockE164NumberToAddress],
           [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
-          [select(secureSendPhoneNumberMappingSelector), {}],
         ])
         .put(updateE164PhoneNumberAddresses({ [mockE164Number]: undefined }, {}))
         .put(
@@ -135,18 +126,13 @@ describe('Fetch Addresses Saga', () => {
     })
 
     it('fetches and caches multiple addresses correctly', async () => {
-      const mockE164NumberToAddress = {
-        [mockE164Number]: [mockAccount.toLowerCase()],
-      }
       const updatedAccounts = ['0xAbC', '0xdef']
       mockFetch.mockResponseOnce(JSON.stringify({ data: { addresses: updatedAccounts } }))
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
-          [select(e164NumberToAddressSelector), mockE164NumberToAddress],
-          [select(walletAddressSelector), mockAccount],
+          [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
-          [select(secureSendPhoneNumberMappingSelector), {}],
         ])
         .put(updateE164PhoneNumberAddresses({ [mockE164Number]: undefined }, {}))
         .put(
@@ -156,14 +142,10 @@ describe('Fetch Addresses Saga', () => {
             {}
           )
         )
-        .put(requireSecureSend(mockE164Number, AddressValidationType.PARTIAL))
         .run()
     })
 
     it('uses verifiedAddresses as source of truth when present', async () => {
-      const mockE164NumberToAddress = {
-        [mockE164Number]: [mockAccount.toLowerCase()],
-      }
       // addresses only contains DB-verified addresses (backward compat),
       // verifiedAddresses contains all (DB + SC) and is the source of truth
       mockFetch.mockResponseOnce(
@@ -180,10 +162,8 @@ describe('Fetch Addresses Saga', () => {
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
-          [select(e164NumberToAddressSelector), mockE164NumberToAddress],
-          [select(walletAddressSelector), mockAccount],
+          [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
-          [select(secureSendPhoneNumberMappingSelector), {}],
         ])
         .put(updateE164PhoneNumberAddresses({ [mockE164Number]: undefined }, {}))
         .put(
@@ -193,20 +173,15 @@ describe('Fetch Addresses Saga', () => {
             { '0xabc': 'valora', '0xdef': 'minipay' }
           )
         )
-        .put(requireSecureSend(mockE164Number, AddressValidationType.PARTIAL))
         .run()
     })
 
     it('handles lookup errors correctly', async () => {
-      const mockE164NumberToAddress = {
-        [mockE164Number]: [mockAccount.toLowerCase()],
-      }
       mockFetch.mockReject()
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
-          [select(e164NumberToAddressSelector), mockE164NumberToAddress],
-          [select(walletAddressSelector), mockAccount],
+          [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
         ])
         .put(showErrorOrFallback(expect.anything(), ErrorMessages.ADDRESS_LOOKUP_FAILURE))

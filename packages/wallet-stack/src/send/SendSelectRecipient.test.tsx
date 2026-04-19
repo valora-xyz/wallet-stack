@@ -8,7 +8,6 @@ import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
 import { getAppConfig } from 'src/appConfig'
 import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
-import { AddressValidationType } from 'src/identity/reducer'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -556,9 +555,6 @@ describe('SendSelectRecipient', () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
-        secureSendPhoneNumberMapping: {
-          [mockE164Number3]: { addressValidationType: AddressValidationType.NONE },
-        },
         e164NumberToAddress: { [mockE164Number3]: [mockAccount3] },
       },
     })
@@ -607,9 +603,6 @@ describe('SendSelectRecipient', () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
-        secureSendPhoneNumberMapping: {
-          [mockE164Number3]: { addressValidationType: AddressValidationType.NONE },
-        },
         e164NumberToAddress: { [mockE164Number3]: [mockAccount3] },
         addressToVerifiedBy: { [mockAccount3]: 'minipay' },
       },
@@ -646,7 +639,7 @@ describe('SendSelectRecipient', () => {
       isMiniPayRecipient: true,
     })
   })
-  it('navigates to secure send flow when phone number recipient with multiple addresses, first time seeing it', async () => {
+  it('navigates to address picker when phone number recipient has multiple verified addresses', async () => {
     jest
       .mocked(getRecipientVerificationStatus)
       .mockReturnValue(RecipientVerificationStatus.VERIFIED)
@@ -654,15 +647,16 @@ describe('SendSelectRecipient', () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
-        secureSendPhoneNumberMapping: {
-          [mockE164Number3]: { addressValidationType: AddressValidationType.PARTIAL },
-        },
         e164NumberToAddress: {
           [mockE164Number3]: [mockAccount2.toLowerCase(), mockAccount3.toLowerCase()],
         },
         addressToE164Number: {
           [mockAccount2.toLowerCase()]: mockE164Number3,
           [mockAccount3.toLowerCase()]: mockE164Number3,
+        },
+        addressToVerifiedBy: {
+          [mockAccount2.toLowerCase()]: 'valora',
+          [mockAccount3.toLowerCase()]: 'minipay',
         },
       },
     })
@@ -689,14 +683,14 @@ describe('SendSelectRecipient', () => {
     expect(AppAnalytics.track).toHaveBeenCalledWith(SendEvents.send_select_recipient_send_press, {
       recipientType: RecipientType.PhoneNumber,
     })
-    expect(navigate).toHaveBeenCalledWith(Screens.ValidateRecipientIntro, {
+    expect(navigate).toHaveBeenCalledWith(Screens.SelectRecipientAddress, {
       defaultTokenIdOverride: undefined,
       forceTokenId: undefined,
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
     })
   })
-  it('navigates to send enter amount when phone number recipient with multiple addresses, already done secure send', async () => {
+  it('navigates to send enter amount when phone number has multiple raw addresses but only one with a verifier', async () => {
     jest
       .mocked(getRecipientVerificationStatus)
       .mockReturnValue(RecipientVerificationStatus.VERIFIED)
@@ -704,18 +698,15 @@ describe('SendSelectRecipient', () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
-        secureSendPhoneNumberMapping: {
-          [mockE164Number3]: {
-            addressValidationType: AddressValidationType.NONE,
-            address: mockAccount3,
-          },
-        },
         e164NumberToAddress: {
           [mockE164Number3]: [mockAccount2.toLowerCase(), mockAccount3.toLowerCase()],
         },
         addressToE164Number: {
           [mockAccount2.toLowerCase()]: mockE164Number3,
           [mockAccount3.toLowerCase()]: mockE164Number3,
+        },
+        addressToVerifiedBy: {
+          [mockAccount3.toLowerCase()]: 'valora',
         },
       },
     })
@@ -739,15 +730,12 @@ describe('SendSelectRecipient', () => {
     await act(() => {
       fireEvent.press(getByTestId('SendOrInviteButton'))
     })
-    expect(AppAnalytics.track).toHaveBeenCalledWith(SendEvents.send_select_recipient_send_press, {
-      recipientType: RecipientType.PhoneNumber,
-    })
     expect(navigate).toHaveBeenCalledWith(Screens.SendEnterAmount, {
       isFromScan: false,
       defaultTokenIdOverride: undefined,
       forceTokenId: undefined,
       recipient: {
-        address: mockAccount3,
+        address: mockAccount3.toLowerCase(),
         displayNumber: '(415) 555-0123',
         e164PhoneNumber: mockE164Number3,
         recipientType: 'PhoneNumber',
@@ -757,7 +745,7 @@ describe('SendSelectRecipient', () => {
     })
   })
   it.each([{ searchAddress: mockAccount2 }, { searchAddress: mockAccount3 }])(
-    'navigates to send enter amount with correct address if a an address is entered which also has a phone number with secure send not done',
+    'navigates to send enter amount with correct address if an address is entered which also maps to a phone number with multiple addresses',
     async ({ searchAddress }) => {
       jest
         .mocked(getRecipientVerificationStatus)
@@ -766,17 +754,16 @@ describe('SendSelectRecipient', () => {
       const store = createMockStore({
         ...storeWithPhoneVerified,
         identity: {
-          secureSendPhoneNumberMapping: {
-            [mockE164Number3]: {
-              addressValidationType: AddressValidationType.PARTIAL,
-            },
-          },
           e164NumberToAddress: {
             [mockE164Number3]: [mockAccount2.toLowerCase(), mockAccount3.toLowerCase()],
           },
           addressToE164Number: {
             [mockAccount2.toLowerCase()]: mockE164Number3,
             [mockAccount3.toLowerCase()]: mockE164Number3,
+          },
+          addressToVerifiedBy: {
+            [mockAccount2.toLowerCase()]: 'valora',
+            [mockAccount3.toLowerCase()]: 'minipay',
           },
         },
       })
@@ -817,73 +804,7 @@ describe('SendSelectRecipient', () => {
           thumbnailPath: undefined,
         },
         origin: SendOrigin.AppSendFlow,
-        isMiniPayRecipient: false,
-      })
-    }
-  )
-  it.each([{ searchAddress: mockAccount2 }, { searchAddress: mockAccount3 }])(
-    'navigates to send enter amount with correct address if a an address is entered which also has a phone number with secure send done with different address',
-    async ({ searchAddress }) => {
-      jest
-        .mocked(getRecipientVerificationStatus)
-        .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
-      const store = createMockStore({
-        ...storeWithPhoneVerified,
-        identity: {
-          secureSendPhoneNumberMapping: {
-            [mockE164Number3]: {
-              addressValidationType: AddressValidationType.NONE,
-              address: mockAccount3,
-            },
-          },
-          e164NumberToAddress: {
-            [mockE164Number3]: [mockAccount2.toLowerCase(), mockAccount3.toLowerCase()],
-          },
-          addressToE164Number: {
-            [mockAccount2.toLowerCase()]: mockE164Number3,
-            [mockAccount3.toLowerCase()]: mockE164Number3,
-          },
-        },
-      })
-
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <SendSelectRecipient {...mockScreenProps({})} />
-        </Provider>
-      )
-      const searchInput = getByTestId('SendSelectRecipientSearchInput')
-
-      await act(() => {
-        fireEvent.changeText(searchInput, searchAddress)
-      })
-      await act(() => {
-        fireEvent.press(getByTestId('RecipientItem'))
-      })
-
-      expect(getByTestId('SendOrInviteButton')).toBeTruthy()
-
-      await act(() => {
-        fireEvent.press(getByTestId('SendOrInviteButton'))
-      })
-      expect(AppAnalytics.track).toHaveBeenCalledWith(SendEvents.send_select_recipient_send_press, {
-        recipientType: RecipientType.Address,
-      })
-      expect(navigate).toHaveBeenCalledWith(Screens.SendEnterAmount, {
-        isFromScan: false,
-        defaultTokenIdOverride: undefined,
-        forceTokenId: undefined,
-        recipient: {
-          address: searchAddress.toLowerCase(),
-          e164PhoneNumber: mockE164Number3,
-          recipientType: RecipientType.Address,
-          contactId: undefined,
-          displayNumber: undefined,
-          name: undefined,
-          thumbnailPath: undefined,
-        },
-        origin: SendOrigin.AppSendFlow,
-        isMiniPayRecipient: false,
+        isMiniPayRecipient: searchAddress.toLowerCase() === mockAccount3.toLowerCase(),
       })
     }
   )

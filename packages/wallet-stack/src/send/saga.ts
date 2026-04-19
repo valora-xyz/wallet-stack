@@ -3,7 +3,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { CeloExchangeEvents, SendEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { navigateBack, navigateInitialTab } from 'src/navigator/NavigationService'
-import { handleQRCodeDefault, handleQRCodeSecureSend, shareSVGImage } from 'src/qrcode/utils'
+import { handleQRCodeDefault, shareSVGImage } from 'src/qrcode/utils'
 import {
   Actions,
   SendPaymentAction,
@@ -164,12 +164,7 @@ function* watchQrCodeDetections() {
   yield* takeEvery(Actions.BARCODE_DETECTED, safely(handleQRCodeDefault))
 }
 
-function* watchQrCodeDetectionsSecureSend() {
-  yield* takeEvery(Actions.BARCODE_DETECTED_SECURE_SEND, safely(handleQRCodeSecureSend))
-}
-
 export function* sendSaga() {
-  yield* spawn(watchQrCodeDetectionsSecureSend)
   yield* spawn(watchQrCodeDetections)
   yield* spawn(watchQrCodeShare)
   yield* spawn(watchSendPayment)

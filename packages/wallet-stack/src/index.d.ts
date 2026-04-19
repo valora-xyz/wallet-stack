@@ -6,7 +6,6 @@ declare module '*.json' {
 declare module '*.png'
 declare module '*.jpg'
 
-declare module 'dot-prop-immutable'
 declare module 'svgs'
 declare module 'react-native-languages'
 declare module 'react-native-version-check'
