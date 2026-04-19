@@ -85,9 +85,7 @@ export type ActionTypes =
   | ContactsSavedAction
   | StoredPasswordRefreshedAction
 
-export const fetchAddressesAndValidate = (
-  e164Number: string
-): FetchAddressesAndValidateAction => ({
+export const fetchAddressesAndValidate = (e164Number: string): FetchAddressesAndValidateAction => ({
   type: Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS,
   e164Number,
 })

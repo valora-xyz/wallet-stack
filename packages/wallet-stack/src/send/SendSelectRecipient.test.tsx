@@ -804,8 +804,7 @@ describe('SendSelectRecipient', () => {
           thumbnailPath: undefined,
         },
         origin: SendOrigin.AppSendFlow,
-        isMiniPayRecipient:
-          searchAddress.toLowerCase() === mockAccount3.toLowerCase(),
+        isMiniPayRecipient: searchAddress.toLowerCase() === mockAccount3.toLowerCase(),
       })
     }
   )
