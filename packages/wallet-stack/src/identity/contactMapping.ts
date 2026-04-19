@@ -134,9 +134,7 @@ function* updateUserContact(e164NumberToRecipients: NumberToRecipient) {
   yield* put(setUserContactDetails(userRecipient.contactId, userRecipient.thumbnailPath || null))
 }
 
-export function* fetchAddressesAndValidateSaga({
-  e164Number,
-}: FetchAddressesAndValidateAction) {
+export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAndValidateAction) {
   AppAnalytics.track(IdentityEvents.phone_number_lookup_start)
   try {
     Logger.debug(TAG + '@fetchAddressesAndValidate', `Fetching addresses for number`)

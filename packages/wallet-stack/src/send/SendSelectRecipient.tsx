@@ -14,10 +14,7 @@ import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
 import CustomHeader from 'src/components/header/CustomHeader'
 import CircledIcon from 'src/icons/CircledIcon'
 import { importContacts } from 'src/identity/actions'
-import {
-  addressToVerifiedBySelector,
-  e164NumberToAddressSelector,
-} from 'src/identity/selectors'
+import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
@@ -256,9 +253,7 @@ function SendSelectRecipient({ route }: Props) {
 
     if (!address) {
       // this should never happen
-      throw new Error(
-        'No address found, this should never happen. Should have routed to invite.'
-      )
+      throw new Error('No address found, this should never happen. Should have routed to invite.')
     }
 
     navigate(Screens.SendEnterAmount, {

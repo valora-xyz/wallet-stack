@@ -199,4 +199,3 @@ describe('handleQRCodeDefault', () => {
     expect(AppAnalytics.track).toHaveBeenCalledWith(QrScreenEvents.qr_scanned, qrCode)
   })
 })
-
