@@ -45,10 +45,9 @@ type SendEnterAmountParams = {
   isMiniPayRecipient?: boolean
 }
 
-interface ValidateRecipientParams {
-  requesterAddress?: string
+interface SelectRecipientAddressParams {
+  recipient: Recipient & { e164PhoneNumber: string }
   origin: SendOrigin
-  recipient: Recipient
   forceTokenId?: boolean
   defaultTokenIdOverride?: string
 }
@@ -262,6 +261,7 @@ export type StackParamList = {
     }
   }
   [Screens.SendInvite]: { recipient: Recipient; shareUrl: string }
+  [Screens.SelectRecipientAddress]: SelectRecipientAddressParams
   [Screens.SendSelectRecipient]:
     | {
         forceTokenId?: boolean
@@ -301,8 +301,6 @@ export type StackParamList = {
     transaction: TokenTransaction
   }
   [Screens.UpgradeScreen]: undefined
-  [Screens.ValidateRecipientIntro]: ValidateRecipientParams
-  [Screens.ValidateRecipientAccount]: ValidateRecipientParams
   [Screens.VerificationStartScreen]:
     | {
         hasOnboarded?: boolean

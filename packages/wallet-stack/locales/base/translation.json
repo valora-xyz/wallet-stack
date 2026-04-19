@@ -2169,6 +2169,12 @@
     "importSuccess": "Successfully imported {{tokenSymbol}} token",
     "importButton": "Import"
   },
+  "selectRecipientAddress": {
+    "header": "Select wallet",
+    "recipient": "Recipient",
+    "explanation": "<0>{{name}}</0> has more than one wallet linked to the phone number. Choose which one to send to.",
+    "verifiedBy": "Verified by {{verifier}}"
+  },
   "sendSelectRecipient": {
     "searchText": "Search by name, phone, wallet...",
     "searchInputLabel": "To",

@@ -14,13 +14,9 @@ import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
 import CustomHeader from 'src/components/header/CustomHeader'
 import CircledIcon from 'src/icons/CircledIcon'
 import { importContacts } from 'src/identity/actions'
-import { getAddressFromPhoneNumber } from 'src/identity/contactMapping'
-import { AddressValidationType } from 'src/identity/reducer'
-import { getAddressValidationType } from 'src/identity/secureSend'
 import {
   addressToVerifiedBySelector,
   e164NumberToAddressSelector,
-  secureSendPhoneNumberMappingSelector,
 } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { noHeader } from 'src/navigator/Headers'
@@ -171,7 +167,6 @@ enum SelectRecipientView {
 function SendSelectRecipient({ route }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const secureSendPhoneNumberMapping = useSelector(secureSendPhoneNumberMappingSelector)
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
   const shareUrl = getAppConfig().experimental?.inviteFriends?.shareUrl ?? null
@@ -241,34 +236,28 @@ function SendSelectRecipient({ route }: Props) {
     // use the address from the recipient object
     let address: string | null | undefined = selectedRecipient.address
 
-    // if not present there must be a phone number, route through secure send or get
-    // the secure send mapped address
+    // if not present there must be a phone number - route through the address picker
+    // when multiple verified addresses exist, otherwise go directly to amount entry
     if (!address && recipientHasNumber(selectedRecipient)) {
-      const addressValidationType: AddressValidationType = getAddressValidationType(
-        selectedRecipient,
-        secureSendPhoneNumberMapping
-      )
-      if (addressValidationType !== AddressValidationType.NONE) {
-        navigate(Screens.ValidateRecipientIntro, {
-          defaultTokenIdOverride,
-          forceTokenId,
+      const phoneAddresses = e164NumberToAddress[selectedRecipient.e164PhoneNumber] ?? []
+
+      if (phoneAddresses.length > 1) {
+        navigate(Screens.SelectRecipientAddress, {
           recipient: selectedRecipient,
           origin: SendOrigin.AppSendFlow,
+          forceTokenId,
+          defaultTokenIdOverride,
         })
         return
       }
-      address = getAddressFromPhoneNumber(
-        selectedRecipient.e164PhoneNumber,
-        e164NumberToAddress,
-        secureSendPhoneNumberMapping,
-        undefined
-      )
+
+      address = phoneAddresses[0]
     }
 
     if (!address) {
       // this should never happen
       throw new Error(
-        'No address found, this should never happen. Should have routed to invite or secure send.'
+        'No address found, this should never happen. Should have routed to invite.'
       )
     }
 
