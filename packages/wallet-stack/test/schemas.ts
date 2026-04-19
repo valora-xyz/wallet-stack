@@ -3776,6 +3776,15 @@ export const v255Schema = {
   },
 }
 
+export const v256Schema = {
+  ...v255Schema,
+  _persist: {
+    ...v255Schema._persist,
+    version: 256,
+  },
+  identity: _.omit(v255Schema.identity, 'secureSendPhoneNumberMapping'),
+}
+
 export function getLatestSchema(): Partial<RootState> {
-  return v255Schema as Partial<RootState>
+  return v256Schema as Partial<RootState>
 }
