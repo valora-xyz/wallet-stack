@@ -35,9 +35,12 @@ const VERIFIER_ICONS: Record<Verifier, number> = {
   minipay: miniPay,
 }
 
+function isKnownVerifier(verifier: string | undefined): verifier is Verifier {
+  return !!verifier && verifier in VERIFIER_NAMES
+}
+
 function VerifierIcon({ verifier }: { verifier: Verifier }) {
-  const source = VERIFIER_ICONS[verifier] ?? valora
-  return <Image source={source} style={styles.icon} resizeMode="contain" />
+  return <Image source={VERIFIER_ICONS[verifier]} style={styles.icon} resizeMode="contain" />
 }
 
 function SelectRecipientAddress({ route }: Props) {
@@ -50,7 +53,9 @@ function SelectRecipientAddress({ route }: Props) {
   const addresses = e164NumberToAddress[recipient.e164PhoneNumber] || []
   const verifiedEntries = addresses
     .map((address) => ({ address, verifier: addressToVerifiedBy[address] }))
-    .filter((entry): entry is { address: string; verifier: Verifier } => !!entry.verifier)
+    .filter((entry): entry is { address: string; verifier: Verifier } =>
+      isKnownVerifier(entry.verifier)
+    )
 
   const onSelectAddress = (address: string, verifier: Verifier) => {
     navigate(Screens.SendEnterAmount, {
