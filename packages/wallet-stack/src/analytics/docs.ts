@@ -284,6 +284,9 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [SendEvents.send_select_recipient_send_press]: `When the send button is pressed after selecting a recipient`,
   [SendEvents.send_select_recipient_invite_press]: `When the invite button is pressed after selecting a recipient`,
   [SendEvents.send_select_recipient_recent_press]: `When a recent recipient is pressed`,
+  [SendEvents.send_select_recipient_address_screen_open]: `When the address picker screen is shown (a phone recipient has multiple verified addresses)`,
+  [SendEvents.send_select_recipient_address_select]: `When a verified address is picked from the address picker screen`,
+  [SendEvents.send_select_recipient_address_back]: `When the back button is pressed on the address picker screen`,
   [JumpstartEvents.jumpstart_reclaim_press]:
     'When user taps on "Reclaim" button on the Jumpstart screen',
   [JumpstartEvents.jumpstart_reclaim_start]:

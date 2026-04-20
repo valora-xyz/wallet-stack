@@ -1,6 +1,8 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
+import AppAnalytics from 'src/analytics/AppAnalytics'
+import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -58,6 +60,15 @@ describe('SelectRecipientAddress', () => {
     ).toBeTruthy()
   })
 
+  it('tracks the screen-open event with the number of verified addresses', () => {
+    renderScreen({})
+
+    expect(AppAnalytics.track).toHaveBeenCalledWith(
+      SendEvents.send_select_recipient_address_screen_open,
+      { addressCount: 2 }
+    )
+  })
+
   it('filters out addresses without a verifier entry', () => {
     const { queryByTestId } = renderScreen({
       identity: {
@@ -107,6 +118,10 @@ describe('SelectRecipientAddress', () => {
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: false,
     })
+    expect(AppAnalytics.track).toHaveBeenCalledWith(
+      SendEvents.send_select_recipient_address_select,
+      { verifier: 'valora' }
+    )
   })
 
   it('navigates to SendEnterAmount on MiniPay row tap with isMiniPayRecipient=true', () => {
@@ -124,5 +139,9 @@ describe('SelectRecipientAddress', () => {
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: true,
     })
+    expect(AppAnalytics.track).toHaveBeenCalledWith(
+      SendEvents.send_select_recipient_address_select,
+      { verifier: 'minipay' }
+    )
   })
 })
