@@ -63,10 +63,9 @@ describe('SelectRecipientAddress', () => {
   it('tracks the screen-open event with the number of verified addresses', () => {
     renderScreen({})
 
-    expect(AppAnalytics.track).toHaveBeenCalledWith(
-      SendEvents.send_select_recipient_address_open,
-      { addressCount: 2 }
-    )
+    expect(AppAnalytics.track).toHaveBeenCalledWith(SendEvents.send_select_recipient_address_open, {
+      addressCount: 2,
+    })
   })
 
   it('filters out addresses without a verifier entry', () => {
