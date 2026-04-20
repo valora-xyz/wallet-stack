@@ -233,7 +233,7 @@ function SendSelectRecipient({ route }: Props) {
     // use the address from the recipient object
     let address: string | null | undefined = selectedRecipient.address
 
-    // if not present there must be a phone number - route through the address picker
+    // if not present there must be a phone number, route through the address picker
     // when multiple verified addresses exist, otherwise go directly to amount entry
     if (!address && recipientHasNumber(selectedRecipient)) {
       const phoneAddresses = e164NumberToAddress[selectedRecipient.e164PhoneNumber] ?? []
@@ -241,10 +241,10 @@ function SendSelectRecipient({ route }: Props) {
 
       if (verifiedAddresses.length > 1) {
         navigate(Screens.SelectRecipientAddress, {
-          recipient: selectedRecipient,
-          origin: SendOrigin.AppSendFlow,
           forceTokenId,
           defaultTokenIdOverride,
+          recipient: selectedRecipient,
+          origin: SendOrigin.AppSendFlow,
         })
         return
       }
@@ -254,7 +254,7 @@ function SendSelectRecipient({ route }: Props) {
 
     if (!address) {
       // this should never happen
-      throw new Error('No address found, this should never happen. Should have routed to invite.')
+      throw new Error('No address found, this should never happen.')
     }
 
     navigate(Screens.SendEnterAmount, {
