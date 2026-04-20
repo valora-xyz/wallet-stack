@@ -581,7 +581,7 @@ interface SendEventsProperties {
     recipientType: RecipientType
   }
 
-  [SendEvents.send_select_recipient_address_screen_open]: {
+  [SendEvents.send_select_recipient_address_open]: {
     addressCount: number
   }
   [SendEvents.send_select_recipient_address_select]: {

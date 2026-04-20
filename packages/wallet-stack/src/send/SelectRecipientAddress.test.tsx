@@ -64,7 +64,7 @@ describe('SelectRecipientAddress', () => {
     renderScreen({})
 
     expect(AppAnalytics.track).toHaveBeenCalledWith(
-      SendEvents.send_select_recipient_address_screen_open,
+      SendEvents.send_select_recipient_address_open,
       { addressCount: 2 }
     )
   })
