@@ -254,7 +254,7 @@ function SendSelectRecipient({ route }: Props) {
 
     if (!address) {
       // this should never happen
-      throw new Error('No address found, this should never happen.')
+      throw new Error('No address found, this should never happen. Should have routed to invite.')
     }
 
     navigate(Screens.SendEnterAmount, {
