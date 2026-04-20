@@ -16,7 +16,6 @@ export enum ErrorMessages {
   FIREBASE_FAILED = 'firebaseFailed',
   IMPORT_CONTACTS_FAILED = 'importContactsFailed',
   QR_FAILED_INVALID_ADDRESS = 'qrFailedInvalidAddress',
-  ADDRESS_VALIDATION_PARTIAL_OWN_ADDRESS = 'addressValidationPartialOwnAddress',
   ACCOUNT_CLEAR_FAILED = 'accountClearFailed',
   KEYCHAIN_FETCH_ACCOUNTS = 'keychainFetchAccounts',
   KEYCHAIN_ACCOUNT_ALREADY_EXISTS = 'keychainAccountAlreadyExists',
