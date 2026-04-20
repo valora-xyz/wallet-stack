@@ -60,7 +60,7 @@ function SelectRecipientAddress({ route }: Props) {
     )
 
   useEffect(() => {
-    AppAnalytics.track(SendEvents.send_select_recipient_address_screen_open, {
+    AppAnalytics.track(SendEvents.send_select_recipient_address_open, {
       addressCount: verifiedEntries.length,
     })
   }, [])
