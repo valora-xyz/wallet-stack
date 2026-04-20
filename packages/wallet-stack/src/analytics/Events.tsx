@@ -269,16 +269,6 @@ export enum SendEvents {
   send_confirm_back = 'send_confirm_back',
   send_confirm_send = 'send_confirm_send',
 
-  send_secure_start = 'send_secure_start',
-  send_secure_back = 'send_secure_back',
-  send_secure_cancel = 'send_secure_cancel',
-
-  send_secure_info = 'send_secure_info',
-  send_secure_info_dismissed = 'send_secure_info_dismissed',
-  send_secure_submit = 'send_secure_submit',
-  send_secure_incorrect = 'send_secure_incorrect',
-  send_secure_complete = 'send_secure_complete',
-
   send_tx_start = 'send_tx_start',
   send_tx_complete = 'send_tx_complete',
   send_tx_error = 'send_tx_error',
