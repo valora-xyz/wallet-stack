@@ -521,31 +521,6 @@ interface SendEventsProperties {
         isTokenManuallyImported: boolean
       }
 
-  [SendEvents.send_secure_start]: {
-    confirmByScan: boolean
-  }
-  [SendEvents.send_secure_back]: undefined
-  [SendEvents.send_secure_cancel]: undefined
-  [SendEvents.send_secure_submit]: {
-    partialAddressValidation: boolean
-    address: string
-  }
-  [SendEvents.send_secure_complete]: {
-    confirmByScan: boolean
-    partialAddressValidation?: boolean
-  }
-  [SendEvents.send_secure_incorrect]: {
-    confirmByScan: boolean
-    partialAddressValidation?: boolean
-    error: string
-  }
-  [SendEvents.send_secure_info]: {
-    partialAddressValidation: boolean
-  }
-  [SendEvents.send_secure_info_dismissed]: {
-    partialAddressValidation: boolean
-  }
-
   [SendEvents.send_tx_start]: undefined
   [SendEvents.send_tx_complete]: {
     txId: string
