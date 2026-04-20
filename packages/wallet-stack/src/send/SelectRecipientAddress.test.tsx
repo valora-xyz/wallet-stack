@@ -75,6 +75,23 @@ describe('SelectRecipientAddress', () => {
     expect(queryByTestId(`SelectRecipientAddress/Row/${mockAccount3.toLowerCase()}`)).toBeNull()
   })
 
+  it('filters out addresses with an unknown verifier', () => {
+    const { queryByTestId } = renderScreen({
+      identity: {
+        e164NumberToAddress: {
+          [mockE164Number3]: [mockAccount2.toLowerCase(), mockAccount3.toLowerCase()],
+        },
+        addressToVerifiedBy: {
+          [mockAccount2.toLowerCase()]: 'valora',
+          [mockAccount3.toLowerCase()]: 'somethingNew',
+        },
+      },
+    })
+
+    expect(queryByTestId(`SelectRecipientAddress/Row/${mockAccount2.toLowerCase()}`)).toBeTruthy()
+    expect(queryByTestId(`SelectRecipientAddress/Row/${mockAccount3.toLowerCase()}`)).toBeNull()
+  })
+
   it('navigates to SendEnterAmount on Valora row tap with isMiniPayRecipient=false', () => {
     const { getByTestId } = renderScreen({})
     fireEvent.press(getByTestId(`SelectRecipientAddress/Row/${mockAccount2.toLowerCase()}`))
