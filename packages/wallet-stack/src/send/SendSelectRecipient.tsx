@@ -272,8 +272,9 @@ function SendSelectRecipient({ route }: Props) {
     // when multiple verified addresses exist, otherwise go directly to amount entry
     if (!address && recipientHasNumber(selectedRecipient)) {
       const phoneAddresses = e164NumberToAddress[selectedRecipient.e164PhoneNumber] ?? []
+      const verifiedAddresses = phoneAddresses.filter((a) => !!addressToVerifiedBy[a])
 
-      if (phoneAddresses.length > 1) {
+      if (verifiedAddresses.length > 1) {
         navigate(Screens.SelectRecipientAddress, {
           recipient: selectedRecipient,
           origin: SendOrigin.AppSendFlow,
@@ -283,7 +284,7 @@ function SendSelectRecipient({ route }: Props) {
         return
       }
 
-      address = phoneAddresses[0]
+      address = verifiedAddresses[0] ?? phoneAddresses[0]
     }
 
     if (!address) {
