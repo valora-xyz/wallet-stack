@@ -1,9 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { formatShortenedAddress } from 'src/account/utils'
+import AppAnalytics from 'src/analytics/AppAnalytics'
+import { SendEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
 import Touchable from 'src/components/Touchable'
 import CustomHeader from 'src/components/header/CustomHeader'
@@ -57,7 +59,16 @@ function SelectRecipientAddress({ route }: Props) {
       isKnownVerifier(entry.verifier)
     )
 
+  useEffect(() => {
+    AppAnalytics.track(SendEvents.send_select_recipient_address_screen_open, {
+      addressCount: verifiedEntries.length,
+    })
+  }, [])
+
   const onSelectAddress = (address: string, verifier: Verifier) => {
+    AppAnalytics.track(SendEvents.send_select_recipient_address_select, {
+      verifier,
+    })
     navigate(Screens.SendEnterAmount, {
       isFromScan: false,
       defaultTokenIdOverride,
@@ -73,7 +84,10 @@ function SelectRecipientAddress({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <CustomHeader style={styles.customHeader} left={<BackButton />} />
+      <CustomHeader
+        style={styles.customHeader}
+        left={<BackButton eventName={SendEvents.send_select_recipient_address_back} />}
+      />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>{t('selectRecipientAddress.header')}</Text>
         <Text style={styles.explanation}>

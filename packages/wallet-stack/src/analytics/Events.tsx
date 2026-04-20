@@ -295,6 +295,9 @@ export enum SendEvents {
   send_select_recipient_invite_press = 'send_select_recipient_invite_press',
   send_select_recipient_send_press = 'send_select_recipient_send_press',
   send_select_recipient_recent_press = 'send_select_recipient_recent_press',
+  send_select_recipient_address_screen_open = 'send_select_recipient_address_screen_open',
+  send_select_recipient_address_select = 'send_select_recipient_address_select',
+  send_select_recipient_address_back = 'send_select_recipient_address_back',
 }
 
 export enum QrScreenEvents {

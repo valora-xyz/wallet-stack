@@ -580,6 +580,14 @@ interface SendEventsProperties {
   [SendEvents.send_select_recipient_recent_press]: {
     recipientType: RecipientType
   }
+
+  [SendEvents.send_select_recipient_address_screen_open]: {
+    addressCount: number
+  }
+  [SendEvents.send_select_recipient_address_select]: {
+    verifier: 'valora' | 'minipay'
+  }
+  [SendEvents.send_select_recipient_address_back]: undefined
 }
 
 interface FeeEventsProperties {
