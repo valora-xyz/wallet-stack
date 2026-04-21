@@ -15,12 +15,7 @@ import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { getDisplayName } from 'src/recipients/recipient'
-import {
-  VERIFIER_ICONS,
-  VERIFIER_NAMES,
-  Verifier,
-  isKnownVerifier,
-} from 'src/recipients/verifier'
+import { VERIFIER_ICONS, VERIFIER_NAMES, Verifier, isKnownVerifier } from 'src/recipients/verifier'
 import { useSelector } from 'src/redux/hooks'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'

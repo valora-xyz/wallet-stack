@@ -16,11 +16,7 @@ import PhoneIcon from 'src/icons/Phone'
 import UserIcon from 'src/icons/User'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { formatShortenedAddress } from 'src/account/utils'
-import {
-  getDisplayName,
-  recipientHasNumber,
-  type Recipient,
-} from 'src/recipients/recipient'
+import { getDisplayName, recipientHasNumber, type Recipient } from 'src/recipients/recipient'
 import { useVerifierName } from 'src/recipients/verifier'
 import colors, { type ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -144,9 +140,7 @@ export function ReviewSummaryItemContact({
   // the transaction goes to that address, not to a phone number, and showing it on
   // review honors what the user is actually signing.
   const shortAddress =
-    isPhoneRecipient && recipient.address
-      ? formatShortenedAddress(recipient.address)
-      : undefined
+    isPhoneRecipient && recipient.address ? formatShortenedAddress(recipient.address) : undefined
 
   // Secondary line: short address · verifier name (when both present), or just one of them.
   const secondaryValue = verifierName

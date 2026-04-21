@@ -13,9 +13,7 @@ export const VERIFIER_ICONS: Record<Verifier, number> = {
   minipay,
 }
 
-export function isKnownVerifier(
-  verifier: string | null | undefined
-): verifier is Verifier {
+export function isKnownVerifier(verifier: string | null | undefined): verifier is Verifier {
   return !!verifier && verifier in VERIFIER_NAMES
 }
 

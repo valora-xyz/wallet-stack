@@ -76,10 +76,7 @@ describe('ReviewSummaryItem', () => {
 })
 
 describe('ReviewSummaryItemContact', () => {
-  const renderContact = (
-    recipient: Recipient,
-    storeOverrides: Record<string, unknown> = {}
-  ) =>
+  const renderContact = (recipient: Recipient, storeOverrides: Record<string, unknown> = {}) =>
     render(
       <Provider store={createMockStore(storeOverrides)}>
         <ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />

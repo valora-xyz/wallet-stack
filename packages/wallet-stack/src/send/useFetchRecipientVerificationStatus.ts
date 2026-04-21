@@ -1,12 +1,6 @@
 import { useState } from 'react'
-import {
-  fetchAddressVerification,
-  fetchAddressesAndValidate,
-} from 'src/identity/actions'
-import {
-  addressToVerifiedBySelector,
-  e164NumberToAddressSelector,
-} from 'src/identity/selectors'
+import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
+import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { Recipient, RecipientType } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -23,10 +17,7 @@ const getRecipientVerificationStatus = (
     return RecipientVerificationStatus.UNKNOWN
   }
 
-  if (
-    recipient.recipientType === RecipientType.PhoneNumber &&
-    recipient.e164PhoneNumber
-  ) {
+  if (recipient.recipientType === RecipientType.PhoneNumber && recipient.e164PhoneNumber) {
     const addresses = e164NumberToAddress[recipient.e164PhoneNumber]
     if (addresses === undefined) return RecipientVerificationStatus.UNKNOWN
     return addresses === null
