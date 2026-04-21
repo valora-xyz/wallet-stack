@@ -2,7 +2,7 @@
 // fmt 11.0.2 (bundled by RN 0.81) uses C++20 `consteval` functions that Apple
 // clang 21 (Xcode 26.4) rejects as non-constant expressions. Compiling fmt
 // itself under C++17 takes the library's constexpr fallback path and avoids
-// the error. See facebook/react-native#55601.
+// the error. See https://github.com/facebook/react-native/issues/55601#issuecomment-4248887899.
 const { withDangerousMod } = require('expo/config-plugins')
 const fs = require('fs')
 const path = require('path')
