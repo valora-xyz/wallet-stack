@@ -47,7 +47,7 @@ function addNeededImports(src: string): MergeResults {
     tag: 'wallet-stack/main-application-user-agent-imports',
     src,
     newSrc: imports.join('\n'),
-    anchor: /import com\.facebook\.soloader\.SoLoader/,
+    anchor: /import expo\.modules\.ReactNativeHostWrapper/,
     offset: 1,
     comment: '//',
   })
