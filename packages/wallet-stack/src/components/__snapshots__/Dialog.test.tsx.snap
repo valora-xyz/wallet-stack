@@ -5,7 +5,6 @@ exports[`renders correctly 1`] = `
   animationType="none"
   deviceHeight={1334}
   deviceWidth={null}
-  hardwareAccelerated={false}
   hideModalContentWhileAnimating={false}
   onBackdropPress={[Function]}
   onModalHide={[Function]}
