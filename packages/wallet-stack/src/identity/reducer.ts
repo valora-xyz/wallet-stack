@@ -139,6 +139,14 @@ export const reducer = (
         addressToE164Number: state.addressToE164Number,
         e164NumberToAddress: state.e164NumberToAddress,
       }
+    case Actions.FETCH_ADDRESS_VERIFICATION_STATUS:
+      return {
+        ...state,
+        addressToVerifiedBy: {
+          ...state.addressToVerifiedBy,
+          [action.address]: undefined,
+        },
+      }
     case Actions.CONTACTS_SAVED:
       return {
         ...state,

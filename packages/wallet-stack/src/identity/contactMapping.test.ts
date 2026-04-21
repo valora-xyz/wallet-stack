@@ -6,6 +6,8 @@ import { call, select } from 'redux-saga/effects'
 import { setUserContactDetails } from 'src/account/actions'
 import { defaultCountryCodeSelector, e164NumberSelector } from 'src/account/selectors'
 import { showError, showErrorOrFallback } from 'src/alert/actions'
+import AppAnalytics from 'src/analytics/AppAnalytics'
+import { IdentityEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
 import {
@@ -273,7 +275,6 @@ describe('Fetch Address Verification Saga', () => {
 
   it('does not touch `addressToVerifiedBy` on network errors — the check is inconclusive, not negative', async () => {
     mockFetch.mockReject()
-
     await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
       .provide([
         [select(walletAddressSelector), '0xxyz'],
@@ -281,6 +282,9 @@ describe('Fetch Address Verification Saga', () => {
       ])
       .not.put.actionType(Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES)
       .run()
+    expect(AppAnalytics.track).toHaveBeenCalledWith(IdentityEvents.address_lookup_error, {
+      error: 'Unable to fetch verification status for this address',
+    })
   })
 })
 

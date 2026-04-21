@@ -4,6 +4,7 @@ import React, { useMemo, type ReactNode } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { formatShortenedAddress } from 'src/account/utils'
 import BackButton from 'src/components/BackButton'
 import ContactCircle from 'src/components/ContactCircle'
 import CustomHeader from 'src/components/header/CustomHeader'
@@ -15,8 +16,7 @@ import WalletIcon from 'src/icons/navigator/Wallet'
 import PhoneIcon from 'src/icons/Phone'
 import UserIcon from 'src/icons/User'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
-import { formatShortenedAddress } from 'src/account/utils'
-import { getDisplayName, recipientHasNumber, type Recipient } from 'src/recipients/recipient'
+import { type Recipient } from 'src/recipients/recipient'
 import { useVerifierName } from 'src/recipients/verifier'
 import colors, { type ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -123,9 +123,28 @@ export function ReviewSummaryItemContact({
 }) {
   const { t } = useTranslation()
   const verifierName = useVerifierName(recipient.address)
+  const contact = useMemo(() => {
+    const phone = recipient.displayNumber || recipient.e164PhoneNumber
+    // For recipients with a phone mapping, surface the resolved on-chain address (and verifier,
+    // if known) as a subtitle so the user can verify the actual destination they are signing.
+    const shortAddress = recipient.address ? formatShortenedAddress(recipient.address) : undefined
+    const phoneSubtitle = [shortAddress, verifierName].filter(Boolean).join(' · ') || undefined
 
-  if (!recipient.name && !recipient.e164PhoneNumber && !recipient.address) {
-    // This should never happen
+    if (recipient.name) {
+      return { title: recipient.name, subtitle: phoneSubtitle, icon: UserIcon }
+    }
+
+    if (phone) {
+      return { title: phone, subtitle: phoneSubtitle, icon: PhoneIcon }
+    }
+
+    if (recipient.address) {
+      return { title: recipient.address, subtitle: verifierName, icon: WalletIcon }
+    }
+  }, [recipient, verifierName])
+
+  // This should never happen
+  if (!contact) {
     Logger.error(
       'ReviewSummaryItemContact',
       `Transaction review could not render a contact item for recipient`
@@ -133,35 +152,19 @@ export function ReviewSummaryItemContact({
     return null
   }
 
-  const isPhoneRecipient = recipientHasNumber(recipient)
-  const defaultIcon = recipient.name ? UserIcon : isPhoneRecipient ? PhoneIcon : WalletIcon
-
-  // For phone recipients we always surface the on-chain destination as a subtitle —
-  // the transaction goes to that address, not to a phone number, and showing it on
-  // review honors what the user is actually signing.
-  const shortAddress =
-    isPhoneRecipient && recipient.address ? formatShortenedAddress(recipient.address) : undefined
-
-  // Secondary line: short address · verifier name (when both present), or just one of them.
-  const secondaryValue = verifierName
-    ? shortAddress
-      ? `${shortAddress} · ${verifierName}`
-      : verifierName
-    : shortAddress
-
   return (
     <ReviewSummaryItem
       testID={testID}
       label={t('to')}
-      primaryValue={getDisplayName(recipient, t)}
-      secondaryValue={secondaryValue}
+      primaryValue={contact.title}
+      secondaryValue={contact.subtitle}
       icon={
         <ContactCircle
           size={32}
           backgroundColor={colors.backgroundTertiary}
           foregroundColor={colors.contentPrimary}
           recipient={recipient}
-          DefaultIcon={defaultIcon}
+          DefaultIcon={contact.icon}
         />
       }
     />

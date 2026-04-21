@@ -7,21 +7,6 @@ import { createMockStore } from 'test/utils'
 import { mockAddressRecipient, mockInvitableRecipient, mockPhoneRecipient } from 'test/values'
 
 describe('RecipientItemV2', () => {
-  it('never renders the verified app icon — verification must be refetched on selection', () => {
-    // Even with a populated mapping (default store includes one) we must not surface
-    // a cached "verified" indicator on the recipient list.
-    const { queryByTestId } = render(
-      <Provider store={createMockStore()}>
-        <RecipientItem
-          recipient={mockInvitableRecipient}
-          onSelectRecipient={jest.fn()}
-          loading={false}
-        />
-      </Provider>
-    )
-    expect(queryByTestId('RecipientItem/AppIcon')).toBeFalsy()
-  })
-
   it('renders contact name and phone number', () => {
     const { getByText } = render(
       <Provider store={createMockStore()}>

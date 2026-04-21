@@ -116,27 +116,29 @@ describe('ReviewSummaryItemContact', () => {
       expectedDisplayedValue: '+222222222',
     },
   ])(
-    'displays only $phoneNumberType phone if name is not available and recipient has no resolved address',
+    'displays only $phoneNumberType phone if name is not available',
     ({ displayNumber, e164PhoneNumber, expectedDisplayedValue }) => {
-      const recipient = { displayNumber, e164PhoneNumber } as Recipient
+      const address = '0x0123456789012345678901234567890123456789'
+      const recipient = { displayNumber, e164PhoneNumber, address } as Recipient
       const tree = renderContact(recipient)
 
       expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent(
         expectedDisplayedValue,
         { exact: false }
       )
-      expect(tree.queryByTestId('ContactItem/SecondaryValue')).toBeNull()
+      expect(tree.getByTestId('ContactItem/SecondaryValue')).toHaveTextContent('0x0123...6789', {
+        exact: false,
+      })
     }
   )
 
-  it('displays formatted short address as primary value if name/phone not available', () => {
+  it('displays address if name/phone not available', () => {
     const recipient = {
-      address: '0x0123456789012345678901234567890123456789',
+      address: '0x123456789',
     } as Recipient
     const tree = renderContact(recipient)
 
-    // getDisplayName translates a bare-address recipient via the `feedItemAddress` key.
-    expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('0x0123...6789', {
+    expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('0x123456789', {
       exact: false,
     })
   })

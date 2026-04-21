@@ -167,17 +167,17 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
     const addressToVerifiedByUpdates: AddressToVerifiedByType = {}
 
     // Prune addresses previously associated with this phone number but no longer present
-    // in the fresh response — otherwise stale verifier/mapping entries stick around
-    // forever and contradict what the backend now says. The fresh phone lookup is
-    // positive evidence that the address↔phone mapping is gone, so we write `null`
-    // ("checked, no verifier") rather than `undefined` ("never checked") in both maps.
+    // in the fresh response.
     for (const prevAddress of prevAddresses) {
-      if (walletAddressSet.has(prevAddress)) continue
-      if (prevAddressToE164Number[prevAddress] === e164Number) {
-        addressToE164NumberUpdates[prevAddress] = null
-      }
-      if (prevAddress in prevAddressToVerifiedBy) {
-        addressToVerifiedByUpdates[prevAddress] = null
+      if (!walletAddressSet.has(prevAddress)) {
+        // Clear the reverse mapping for this number.
+        if (prevAddressToE164Number[prevAddress] === e164Number) {
+          addressToE164NumberUpdates[prevAddress] = null
+        }
+        // Clear verifier info.
+        if (prevAddress in prevAddressToVerifiedBy) {
+          addressToVerifiedByUpdates[prevAddress] = null
+        }
       }
     }
 
@@ -216,10 +216,10 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
 }
 
 export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificationAction) {
-  AppAnalytics.track(IdentityEvents.address_lookup_start)
   try {
+    AppAnalytics.track(IdentityEvents.address_lookup_start)
     const addressVerified = yield* call(fetchAddressVerification, address)
-    // Currently backend only confirms Valora
+    // Note: currently backend only confirms Valora
     yield* put(
       updateE164PhoneNumberAddresses({}, {}, { [address]: addressVerified ? 'valora' : null })
     )

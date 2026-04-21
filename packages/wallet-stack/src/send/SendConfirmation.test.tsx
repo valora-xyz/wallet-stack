@@ -140,8 +140,7 @@ describe('SendConfirmation', () => {
     // renders recipient details
     expect(getByTestId('SendConfirmationRecipient/Label')).toHaveTextContent('to', { exact: false })
     expect(getByTestId('SendConfirmationRecipient/PrimaryValue')).toHaveTextContent(
-      'feedItemAddress, {"address":"0x0000...7E57"}',
-      { exact: false }
+      '0x0000000000000000000000000000000000007E57'
     )
 
     // renders network details
