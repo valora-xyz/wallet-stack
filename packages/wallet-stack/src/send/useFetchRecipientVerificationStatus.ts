@@ -1,60 +1,79 @@
-import { useEffect, useState } from 'react'
-import { phoneNumberVerifiedSelector } from 'src/app/selectors'
-import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
+import { useState } from 'react'
 import {
-  addressToVerificationStatusSelector,
+  fetchAddressVerification,
+  fetchAddressesAndValidate,
+} from 'src/identity/actions'
+import {
+  addressToVerifiedBySelector,
   e164NumberToAddressSelector,
 } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
-import { Recipient, RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
+import { Recipient, RecipientType } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
+
+type E164NumberToAddress = ReturnType<typeof e164NumberToAddressSelector>
+type AddressToVerifiedBy = ReturnType<typeof addressToVerifiedBySelector>
+
+const getRecipientVerificationStatus = (
+  recipient: Recipient | null,
+  e164NumberToAddress: E164NumberToAddress,
+  addressToVerifiedBy: AddressToVerifiedBy
+): RecipientVerificationStatus => {
+  if (!recipient) {
+    return RecipientVerificationStatus.UNKNOWN
+  }
+
+  if (
+    recipient.recipientType === RecipientType.PhoneNumber &&
+    recipient.e164PhoneNumber
+  ) {
+    const addresses = e164NumberToAddress[recipient.e164PhoneNumber]
+    if (addresses === undefined) return RecipientVerificationStatus.UNKNOWN
+    return addresses === null
+      ? RecipientVerificationStatus.UNVERIFIED
+      : RecipientVerificationStatus.VERIFIED
+  }
+
+  if (recipient.address) {
+    const entry = addressToVerifiedBy[recipient.address]
+    if (entry === undefined) return RecipientVerificationStatus.UNKNOWN
+    return entry === null
+      ? RecipientVerificationStatus.UNVERIFIED
+      : RecipientVerificationStatus.VERIFIED
+  }
+
+  return RecipientVerificationStatus.UNKNOWN
+}
 
 const useFetchRecipientVerificationStatus = () => {
   const [recipient, setRecipient] = useState<Recipient | null>(null)
-  const [recipientVerificationStatus, setRecipientVerificationStatus] = useState(
-    RecipientVerificationStatus.UNKNOWN
-  )
 
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
-  const addressToVerificationStatus = useSelector(addressToVerificationStatusSelector)
-  const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
+  const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
   const dispatch = useDispatch()
 
   const unsetSelectedRecipient = () => {
     setRecipient(null)
-    setRecipientVerificationStatus(RecipientVerificationStatus.UNKNOWN)
   }
 
   const setSelectedRecipient = (selectedRecipient: Recipient) => {
     setRecipient(selectedRecipient)
-    setRecipientVerificationStatus(RecipientVerificationStatus.UNKNOWN)
 
-    // phone recipients should always have a number, the extra check is to ensure typing
     if (
       selectedRecipient.recipientType === RecipientType.PhoneNumber &&
       selectedRecipient.e164PhoneNumber
     ) {
       dispatch(fetchAddressesAndValidate(selectedRecipient.e164PhoneNumber))
-    } else if (selectedRecipient?.address) {
-      if (addressToVerificationStatus[selectedRecipient.address]) {
-        setRecipientVerificationStatus(RecipientVerificationStatus.VERIFIED)
-      } else if (phoneNumberVerified) {
-        dispatch(fetchAddressVerification(selectedRecipient.address))
-      } else {
-        setRecipientVerificationStatus(RecipientVerificationStatus.UNVERIFIED)
-      }
+    } else if (selectedRecipient.address) {
+      dispatch(fetchAddressVerification(selectedRecipient.address))
     }
   }
 
-  useEffect(() => {
-    if (recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN) {
-      // e164NumberToAddress is updated after a successful phone number lookup,
-      // addressToVerificationStatus is updated after a successful address lookup
-      setRecipientVerificationStatus(
-        getRecipientVerificationStatus(recipient, e164NumberToAddress, addressToVerificationStatus)
-      )
-    }
-  }, [e164NumberToAddress, addressToVerificationStatus, recipient, recipientVerificationStatus])
+  const recipientVerificationStatus = getRecipientVerificationStatus(
+    recipient,
+    e164NumberToAddress,
+    addressToVerifiedBy
+  )
 
   return {
     recipient,

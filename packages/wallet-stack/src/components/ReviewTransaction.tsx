@@ -15,7 +15,13 @@ import WalletIcon from 'src/icons/navigator/Wallet'
 import PhoneIcon from 'src/icons/Phone'
 import UserIcon from 'src/icons/User'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
-import { getDisplayDetail, type Recipient } from 'src/recipients/recipient'
+import { formatShortenedAddress } from 'src/account/utils'
+import {
+  getDisplayName,
+  recipientHasNumber,
+  type Recipient,
+} from 'src/recipients/recipient'
+import { useVerifierName } from 'src/recipients/verifier'
 import colors, { type ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
@@ -120,23 +126,10 @@ export function ReviewSummaryItemContact({
   recipient: Recipient
 }) {
   const { t } = useTranslation()
-  const contact = useMemo(() => {
-    const phone = recipient.displayNumber || recipient.e164PhoneNumber
-    if (recipient.name) {
-      return { title: recipient.name, subtitle: getDisplayDetail(recipient), icon: UserIcon }
-    }
+  const verifierName = useVerifierName(recipient.address)
 
-    if (phone) {
-      return { title: phone, icon: PhoneIcon }
-    }
-
-    if (recipient.address) {
-      return { title: recipient.address, icon: WalletIcon }
-    }
-  }, [recipient])
-
-  // This should never happen
-  if (!contact) {
+  if (!recipient.name && !recipient.e164PhoneNumber && !recipient.address) {
+    // This should never happen
     Logger.error(
       'ReviewSummaryItemContact',
       `Transaction review could not render a contact item for recipient`
@@ -144,19 +137,37 @@ export function ReviewSummaryItemContact({
     return null
   }
 
+  const isPhoneRecipient = recipientHasNumber(recipient)
+  const defaultIcon = recipient.name ? UserIcon : isPhoneRecipient ? PhoneIcon : WalletIcon
+
+  // For phone recipients we always surface the on-chain destination as a subtitle —
+  // the transaction goes to that address, not to a phone number, and showing it on
+  // review honors what the user is actually signing.
+  const shortAddress =
+    isPhoneRecipient && recipient.address
+      ? formatShortenedAddress(recipient.address)
+      : undefined
+
+  // Secondary line: short address · verifier name (when both present), or just one of them.
+  const secondaryValue = verifierName
+    ? shortAddress
+      ? `${shortAddress} · ${verifierName}`
+      : verifierName
+    : shortAddress
+
   return (
     <ReviewSummaryItem
       testID={testID}
       label={t('to')}
-      primaryValue={contact.title}
-      secondaryValue={contact.subtitle}
+      primaryValue={getDisplayName(recipient, t)}
+      secondaryValue={secondaryValue}
       icon={
         <ContactCircle
           size={32}
           backgroundColor={colors.backgroundTertiary}
           foregroundColor={colors.contentPrimary}
           recipient={recipient}
-          DefaultIcon={contact.icon}
+          DefaultIcon={defaultIcon}
         />
       }
     />

@@ -1,17 +1,16 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
 import * as React from 'react'
-import { Provider } from 'react-redux'
 import Share from 'react-native-share'
+import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
 import { getAppConfig } from 'src/appConfig'
 import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
-import { RecipientVerificationStatus } from 'src/identity/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
-import { RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
+import { RecipientType } from 'src/recipients/recipient'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
 import { getDynamicConfigParams } from 'src/statsig'
 import { StatsigDynamicConfigs } from 'src/statsig/types'
@@ -32,10 +31,6 @@ import {
 jest.mock('@react-native-clipboard/clipboard')
 jest.mock('src/utils/IosVersionUtils')
 jest.mock('src/recipients/resolve-id')
-jest.mock('src/recipients/recipient', () => ({
-  ...(jest.requireActual('src/recipients/recipient') as any),
-  getRecipientVerificationStatus: jest.fn(),
-}))
 
 jest.mock('react-native-device-info', () => ({ getFontScaleSync: () => 1 }))
 jest.mock('src/statsig')
@@ -204,11 +199,13 @@ describe('SendSelectRecipient', () => {
     expect(getByTestId('SelectRecipient/NoResults')).toBeTruthy()
   })
   it('navigates to send amount when search result next button is pressed', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
-    const store = createMockStore(storeWithPhoneVerified)
+    const store = createMockStore({
+      ...storeWithPhoneVerified,
+      identity: {
+        e164NumberToAddress: { [mockE164Number2Invite]: [mockAccount3] },
+        addressToVerifiedBy: { [mockAccount3]: 'valora' },
+      },
+    })
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -247,7 +244,12 @@ describe('SendSelectRecipient', () => {
     })
   })
   it('navigates to send amount when address recipient is pressed', async () => {
-    const store = createMockStore(defaultStore)
+    const store = createMockStore({
+      ...defaultStore,
+      identity: {
+        addressToVerifiedBy: { [mockAddressRecipient.address.toLowerCase()]: 'valora' },
+      },
+    })
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -286,11 +288,12 @@ describe('SendSelectRecipient', () => {
   })
 
   it('does not show unknown address info text when searching for known app address', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
-    const store = createMockStore(storeWithPhoneVerified)
+    const store = createMockStore({
+      ...storeWithPhoneVerified,
+      identity: {
+        addressToVerifiedBy: { [mockAccount2.toLowerCase()]: 'valora' },
+      },
+    })
 
     const { getByTestId, queryByTestId } = render(
       <Provider store={store}>
@@ -320,11 +323,12 @@ describe('SendSelectRecipient', () => {
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
   })
   it('does not show unknown address info text when searching for phone number', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)
-
-    const store = createMockStore(storeWithPhoneVerified)
+    const store = createMockStore({
+      ...storeWithPhoneVerified,
+      identity: {
+        e164NumberToAddress: { [mockE164Number2Invite]: null },
+      },
+    })
 
     const { getByTestId, queryByTestId } = render(
       <Provider store={store}>
@@ -362,10 +366,6 @@ describe('SendSelectRecipient', () => {
         inviteFriends: { shareUrl },
       },
     })
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)
-
     let resolveShare!: (value: {
       success: boolean
       dismissedAction: boolean
@@ -380,7 +380,12 @@ describe('SendSelectRecipient', () => {
     })
     jest.mocked(Share.open).mockReturnValueOnce(sharePromise)
 
-    const store = createMockStore(storeWithPhoneVerified)
+    const store = createMockStore({
+      ...storeWithPhoneVerified,
+      identity: {
+        e164NumberToAddress: { [mockE164Number2Invite]: null },
+      },
+    })
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -422,12 +427,12 @@ describe('SendSelectRecipient', () => {
     })
   })
 
-  it('shows unknown address info text when searching for unknown address after making address verification request', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)
-
-    const store = createMockStore(storeWithPhoneVerified)
+  it('shows unknown address info text when searching for unknown address', async () => {
+    // addressToVerifiedBy entry is `null` → checked and not verified
+    const store = createMockStore({
+      ...storeWithPhoneVerified,
+      identity: { addressToVerifiedBy: { [mockAccount2.toLowerCase()]: null } },
+    })
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -457,8 +462,11 @@ describe('SendSelectRecipient', () => {
     expect(getByTestId('UnknownAddressInfo')).toBeTruthy()
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
   })
-  it('shows unknown address info text and skips CPV request when searching for any address if PN not verified', async () => {
-    const store = createMockStore(defaultStore)
+  it('dispatches verification fetch for typed addresses regardless of own phone verification', async () => {
+    const store = createMockStore({
+      ...defaultStore,
+      identity: { addressToVerifiedBy: { [mockAccount2.toLowerCase()]: null } },
+    })
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -484,16 +492,15 @@ describe('SendSelectRecipient', () => {
       fireEvent.press(getByTestId('RecipientItem'))
     })
 
-    expect(store.getActions()).toEqual([])
+    expect(store.getActions()).toEqual([fetchAddressVerification(mockAccount2.toLowerCase())])
     expect(getByTestId('UnknownAddressInfo')).toBeTruthy()
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
   })
   it('shows unknown address info text and send button when searching for address with cached phone number but no longer connected to the phone number', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)
-
-    const store = createMockStore(storeWithPhoneVerified)
+    const store = createMockStore({
+      ...storeWithPhoneVerified,
+      identity: { addressToVerifiedBy: { [mockAccount]: null } },
+    })
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -548,10 +555,6 @@ describe('SendSelectRecipient', () => {
   })
 
   it('navigates to send amount when phone number recipient with single address', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -596,10 +599,6 @@ describe('SendSelectRecipient', () => {
     })
   })
   it('navigates to send amount with isMiniPayRecipient when address is verified by minipay', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -640,10 +639,6 @@ describe('SendSelectRecipient', () => {
     })
   })
   it('navigates to address picker when phone number recipient has multiple verified addresses', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -691,10 +686,6 @@ describe('SendSelectRecipient', () => {
     })
   })
   it('navigates to send enter amount when phone number has multiple raw addresses but only one with a verifier', async () => {
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -747,10 +738,6 @@ describe('SendSelectRecipient', () => {
   it.each([{ searchAddress: mockAccount2 }, { searchAddress: mockAccount3 }])(
     'navigates to send enter amount with correct address if an address is entered which also maps to a phone number with multiple addresses',
     async ({ searchAddress }) => {
-      jest
-        .mocked(getRecipientVerificationStatus)
-        .mockReturnValue(RecipientVerificationStatus.VERIFIED)
-
       const store = createMockStore({
         ...storeWithPhoneVerified,
         identity: {

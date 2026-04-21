@@ -7,15 +7,20 @@ import { formatShortenedAddress } from 'src/account/utils'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
-import Touchable from 'src/components/Touchable'
 import CustomHeader from 'src/components/header/CustomHeader'
+import Touchable from 'src/components/Touchable'
 import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
-import { miniPay, valora } from 'src/images/Images'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { getDisplayName } from 'src/recipients/recipient'
+import {
+  VERIFIER_ICONS,
+  VERIFIER_NAMES,
+  Verifier,
+  isKnownVerifier,
+} from 'src/recipients/verifier'
 import { useSelector } from 'src/redux/hooks'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -23,23 +28,7 @@ import { Spacing } from 'src/styles/styles'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SelectRecipientAddress>
 
-type Verifier = 'valora' | 'minipay'
-
-const VERIFIER_NAMES: Record<Verifier, string> = {
-  valora: 'Valora',
-  minipay: 'MiniPay',
-}
-
 const ICON_SIZE = 40
-
-const VERIFIER_ICONS: Record<Verifier, number> = {
-  valora,
-  minipay: miniPay,
-}
-
-function isKnownVerifier(verifier: string | undefined): verifier is Verifier {
-  return !!verifier && verifier in VERIFIER_NAMES
-}
 
 function VerifierIcon({ verifier }: { verifier: Verifier }) {
   return <Image source={VERIFIER_ICONS[verifier]} style={styles.icon} resizeMode="contain" />

@@ -4,23 +4,14 @@ import 'react-native'
 import { Provider } from 'react-redux'
 import RecipientItem from 'src/recipients/RecipientItemV2'
 import { createMockStore } from 'test/utils'
-import {
-  mockAddressRecipient,
-  mockInvitableRecipient,
-  mockPhoneRecipient,
-  mockRecipient,
-} from 'test/values'
+import { mockAddressRecipient, mockInvitableRecipient, mockPhoneRecipient } from 'test/values'
 
 describe('RecipientItemV2', () => {
-  it('renders correctly with no app icon if phone number recipient is not a known app user (number never looked up)', () => {
-    const { queryByTestId, getByText } = render(
-      <Provider
-        store={createMockStore({
-          identity: {
-            e164NumberToAddress: {},
-          },
-        })}
-      >
+  it('never renders the verified app icon — verification must be refetched on selection', () => {
+    // Even with a populated mapping (default store includes one) we must not surface
+    // a cached "verified" indicator on the recipient list.
+    const { queryByTestId } = render(
+      <Provider store={createMockStore()}>
         <RecipientItem
           recipient={mockInvitableRecipient}
           onSelectRecipient={jest.fn()}
@@ -28,37 +19,11 @@ describe('RecipientItemV2', () => {
         />
       </Provider>
     )
-    expect(getByText(mockInvitableRecipient.name)).toBeTruthy()
-    expect(getByText(mockInvitableRecipient.displayNumber)).toBeTruthy()
     expect(queryByTestId('RecipientItem/AppIcon')).toBeFalsy()
-    expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
   })
 
-  it('renders correctly with no app icon if phone number recipient is not a known app user (number looked up before)', () => {
-    const { queryByTestId, getByText } = render(
-      <Provider
-        store={createMockStore({
-          identity: {
-            e164NumberToAddress: { [mockInvitableRecipient.e164PhoneNumber]: null },
-          },
-        })}
-      >
-        <RecipientItem
-          recipient={mockInvitableRecipient}
-          onSelectRecipient={jest.fn()}
-          loading={false}
-        />
-      </Provider>
-    )
-    expect(getByText(mockInvitableRecipient.name)).toBeTruthy()
-    expect(getByText(mockInvitableRecipient.displayNumber)).toBeTruthy()
-    expect(queryByTestId('RecipientItem/AppIcon')).toBeFalsy()
-    expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
-  })
-
-  it('renders correctly with app icon if phone number recipient is an app user', () => {
-    const { queryByTestId, getByText, getByTestId } = render(
-      // default store includes a cached mapping
+  it('renders contact name and phone number', () => {
+    const { getByText } = render(
       <Provider store={createMockStore()}>
         <RecipientItem
           recipient={mockInvitableRecipient}
@@ -69,32 +34,10 @@ describe('RecipientItemV2', () => {
     )
     expect(getByText(mockInvitableRecipient.name)).toBeTruthy()
     expect(getByText(mockInvitableRecipient.displayNumber)).toBeTruthy()
-    expect(getByTestId('RecipientItem/AppIcon')).toBeTruthy()
-    expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
   })
 
-  it('renders correctly with app icon if address recipient is an app user', () => {
-    const { queryByTestId, getByText, getByTestId } = render(
-      // default store includes a cached mapping
-      <Provider
-        store={createMockStore({
-          identity: {
-            addressToVerificationStatus: {
-              [mockRecipient.address]: true,
-            },
-          },
-        })}
-      >
-        <RecipientItem recipient={mockRecipient} onSelectRecipient={jest.fn()} loading={false} />
-      </Provider>
-    )
-    expect(getByText(mockRecipient.name)).toBeTruthy()
-    expect(getByTestId('RecipientItem/AppIcon')).toBeTruthy()
-    expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
-  })
-
-  it('renders correctly if loading is set to true', () => {
-    const { getByText, getByTestId } = render(
+  it('renders spinner while loading', () => {
+    const { getByTestId } = render(
       <Provider store={createMockStore()}>
         <RecipientItem
           recipient={mockInvitableRecipient}
@@ -103,9 +46,20 @@ describe('RecipientItemV2', () => {
         />
       </Provider>
     )
-    expect(getByText(mockInvitableRecipient.name)).toBeTruthy()
-    expect(getByText(mockInvitableRecipient.displayNumber)).toBeTruthy()
     expect(getByTestId('RecipientItem/ActivityIndicator')).toBeTruthy()
+  })
+
+  it('hides spinner when not loading', () => {
+    const { queryByTestId } = render(
+      <Provider store={createMockStore()}>
+        <RecipientItem
+          recipient={mockInvitableRecipient}
+          onSelectRecipient={jest.fn()}
+          loading={false}
+        />
+      </Provider>
+    )
+    expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
   })
 
   it('tapping item invokes onSelectRecipient', () => {

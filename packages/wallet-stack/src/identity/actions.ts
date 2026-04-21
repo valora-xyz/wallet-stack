@@ -10,12 +10,11 @@ export enum Actions {
   UPDATE_E164_PHONE_NUMBER_ADDRESSES = 'IDENTITY/UPDATE_E164_PHONE_NUMBER_ADDRESSES',
   UPDATE_KNOWN_ADDRESSES = 'IDENTITY/UPDATE_KNOWN_ADDRESSES',
   FETCH_ADDRESSES_AND_VALIDATION_STATUS = 'IDENTITY/FETCH_ADDRESSES_AND_VALIDATION_STATUS',
+  FETCH_ADDRESS_VERIFICATION_STATUS = 'IDENTITY/FETCH_ADDRESS_VERIFICATION_STATUS',
   IMPORT_CONTACTS = 'IDENTITY/IMPORT_CONTACTS',
   UPDATE_IMPORT_CONTACT_PROGRESS = 'IDENTITY/UPDATE_IMPORT_CONTACT_PROGRESS',
   CANCEL_IMPORT_CONTACTS = 'IDENTITY/CANCEL_IMPORT_CONTACTS',
   END_IMPORT_CONTACTS = 'IDENTITY/END_IMPORT_CONTACTS',
-  FETCH_ADDRESS_VERIFICATION_STATUS = 'IDENTITY/FETCH_ADDRESS_VERIFICATION_STATUS',
-  ADDRESS_VERIFICATION_STATUS_RECEIVED = 'IDENTITY/ADDRESS_VERIFICATION_STATUS_RECEIVED',
   CONTACTS_SAVED = 'IDENTITY/CONTACTS_SAVED',
   STORED_PASSWORD_REFRESHED = 'IDENTITY/STORED_PASSWORD_REFRESHED',
 }
@@ -37,6 +36,11 @@ export interface FetchAddressesAndValidateAction {
   e164Number: string
 }
 
+export interface FetchAddressVerificationAction {
+  type: Actions.FETCH_ADDRESS_VERIFICATION_STATUS
+  address: string
+}
+
 export interface ImportContactsAction {
   type: Actions.IMPORT_CONTACTS
 }
@@ -51,17 +55,6 @@ export interface UpdateImportContactProgress {
 export interface EndImportContactsAction {
   type: Actions.END_IMPORT_CONTACTS
   success: boolean
-}
-
-export interface FetchAddressVerificationAction {
-  type: Actions.FETCH_ADDRESS_VERIFICATION_STATUS
-  address: string
-}
-
-export interface AddressVerificationStatusReceivedAction {
-  type: Actions.ADDRESS_VERIFICATION_STATUS_RECEIVED
-  address: string
-  addressVerified: boolean
 }
 
 interface ContactsSavedAction {
@@ -81,22 +74,12 @@ export type ActionTypes =
   | EndImportContactsAction
   | FetchAddressesAndValidateAction
   | FetchAddressVerificationAction
-  | AddressVerificationStatusReceivedAction
   | ContactsSavedAction
   | StoredPasswordRefreshedAction
 
 export const fetchAddressesAndValidate = (e164Number: string): FetchAddressesAndValidateAction => ({
   type: Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS,
   e164Number,
-})
-
-export const addressVerificationStatusReceived = (
-  address: string,
-  addressVerified: boolean
-): AddressVerificationStatusReceivedAction => ({
-  type: Actions.ADDRESS_VERIFICATION_STATUS_RECEIVED,
-  address,
-  addressVerified,
 })
 
 export const fetchAddressVerification = (address: string): FetchAddressVerificationAction => ({

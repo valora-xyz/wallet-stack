@@ -162,12 +162,6 @@
             },
             "type": "object"
         },
-        "AddressToVerificationStatus": {
-            "additionalProperties": {
-                "type": "boolean"
-            },
-            "type": "object"
-        },
         "AddressToVerifiedByType": {
             "additionalProperties": {
                 "type": "string"
@@ -5515,9 +5509,6 @@
                 "addressToE164Number": {
                     "$ref": "#/definitions/AddressToE164NumberType"
                 },
-                "addressToVerificationStatus": {
-                    "$ref": "#/definitions/AddressToVerificationStatus"
-                },
                 "addressToVerifiedBy": {
                     "$ref": "#/definitions/AddressToVerifiedByType"
                 },
@@ -5543,7 +5534,6 @@
             "required": [
                 "addressToDisplayName",
                 "addressToE164Number",
-                "addressToVerificationStatus",
                 "addressToVerifiedBy",
                 "askedContactsPermission",
                 "e164NumberToAddress",

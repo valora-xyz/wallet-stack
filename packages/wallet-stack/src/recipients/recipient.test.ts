@@ -1,18 +1,6 @@
 import { MinimalContact } from 'react-native-contacts'
-import { RecipientVerificationStatus } from 'src/identity/types'
-import {
-  contactsToRecipients,
-  getRecipientVerificationStatus,
-  sortRecipients,
-} from 'src/recipients/recipient'
-import {
-  mockAccount,
-  mockAddressRecipient,
-  mockInvitableRecipient,
-  mockRecipient,
-  mockRecipient2,
-  mockRecipient3,
-} from 'test/values'
+import { contactsToRecipients, sortRecipients } from 'src/recipients/recipient'
+import { mockRecipient, mockRecipient2, mockRecipient3 } from 'test/values'
 
 describe('contactsToRecipients', () => {
   it('returns a recipient per phone number', () => {
@@ -70,44 +58,3 @@ describe('Recipient sorting', () => {
   })
 })
 
-describe('getRecipientVerificationStatus', () => {
-  describe.each([
-    { recipient: mockAddressRecipient, type: 'without phone number' },
-    { recipient: mockRecipient, type: 'with phone number' },
-  ])('address recipient $type', ({ recipient }) => {
-    it('returns appropriate status', () => {
-      expect(getRecipientVerificationStatus(recipient, {}, { [recipient.address]: true })).toEqual(
-        RecipientVerificationStatus.VERIFIED
-      )
-      expect(getRecipientVerificationStatus(recipient, {}, { [recipient.address]: false })).toEqual(
-        RecipientVerificationStatus.UNVERIFIED
-      )
-      expect(
-        getRecipientVerificationStatus(recipient, {}, { [recipient.address]: undefined })
-      ).toEqual(RecipientVerificationStatus.UNKNOWN)
-      expect(getRecipientVerificationStatus(recipient, {}, {})).toEqual(
-        RecipientVerificationStatus.UNKNOWN
-      )
-    })
-  })
-
-  it('returns appropriate status for phone recipient', () => {
-    expect(
-      getRecipientVerificationStatus(
-        mockInvitableRecipient,
-        { [mockInvitableRecipient.e164PhoneNumber]: [mockAccount] },
-        {}
-      )
-    ).toEqual(RecipientVerificationStatus.VERIFIED)
-    expect(
-      getRecipientVerificationStatus(
-        mockInvitableRecipient,
-        { [mockInvitableRecipient.e164PhoneNumber]: null },
-        {}
-      )
-    ).toEqual(RecipientVerificationStatus.UNVERIFIED)
-    expect(getRecipientVerificationStatus(mockInvitableRecipient, {}, {})).toEqual(
-      RecipientVerificationStatus.UNKNOWN
-    )
-  })
-})
