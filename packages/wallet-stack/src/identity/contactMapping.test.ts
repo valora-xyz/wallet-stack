@@ -295,6 +295,7 @@ describe('Fetch Address Verification Saga', () => {
         [call(retrieveSignedMessage), 'some signed message'],
       ])
       .not.put.actionType(Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES)
+      .put(showErrorOrFallback(expect.anything(), ErrorMessages.ADDRESS_LOOKUP_FAILURE))
       .run()
     expect(AppAnalytics.track).toHaveBeenCalledWith(IdentityEvents.address_lookup_error, {
       error: 'Unable to fetch verification status for this address',

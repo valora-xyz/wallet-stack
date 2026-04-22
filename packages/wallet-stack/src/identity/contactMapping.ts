@@ -240,6 +240,7 @@ export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificat
       `Error fetching address verification`,
       error
     )
+    yield* put(showErrorOrFallback(error, ErrorMessages.ADDRESS_LOOKUP_FAILURE))
     AppAnalytics.track(IdentityEvents.address_lookup_error, { error: error.message })
   }
 }
