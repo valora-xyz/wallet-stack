@@ -499,7 +499,7 @@ describe('SendSelectRecipient', () => {
   it('shows unknown address info text and send button when searching for address with cached phone number but no longer connected to the phone number', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
-      identity: { addressToVerifiedBy: { [mockAccount]: null } },
+      identity: { addressToVerifiedBy: { [mockAccount.toLowerCase()]: null } },
     })
 
     const { getByTestId } = render(

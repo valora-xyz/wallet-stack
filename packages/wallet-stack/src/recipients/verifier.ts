@@ -19,6 +19,6 @@ export function isKnownVerifier(verifier: string | null | undefined): verifier i
 
 export function useVerifierName(address: string | undefined): string | undefined {
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
-  const verifier = address ? addressToVerifiedBy[address] : undefined
+  const verifier = address ? addressToVerifiedBy[address.toLowerCase()] : undefined
   return isKnownVerifier(verifier) ? VERIFIER_NAMES[verifier] : undefined
 }

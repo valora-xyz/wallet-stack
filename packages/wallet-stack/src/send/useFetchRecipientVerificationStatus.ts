@@ -26,7 +26,7 @@ const getRecipientVerificationStatus = (
   }
 
   if (recipient.address) {
-    const entry = addressToVerifiedBy[recipient.address]
+    const entry = addressToVerifiedBy[recipient.address.toLowerCase()]
     if (entry === undefined) return RecipientVerificationStatus.UNKNOWN
     return entry === null
       ? RecipientVerificationStatus.UNVERIFIED

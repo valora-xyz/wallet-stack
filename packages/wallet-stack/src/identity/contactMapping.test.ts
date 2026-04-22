@@ -246,12 +246,12 @@ describe('Fetch Address Verification Saga', () => {
         [select(walletAddressSelector), '0xxyz'],
         [call(retrieveSignedMessage), 'some signed message'],
       ])
-      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount]: 'valora' }))
+      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'valora' }))
       .run()
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
     expect(mockFetch).toHaveBeenCalledWith(
-      `${networkConfig.checkAddressVerifiedUrl}?address=${mockAccount}&clientPlatform=android&clientVersion=0.0.1`,
+      `${networkConfig.checkAddressVerifiedUrl}?address=${mockAccount.toLowerCase()}&clientPlatform=android&clientVersion=0.0.1`,
       expect.objectContaining({
         method: 'GET',
         headers: expect.objectContaining({
@@ -269,7 +269,7 @@ describe('Fetch Address Verification Saga', () => {
         [select(walletAddressSelector), '0xxyz'],
         [call(retrieveSignedMessage), 'some signed message'],
       ])
-      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount]: null }))
+      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: null }))
       .run()
   })
 

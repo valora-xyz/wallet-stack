@@ -216,12 +216,17 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
 }
 
 export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificationAction) {
+  const normalizedAddress = address.toLowerCase()
   try {
     AppAnalytics.track(IdentityEvents.address_lookup_start)
-    const addressVerified = yield* call(fetchAddressVerification, address)
+    const addressVerified = yield* call(fetchAddressVerification, normalizedAddress)
     // Note: currently backend only confirms Valora
     yield* put(
-      updateE164PhoneNumberAddresses({}, {}, { [address]: addressVerified ? 'valora' : null })
+      updateE164PhoneNumberAddresses(
+        {},
+        {},
+        { [normalizedAddress]: addressVerified ? 'valora' : null }
+      )
     )
     AppAnalytics.track(IdentityEvents.address_lookup_complete)
   } catch (err) {
