@@ -219,13 +219,17 @@ export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificat
   const normalizedAddress = address.toLowerCase()
   try {
     AppAnalytics.track(IdentityEvents.address_lookup_start)
-    const addressVerified = yield* call(fetchAddressVerification, normalizedAddress)
-    // Note: currently backend only confirms Valora
+    const { addressVerified, verifiedBy } = yield* call(
+      fetchAddressVerification,
+      normalizedAddress
+    )
+    // Older backend responses omit `verifiedBy` and only signal Valora-verified addresses,
+    // so fall back to 'valora' when verification is confirmed without a verifier.
     yield* put(
       updateE164PhoneNumberAddresses(
         {},
         {},
-        { [normalizedAddress]: addressVerified ? 'valora' : null }
+        { [normalizedAddress]: addressVerified ? (verifiedBy ?? 'valora') : null }
       )
     )
     AppAnalytics.track(IdentityEvents.address_lookup_complete)
@@ -318,8 +322,13 @@ function* fetchAddressVerification(address: string) {
       )
     }
 
-    const { data }: { data: { addressVerified: boolean } } = yield* call([response, 'json'])
-    return data.addressVerified
+    const {
+      data,
+    }: { data: { addressVerified: boolean; verifiedBy?: string | null } } = yield* call([
+      response,
+      'json',
+    ])
+    return { addressVerified: data.addressVerified, verifiedBy: data.verifiedBy }
   } catch (error) {
     Logger.warn(`${TAG}/fetchAddressVerification`, 'Unable to look up address', error)
     throw new Error('Unable to fetch verification status for this address')

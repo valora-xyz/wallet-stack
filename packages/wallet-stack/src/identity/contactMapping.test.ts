@@ -238,15 +238,17 @@ describe('Fetch Address Verification Saga', () => {
     mockFetch.resetMocks()
   })
 
-  it('records `valora` verifier when the backend confirms the address', async () => {
-    mockFetch.mockResponseOnce(JSON.stringify({ data: { addressVerified: true } }))
+  it('records the `verifiedBy` value returned by the backend', async () => {
+    mockFetch.mockResponseOnce(
+      JSON.stringify({ data: { addressVerified: true, verifiedBy: 'minipay' } })
+    )
 
     await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
       .provide([
         [select(walletAddressSelector), '0xxyz'],
         [call(retrieveSignedMessage), 'some signed message'],
       ])
-      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'valora' }))
+      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'minipay' }))
       .run()
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -259,6 +261,18 @@ describe('Fetch Address Verification Saga', () => {
         }),
       })
     )
+  })
+
+  it('falls back to `valora` when the backend confirms the address without a `verifiedBy` field', async () => {
+    mockFetch.mockResponseOnce(JSON.stringify({ data: { addressVerified: true } }))
+
+    await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
+      .provide([
+        [select(walletAddressSelector), '0xxyz'],
+        [call(retrieveSignedMessage), 'some signed message'],
+      ])
+      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'valora' }))
+      .run()
   })
 
   it('records `null` (checked, not verified) when the backend returns false', async () => {
