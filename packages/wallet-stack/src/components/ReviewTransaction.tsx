@@ -131,9 +131,7 @@ function renderAddressAndVerifier(
   if (!shortAddress && !verifierName) return undefined
   return (
     <>
-      {!!shortAddress && (
-        <Text style={styles.reviewSummaryItemSecondaryValue}>{shortAddress}</Text>
-      )}
+      {!!shortAddress && <Text style={styles.reviewSummaryItemSecondaryValue}>{shortAddress}</Text>}
       {!!verifierName && (
         <>
           <VerifiedBadge color={colors.contentSecondary} />
