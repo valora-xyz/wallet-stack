@@ -2,7 +2,13 @@ import * as fuzzysort from 'fuzzysort'
 import { TFunction } from 'i18next'
 import { MinimalContact } from 'react-native-contacts'
 import { formatShortenedAddress } from 'src/account/utils'
-import { AddressToDisplayNameType, AddressToE164NumberType } from 'src/identity/reducer'
+import {
+  AddressToDisplayNameType,
+  AddressToE164NumberType,
+  AddressToVerifiedByType,
+  E164NumberToAddressType,
+} from 'src/identity/reducer'
+import { RecipientVerificationStatus } from 'src/identity/types'
 import Logger from 'src/utils/Logger'
 import { parsePhoneNumber } from 'src/utils/phoneNumbers'
 
@@ -157,6 +163,34 @@ export function getRecipientFromAddress(
   }
 
   return recipient
+}
+
+export function getRecipientVerificationStatus(
+  recipient: Recipient,
+  e164NumberToAddress: E164NumberToAddressType,
+  addressToVerifiedBy: AddressToVerifiedByType
+): RecipientVerificationStatus {
+  // phone recipients should always have a number, the extra check is to ensure typing
+  if (recipient.recipientType === RecipientType.PhoneNumber && recipientHasNumber(recipient)) {
+    const addresses = e164NumberToAddress[recipient.e164PhoneNumber]
+    if (addresses === undefined) {
+      return RecipientVerificationStatus.UNKNOWN
+    }
+
+    if (addresses === null) {
+      return RecipientVerificationStatus.UNVERIFIED
+    }
+
+    return RecipientVerificationStatus.VERIFIED
+  }
+  if (recipientHasAddress(recipient)) {
+    const entry = addressToVerifiedBy[recipient.address.toLowerCase()]
+    if (entry === undefined) return RecipientVerificationStatus.UNKNOWN
+    return entry === null
+      ? RecipientVerificationStatus.UNVERIFIED
+      : RecipientVerificationStatus.VERIFIED
+  }
+  return RecipientVerificationStatus.UNKNOWN
 }
 
 type PreparedRecipient = Recipient & {

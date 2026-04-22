@@ -462,11 +462,8 @@ describe('SendSelectRecipient', () => {
     expect(getByTestId('UnknownAddressInfo')).toBeTruthy()
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
   })
-  it('dispatches verification fetch for typed addresses regardless of own phone verification', async () => {
-    const store = createMockStore({
-      ...defaultStore,
-      identity: { addressToVerifiedBy: { [mockAccount2.toLowerCase()]: null } },
-    })
+  it('skips verification fetch for typed addresses when own phone is not verified', async () => {
+    const store = createMockStore(defaultStore)
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -492,7 +489,7 @@ describe('SendSelectRecipient', () => {
       fireEvent.press(getByTestId('RecipientItem'))
     })
 
-    expect(store.getActions()).toEqual([fetchAddressVerification(mockAccount2.toLowerCase())])
+    expect(store.getActions()).toEqual([])
     expect(getByTestId('UnknownAddressInfo')).toBeTruthy()
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
   })
