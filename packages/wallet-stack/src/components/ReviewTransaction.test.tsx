@@ -157,7 +157,6 @@ describe('ReviewSummaryItemContact', () => {
 
     const subtitle = tree.getByTestId('ContactItem/SecondaryValue')
     expect(subtitle).toHaveTextContent('0x0123...6789', { exact: false })
-    expect(subtitle).toHaveTextContent('·', { exact: false })
     expect(subtitle).toHaveTextContent('Valora', { exact: false })
   })
 
@@ -170,7 +169,6 @@ describe('ReviewSummaryItemContact', () => {
 
     const subtitle = tree.getByTestId('ContactItem/SecondaryValue')
     // No address in the subtitle — it's already in the primary slot for address-only recipients
-    expect(subtitle).not.toHaveTextContent('·')
     expect(subtitle).toHaveTextContent('MiniPay', { exact: false })
   })
 

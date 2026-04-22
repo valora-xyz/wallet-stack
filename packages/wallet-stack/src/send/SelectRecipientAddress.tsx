@@ -9,6 +9,7 @@ import { SendEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
 import Touchable from 'src/components/Touchable'
 import CustomHeader from 'src/components/header/CustomHeader'
+import VerifiedBadge from 'src/icons/VerifiedBadge'
 import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
@@ -92,11 +93,10 @@ function SelectRecipientAddress({ route }: Props) {
               <VerifierIcon verifier={verifier} />
               <View style={styles.rowContent}>
                 <Text style={styles.address}>{formatShortenedAddress(address)}</Text>
-                <Text style={styles.verifier}>
-                  {t('selectRecipientAddress.verifiedBy', {
-                    verifier: VERIFIER_NAMES[verifier],
-                  })}
-                </Text>
+                <View style={styles.verifier}>
+                  <VerifiedBadge color={Colors.contentSecondary} />
+                  <Text style={styles.verifierName}>{VERIFIER_NAMES[verifier]}</Text>
+                </View>
               </View>
             </View>
           </Touchable>
@@ -149,6 +149,11 @@ const styles = StyleSheet.create({
     ...typeScale.labelMedium,
   },
   verifier: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.Tiny4,
+  },
+  verifierName: {
     ...typeScale.bodySmall,
     color: Colors.contentSecondary,
   },

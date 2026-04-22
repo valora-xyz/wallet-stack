@@ -15,6 +15,7 @@ import InfoIcon from 'src/icons/InfoIcon'
 import WalletIcon from 'src/icons/navigator/Wallet'
 import PhoneIcon from 'src/icons/Phone'
 import UserIcon from 'src/icons/User'
+import VerifiedBadge from 'src/icons/VerifiedBadge'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { type Recipient } from 'src/recipients/recipient'
 import { useVerifierName } from 'src/recipients/verifier'
@@ -72,7 +73,7 @@ export function ReviewSummaryItem(props: {
   label: string
   icon: ReactNode
   primaryValue: string
-  secondaryValue?: string
+  secondaryValue?: ReactNode
   testID?: string
   onPress?: () => void
 }) {
@@ -98,12 +99,21 @@ export function ReviewSummaryItem(props: {
 
             {!!props.secondaryValue && (
               <View style={styles.reviewSummaryItemSecondaryValueWrapper}>
-                <Text
-                  style={styles.reviewSummaryItemSecondaryValue}
-                  testID={`${props.testID}/SecondaryValue`}
-                >
-                  {props.secondaryValue}
-                </Text>
+                {typeof props.secondaryValue === 'string' ? (
+                  <Text
+                    style={styles.reviewSummaryItemSecondaryValue}
+                    testID={`${props.testID}/SecondaryValue`}
+                  >
+                    {props.secondaryValue}
+                  </Text>
+                ) : (
+                  <View
+                    style={styles.reviewSummaryItemSecondaryValueContent}
+                    testID={`${props.testID}/SecondaryValue`}
+                  >
+                    {props.secondaryValue}
+                  </View>
+                )}
                 {!!props.onPress && <InfoIcon size={14} color={colors.contentSecondary} />}
               </View>
             )}
@@ -111,6 +121,26 @@ export function ReviewSummaryItem(props: {
         </>
       </Touchable>
     </View>
+  )
+}
+
+function renderAddressAndVerifier(
+  shortAddress: string | undefined,
+  verifierName: string | undefined
+): ReactNode {
+  if (!shortAddress && !verifierName) return undefined
+  return (
+    <>
+      {!!shortAddress && (
+        <Text style={styles.reviewSummaryItemSecondaryValue}>{shortAddress}</Text>
+      )}
+      {!!verifierName && (
+        <>
+          <VerifiedBadge color={colors.contentSecondary} />
+          <Text style={styles.reviewSummaryItemSecondaryValue}>{verifierName}</Text>
+        </>
+      )}
+    </>
   )
 }
 
@@ -128,7 +158,7 @@ export function ReviewSummaryItemContact({
     // For recipients with a phone mapping, surface the resolved on-chain address (and verifier,
     // if known) as a subtitle so the user can verify the actual destination they are signing.
     const shortAddress = recipient.address ? formatShortenedAddress(recipient.address) : undefined
-    const phoneSubtitle = [shortAddress, verifierName].filter(Boolean).join(' · ') || undefined
+    const phoneSubtitle = renderAddressAndVerifier(shortAddress, verifierName)
 
     if (recipient.name) {
       return { title: recipient.name, subtitle: phoneSubtitle, icon: UserIcon }
@@ -139,7 +169,11 @@ export function ReviewSummaryItemContact({
     }
 
     if (recipient.address) {
-      return { title: recipient.address, subtitle: verifierName, icon: WalletIcon }
+      return {
+        title: recipient.address,
+        subtitle: renderAddressAndVerifier(undefined, verifierName),
+        icon: WalletIcon,
+      }
     }
   }, [recipient, verifierName])
 
@@ -485,6 +519,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.Smallest8,
     alignItems: 'center',
+  },
+  reviewSummaryItemSecondaryValueContent: {
+    flexDirection: 'row',
+    gap: Spacing.Tiny4,
+    alignItems: 'center',
+    flexShrink: 1,
   },
   reviewDetails: {
     gap: Spacing.Regular16,

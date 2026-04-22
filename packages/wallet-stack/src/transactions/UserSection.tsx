@@ -5,11 +5,13 @@ import { formatShortenedAddress } from 'src/account/utils'
 import AccountNumber from 'src/components/AccountNumber'
 import Expandable from 'src/components/Expandable'
 import Touchable from 'src/components/Touchable'
+import VerifiedBadge from 'src/icons/VerifiedBadge'
 import { Screens } from 'src/navigator/Screens'
 import { getDisplayName, Recipient, recipientHasNumber } from 'src/recipients/recipient'
 import { useVerifierName } from 'src/recipients/verifier'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
+import { Spacing } from 'src/styles/styles'
 
 interface Props {
   type: 'sent' | 'received' | 'withdrawn'
@@ -48,11 +50,18 @@ export default function UserSection({
   const shortAddress =
     hasIdentity && recipient.address ? formatShortenedAddress(recipient.address) : undefined
 
-  const secondaryText = verifierName
-    ? shortAddress
-      ? `${shortAddress} · ${verifierName}`
-      : verifierName
-    : (shortAddress ?? null)
+  const secondaryContent = verifierName ? (
+    <View style={styles.secondaryContent}>
+      {!!shortAddress && <Text style={styles.secondaryText}>{shortAddress}</Text>}
+      <VerifiedBadge
+        color={colors.contentSecondary}
+        testID={testID ? `${testID}/VerifierBadge` : undefined}
+      />
+      <Text style={styles.secondaryText}>{verifierName}</Text>
+    </View>
+  ) : shortAddress ? (
+    <Text style={styles.secondaryText}>{shortAddress}</Text>
+  ) : null
 
   const sectionLabel = {
     received: t('receivedFrom'),
@@ -67,16 +76,14 @@ export default function UserSection({
           <Text style={styles.sectionLabel}>{sectionLabel}</Text>
           <Touchable onPress={toggleExpanded} disabled={!expandable}>
             <>
-              <Expandable isExpandable={expandable && !secondaryText} isExpanded={expanded}>
+              <Expandable isExpandable={expandable && !secondaryContent} isExpanded={expanded}>
                 <Text style={styles.username} testID={`${testID}/name`}>
                   {displayName}
                 </Text>
               </Expandable>
-              {!!secondaryText && (
+              {!!secondaryContent && (
                 <Expandable isExpandable={expandable} isExpanded={expanded}>
-                  <Text style={styles.secondary} testID={`${testID}/address`}>
-                    {secondaryText}
-                  </Text>
+                  <View testID={`${testID}/address`}>{secondaryContent}</View>
                 </Expandable>
               )}
             </>
@@ -117,9 +124,15 @@ const styles = StyleSheet.create({
   username: {
     ...typeScale.bodyMedium,
   },
-  secondary: {
+  secondaryText: {
     ...typeScale.bodySmall,
     color: colors.contentSecondary,
+  },
+  secondaryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.Tiny4,
+    flexShrink: 1,
   },
   avatarContainer: {
     flex: 1,
