@@ -84,6 +84,9 @@ const App = createApp({
       },
       notificationCenter: true,
       phoneNumberVerification: true,
+      inviteFriends: {
+        shareUrl: 'https://example.test/invite',
+      },
       zendeskConfig: {
         apiKey: 'dummyApiKey',
         projectName: 'walletapp',

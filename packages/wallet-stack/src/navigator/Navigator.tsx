@@ -105,6 +105,7 @@ import { store } from 'src/redux/store'
 import SelectRecipientAddress from 'src/send/SelectRecipientAddress'
 import SendConfirmation, { sendConfirmationScreenNavOptions } from 'src/send/SendConfirmation'
 import SendEnterAmount from 'src/send/SendEnterAmount'
+import SendInvite from 'src/send/SendInvite'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
@@ -245,6 +246,11 @@ const sendScreens = (Navigator: typeof Stack) => (
       name={Screens.SendEnterAmount}
       component={SendEnterAmount}
       options={noHeader}
+    />
+    <Navigator.Screen
+      name={Screens.SendInvite}
+      component={SendInvite}
+      options={SendInvite.navigationOptions}
     />
   </>
 )

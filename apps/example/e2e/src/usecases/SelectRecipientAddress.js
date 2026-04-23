@@ -80,8 +80,6 @@ export default SelectRecipientAddress = () => {
       )
       await element(by.id('RecipientItem')).tap()
 
-      await waitForElementById('SendOrInviteButton', { timeout: 30_000, tap: true })
-
       // Pick the target address from the verified address picker.
       await waitForElementById(
         `SelectRecipientAddress/Row/${WALLET_MULTIPLE_VERIFIED_ADDRESS.toLowerCase()}`,
