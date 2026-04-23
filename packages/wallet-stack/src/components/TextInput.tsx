@@ -4,13 +4,13 @@
 
 import * as React from 'react'
 import {
-  NativeSyntheticEvent,
+  BlurEvent,
+  FocusEvent,
   Platform,
   TextInput as RNTextInput,
   TextInputProps as RNTextInputProps,
   StyleProp,
   StyleSheet,
-  TextInputFocusEventData,
   View,
   ViewStyle,
 } from 'react-native'
@@ -46,12 +46,12 @@ export class CTextInput extends React.Component<Props, State> {
     }
   }
 
-  handleInputFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+  handleInputFocus = (e: FocusEvent) => {
     this.setState({ isFocused: true })
     this.props.onFocus?.(e)
   }
 
-  handleInputBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+  handleInputBlur = (e: BlurEvent) => {
     this.setState({ isFocused: false })
     this.props.onBlur?.(e)
   }
