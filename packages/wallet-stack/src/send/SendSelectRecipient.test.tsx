@@ -1,7 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
 import * as React from 'react'
-import Share from 'react-native-share'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
@@ -345,19 +344,6 @@ describe('SendSelectRecipient', () => {
         inviteFriends: { shareUrl },
       },
     })
-    let resolveShare!: (value: {
-      success: boolean
-      dismissedAction: boolean
-      message: string
-    }) => void
-    const sharePromise = new Promise<{
-      success: boolean
-      dismissedAction: boolean
-      message: string
-    }>((resolve) => {
-      resolveShare = resolve
-    })
-    jest.mocked(Share.open).mockReturnValueOnce(sharePromise)
 
     const store = createMockStore({
       ...storeWithPhoneVerified,
