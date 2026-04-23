@@ -10,7 +10,7 @@ import BackButton from 'src/components/BackButton'
 import { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
 import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
-import { FilterChip } from 'src/components/FilterChipsCarousel'
+import { FilterChip, isNetworkChip } from 'src/components/FilterChipsCarousel'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
 import { ReviewDetailsItem } from 'src/components/ReviewTransaction'
@@ -114,7 +114,16 @@ export default function EnterAmount({
 }: Props) {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
-  const [token, setToken] = useState<TokenBalance | undefined>(() => defaultToken)
+  const [token, setToken] = useState<TokenBalance | undefined>(() => {
+    if (defaultToken) return defaultToken
+    const activeFilters = filterChips?.filter((chip) => chip.isSelected) ?? []
+    const selectableTokens = tokens.filter((t) =>
+      activeFilters.every((filter) =>
+        isNetworkChip(filter) ? filter.filterFn(t, filter.selectedNetworkIds) : filter.filterFn(t)
+      )
+    )
+    return selectableTokens[0]
+  })
   const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null)
   const feeCurrencies = useSelector((state) =>
     feeCurrenciesSelector(state, token?.networkId ?? networkConfig.defaultNetworkId)
