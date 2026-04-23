@@ -10,6 +10,7 @@ import BackButton from 'src/components/BackButton'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
 import InfoBottomSheet, { InfoBottomSheetContentBlock } from 'src/components/InfoBottomSheet'
+import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import {
   buildAmounts,
   ReviewContent,
@@ -23,11 +24,13 @@ import {
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
+import { addressToVerifiedBySelector } from 'src/identity/selectors'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencyCode, getLocalCurrencySymbol } from 'src/localCurrency/selectors'
 import { noHeader } from 'src/navigator/Headers'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
+import { RecipientType } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { sendPayment } from 'src/send/actions'
 import { isSendingSelector } from 'src/send/selectors'
@@ -36,11 +39,11 @@ import { NETWORK_NAMES } from 'src/shared/conts'
 import { useAmountAsUsd, useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import Logger from 'src/utils/Logger'
-import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import {
   getPreparedTransactionsPossible,
   getSerializablePreparedTransaction,
 } from 'src/viem/preparedTransactionSerialization'
+import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import { walletAddressSelector } from 'src/web3/selectors'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendConfirmation>
@@ -88,6 +91,12 @@ export default function SendConfirmation({ route: { params } }: Props) {
   const localAmount = useTokenToLocalAmount(tokenAmount, tokenId)
   const usdAmount = useAmountAsUsd(tokenAmount, tokenId)
   const walletAddress = useSelector(walletAddressSelector)
+  const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
+  const showUnknownAddressInfo =
+    recipient.recipientType === RecipientType.Address &&
+    !!recipient.address &&
+    addressToVerifiedBy[recipient.address] === null
+
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, tokenInfo!.networkId))
   const {
     maxFeeAmount,
@@ -233,6 +242,14 @@ export default function SendConfirmation({ route: { params } }: Props) {
       </ReviewContent>
 
       <ReviewFooter>
+        {showUnknownAddressInfo && (
+          <InLineNotification
+            variant={NotificationVariant.Info}
+            description={t('sendSelectRecipient.unknownAddressInfo')}
+            testID="UnknownAddressInfo"
+          />
+        )}
+
         <Button
           testID="ConfirmButton"
           text={t('send')}

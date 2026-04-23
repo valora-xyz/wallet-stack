@@ -260,6 +260,7 @@ export type StackParamList = {
       fiat: number
     }
   }
+  [Screens.SendInvite]: { recipient: Recipient; shareUrl: string }
   [Screens.SelectRecipientAddress]: SelectRecipientAddressParams
   [Screens.SendSelectRecipient]:
     | {

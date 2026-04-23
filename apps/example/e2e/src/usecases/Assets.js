@@ -16,7 +16,7 @@ async function validateSendFlow(tokenSymbol) {
   await element(by.id('SendSelectRecipientSearchInput')).tapReturnKey()
   await expect(element(by.text(recipientAddressDisplay)).atIndex(0)).toBeVisible()
   await element(by.text(recipientAddressDisplay)).atIndex(0).tap()
-  await waitForElementById('SendOrInviteButton', { tap: true })
+  await waitForElementById('SendEnterAmount/TokenSelect', { timeout: 30_000 })
   await expect(
     element(by.text(`${tokenSymbol} on Celo`).withAncestor(by.id('SendEnterAmount/TokenSelect')))
   ).toBeVisible()

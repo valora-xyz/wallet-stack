@@ -75,6 +75,7 @@ export enum Screens {
   SelectCountry = 'SelectCountry',
   SelectLocalCurrency = 'SelectLocalCurrency',
   SelectProvider = 'SelectProvider',
+  SendInvite = 'SendInvite',
   SelectRecipientAddress = 'SelectRecipientAddress',
   SendSelectRecipient = 'SendSelectRecipient',
   SendConfirmation = 'SendConfirmation',
