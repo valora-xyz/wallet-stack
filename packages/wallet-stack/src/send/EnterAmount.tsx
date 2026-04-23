@@ -34,6 +34,7 @@ import { Spacing } from 'src/styles/styles'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
 import { PreparedTransactionsResult } from 'src/viem/prepareTransactions'
+import networkConfig from 'src/web3/networkConfig'
 
 export interface ProceedArgs {
   tokenAmount: BigNumber
@@ -113,9 +114,11 @@ export default function EnterAmount({
 }: Props) {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
-  const [token, setToken] = useState<TokenBalance>(() => defaultToken ?? tokens[0])
+  const [token, setToken] = useState<TokenBalance | undefined>(() => defaultToken)
   const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null)
-  const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, token.networkId))
+  const feeCurrencies = useSelector((state) =>
+    feeCurrenciesSelector(state, token?.networkId ?? networkConfig.defaultNetworkId)
+  )
   const networkFee = useNetworkFee(prepareTransactionsResult)
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
 
@@ -142,6 +145,8 @@ export default function EnterAmount({
   useEffect(() => {
     onClearPreparedTransactions()
 
+    if (!token) return
+
     const canRefresh =
       processedAmounts.token.bignum &&
       processedAmounts.token.bignum.gt(0) &&
@@ -158,9 +163,9 @@ export default function EnterAmount({
   const onOpenTokenPicker = () => {
     tokenBottomSheetRef.current?.snapToIndex(0)
     AppAnalytics.track(SendEvents.token_dropdown_opened, {
-      currentTokenId: token.tokenId,
-      currentTokenAddress: token.address,
-      currentNetworkId: token.networkId,
+      currentTokenId: token?.tokenId ?? '',
+      currentTokenAddress: token?.address ?? null,
+      currentNetworkId: token?.networkId ?? null,
     })
   }
 
@@ -174,6 +179,7 @@ export default function EnterAmount({
   }
 
   const onSelectPercentageAmount = (percentage: number) => {
+    if (!token) return
     handleSelectPercentageAmount(percentage)
     setSelectedPercentage(percentage)
 
@@ -187,6 +193,7 @@ export default function EnterAmount({
   }
 
   const showLowerAmountError =
+    token &&
     processedAmounts.token.bignum &&
     !processedAmounts.token.bignum.lte(token.balance) &&
     !disableBalanceCheck
@@ -205,6 +212,7 @@ export default function EnterAmount({
     prepareTransactionsResult.transactions.length > 0
 
   const disabled =
+    !token ||
     disableProceed ||
     (disableBalanceCheck ? !!processedAmounts.token.bignum?.isZero() : !transactionIsPossible)
 
@@ -236,89 +244,95 @@ export default function EnterAmount({
             onOpenTokenPicker={tokenSelectionDisabled ? undefined : onOpenTokenPicker}
           />
 
-          {prepareTransactionsResult?.type !== 'not-enough-balance-for-gas' && !!networkFee && (
-            <View style={styles.feeContainer}>
-              <ReviewDetailsItem
-                approx
-                testID="SendEnterAmount/NetworkFee"
-                type="token-amount"
-                label={t('networkFee')}
-                tokenAmount={networkFee.amount}
-                localAmount={networkFee.localAmount}
-                tokenInfo={networkFee.token}
-                localCurrencySymbol={localCurrencySymbol}
-                onInfoPress={() => feeInfoBottomSheetRef.current?.snapToIndex(0)}
-              />
+          {token &&
+            prepareTransactionsResult?.type !== 'not-enough-balance-for-gas' &&
+            !!networkFee && (
+              <View style={styles.feeContainer}>
+                <ReviewDetailsItem
+                  approx
+                  testID="SendEnterAmount/NetworkFee"
+                  type="token-amount"
+                  label={t('networkFee')}
+                  tokenAmount={networkFee.amount}
+                  localAmount={networkFee.localAmount}
+                  tokenInfo={networkFee.token}
+                  localCurrencySymbol={localCurrencySymbol}
+                  onInfoPress={() => feeInfoBottomSheetRef.current?.snapToIndex(0)}
+                />
 
-              <FeeInfoBottomSheet forwardedRef={feeInfoBottomSheetRef} networkFee={networkFee} />
-            </View>
-          )}
+                <FeeInfoBottomSheet forwardedRef={feeInfoBottomSheetRef} networkFee={networkFee} />
+              </View>
+            )}
         </View>
 
-        {showLowerAmountError && (
-          <InLineNotification
-            variant={NotificationVariant.Warning}
-            title={t('sendEnterAmountScreen.insufficientBalanceWarning.title', {
-              tokenSymbol: token.symbol,
-            })}
-            description={t('sendEnterAmountScreen.insufficientBalanceWarning.description', {
-              tokenSymbol: token.symbol,
-            })}
-            style={styles.warning}
-            testID="SendEnterAmount/NotEnoughBalanceWarning"
-          />
-        )}
-        {showMaxAmountWarning && (
-          <InLineNotification
-            variant={NotificationVariant.Warning}
-            title={t('sendEnterAmountScreen.maxAmountWarning.title')}
-            description={t('sendEnterAmountScreen.maxAmountWarning.description', {
-              feeTokenSymbol: prepareTransactionsResult.feeCurrency.symbol,
-            })}
-            style={styles.warning}
-            testID="SendEnterAmount/MaxAmountWarning"
-          />
-        )}
-        {showNotEnoughBalanceForGasWarning && (
-          <InLineNotification
-            variant={NotificationVariant.Warning}
-            title={t('sendEnterAmountScreen.notEnoughBalanceForGasWarning.title', {
-              feeTokenSymbol: prepareTransactionsResult.feeCurrencies[0].symbol,
-            })}
-            description={t('sendEnterAmountScreen.notEnoughBalanceForGasWarning.description', {
-              feeTokenSymbol: prepareTransactionsResult.feeCurrencies[0].symbol,
-            })}
-            style={styles.warning}
-            testID="SendEnterAmount/NotEnoughForGasWarning"
-          />
-        )}
-        {prepareTransactionError && (
-          <InLineNotification
-            variant={NotificationVariant.Error}
-            title={t('sendEnterAmountScreen.prepareTransactionError.title')}
-            description={t('sendEnterAmountScreen.prepareTransactionError.description')}
-            style={styles.warning}
-            testID="SendEnterAmount/PrepareTransactionError"
-          />
-        )}
+        {token && (
+          <>
+            {showLowerAmountError && (
+              <InLineNotification
+                variant={NotificationVariant.Warning}
+                title={t('sendEnterAmountScreen.insufficientBalanceWarning.title', {
+                  tokenSymbol: token.symbol,
+                })}
+                description={t('sendEnterAmountScreen.insufficientBalanceWarning.description', {
+                  tokenSymbol: token.symbol,
+                })}
+                style={styles.warning}
+                testID="SendEnterAmount/NotEnoughBalanceWarning"
+              />
+            )}
+            {showMaxAmountWarning && (
+              <InLineNotification
+                variant={NotificationVariant.Warning}
+                title={t('sendEnterAmountScreen.maxAmountWarning.title')}
+                description={t('sendEnterAmountScreen.maxAmountWarning.description', {
+                  feeTokenSymbol: prepareTransactionsResult.feeCurrency.symbol,
+                })}
+                style={styles.warning}
+                testID="SendEnterAmount/MaxAmountWarning"
+              />
+            )}
+            {showNotEnoughBalanceForGasWarning && (
+              <InLineNotification
+                variant={NotificationVariant.Warning}
+                title={t('sendEnterAmountScreen.notEnoughBalanceForGasWarning.title', {
+                  feeTokenSymbol: prepareTransactionsResult.feeCurrencies[0].symbol,
+                })}
+                description={t('sendEnterAmountScreen.notEnoughBalanceForGasWarning.description', {
+                  feeTokenSymbol: prepareTransactionsResult.feeCurrencies[0].symbol,
+                })}
+                style={styles.warning}
+                testID="SendEnterAmount/NotEnoughForGasWarning"
+              />
+            )}
+            {prepareTransactionError && (
+              <InLineNotification
+                variant={NotificationVariant.Error}
+                title={t('sendEnterAmountScreen.prepareTransactionError.title')}
+                description={t('sendEnterAmountScreen.prepareTransactionError.description')}
+                style={styles.warning}
+                testID="SendEnterAmount/PrepareTransactionError"
+              />
+            )}
 
-        {children}
+            {children}
 
-        <EnterAmountOptions
-          onPressAmount={onSelectPercentageAmount}
-          selectedAmount={selectedPercentage}
-          testID="SendEnterAmount/AmountOptions"
-        />
+            <EnterAmountOptions
+              onPressAmount={onSelectPercentageAmount}
+              selectedAmount={selectedPercentage}
+              testID="SendEnterAmount/AmountOptions"
+            />
 
-        <ProceedComponent
-          tokenAmount={processedAmounts.token.bignum}
-          localAmount={processedAmounts.local.bignum}
-          token={token}
-          amountEnteredIn={amountType}
-          onPressProceed={onPressProceed}
-          disabled={disabled}
-          showLoading={prepareTransactionsLoading}
-        />
+            <ProceedComponent
+              tokenAmount={processedAmounts.token.bignum}
+              localAmount={processedAmounts.local.bignum}
+              token={token}
+              amountEnteredIn={amountType}
+              onPressProceed={onPressProceed}
+              disabled={disabled}
+              showLoading={prepareTransactionsLoading}
+            />
+          </>
+        )}
       </KeyboardAwareScrollView>
       <TokenBottomSheet
         forwardedRef={tokenBottomSheetRef}
