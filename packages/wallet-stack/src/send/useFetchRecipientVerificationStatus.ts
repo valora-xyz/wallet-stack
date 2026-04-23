@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
 import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
-import {
-  addressToVerificationStatusSelector,
-  e164NumberToAddressSelector,
-} from 'src/identity/selectors'
+import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { Recipient, RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -16,7 +13,7 @@ const useFetchRecipientVerificationStatus = () => {
   )
 
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
-  const addressToVerificationStatus = useSelector(addressToVerificationStatusSelector)
+  const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
   const dispatch = useDispatch()
 
@@ -36,9 +33,7 @@ const useFetchRecipientVerificationStatus = () => {
     ) {
       dispatch(fetchAddressesAndValidate(selectedRecipient.e164PhoneNumber))
     } else if (selectedRecipient?.address) {
-      if (addressToVerificationStatus[selectedRecipient.address]) {
-        setRecipientVerificationStatus(RecipientVerificationStatus.VERIFIED)
-      } else if (phoneNumberVerified) {
+      if (phoneNumberVerified) {
         dispatch(fetchAddressVerification(selectedRecipient.address))
       } else {
         setRecipientVerificationStatus(RecipientVerificationStatus.UNVERIFIED)
@@ -49,12 +44,12 @@ const useFetchRecipientVerificationStatus = () => {
   useEffect(() => {
     if (recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN) {
       // e164NumberToAddress is updated after a successful phone number lookup,
-      // addressToVerificationStatus is updated after a successful address lookup
+      // addressToVerifiedBy is updated after a successful address lookup
       setRecipientVerificationStatus(
-        getRecipientVerificationStatus(recipient, e164NumberToAddress, addressToVerificationStatus)
+        getRecipientVerificationStatus(recipient, e164NumberToAddress, addressToVerifiedBy)
       )
     }
-  }, [e164NumberToAddress, addressToVerificationStatus, recipient, recipientVerificationStatus])
+  }, [e164NumberToAddress, addressToVerifiedBy, recipient, recipientVerificationStatus])
 
   return {
     recipient,

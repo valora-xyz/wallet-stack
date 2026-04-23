@@ -69,17 +69,6 @@ export function getDisplayPhoneNumber(phoneNumber: string, defaultCountryCode: s
   }
 }
 
-export function getDisplayNumberInternational(e164PhoneNumber: string) {
-  const countryCode = getCountryCode(e164PhoneNumber)
-  const phoneDetails = parsePhoneNumber(e164PhoneNumber, (countryCode || '').toString())
-  if (phoneDetails) {
-    return phoneDetails.displayNumberInternational
-  } else {
-    // Fallback to input instead of showing nothing for invalid numbers
-    return e164PhoneNumber
-  }
-}
-
 export function isE164NumberStrict(phoneNumber: string) {
   try {
     const parsedPhoneNumber = phoneUtil.parse(phoneNumber)

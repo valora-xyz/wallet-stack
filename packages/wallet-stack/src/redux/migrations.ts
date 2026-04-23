@@ -2081,4 +2081,8 @@ export const migrations = {
     ...state,
     identity: _.omit(state.identity, 'secureSendPhoneNumberMapping'),
   }),
+  257: (state: any) => ({
+    ...state,
+    identity: _.omit(state.identity, 'addressToVerificationStatus'),
+  }),
 }

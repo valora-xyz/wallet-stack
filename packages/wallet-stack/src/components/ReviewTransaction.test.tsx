@@ -76,18 +76,27 @@ describe('ReviewSummaryItem', () => {
 })
 
 describe('ReviewSummaryItemContact', () => {
-  it('displays name + phone if recipient has a name and phone number', () => {
+  const renderContact = (recipient: Recipient, storeOverrides: Record<string, unknown> = {}) =>
+    render(
+      <Provider store={createMockStore(storeOverrides)}>
+        <ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />
+      </Provider>
+    )
+
+  it('shows name as primary value and resolved short address as subtitle for phone recipients', () => {
     const recipient = {
       name: 'John Doe',
       displayNumber: '+111111111',
       e164PhoneNumber: '+222222222',
+      address: '0x0123456789012345678901234567890123456789',
     } as Recipient
-    const tree = render(<ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />)
+    const tree = renderContact(recipient)
 
     expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('John Doe', {
       exact: false,
     })
-    expect(tree.getByTestId('ContactItem/SecondaryValue')).toHaveTextContent('+111111111', {
+    // Phone recipients always surface the on-chain destination on the review screen.
+    expect(tree.getByTestId('ContactItem/SecondaryValue')).toHaveTextContent('0x0123...6789', {
       exact: false,
     })
   })
@@ -109,14 +118,17 @@ describe('ReviewSummaryItemContact', () => {
   ])(
     'displays only $phoneNumberType phone if name is not available',
     ({ displayNumber, e164PhoneNumber, expectedDisplayedValue }) => {
-      const recipient = { displayNumber, e164PhoneNumber } as Recipient
-      const tree = render(<ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />)
+      const address = '0x0123456789012345678901234567890123456789'
+      const recipient = { displayNumber, e164PhoneNumber, address } as Recipient
+      const tree = renderContact(recipient)
 
       expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent(
         expectedDisplayedValue,
         { exact: false }
       )
-      expect(tree.queryByTestId('ContactItem/SecondaryValue')).toBeNull()
+      expect(tree.getByTestId('ContactItem/SecondaryValue')).toHaveTextContent('0x0123...6789', {
+        exact: false,
+      })
     }
   )
 
@@ -124,16 +136,45 @@ describe('ReviewSummaryItemContact', () => {
     const recipient = {
       address: '0x123456789',
     } as Recipient
-    const tree = render(<ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />)
+    const tree = renderContact(recipient)
 
     expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('0x123456789', {
       exact: false,
     })
   })
 
+  it('inlines the verifier with the short address for phone recipients', () => {
+    const address = '0x0123456789012345678901234567890123456789'
+    const recipient = {
+      name: 'John Doe',
+      displayNumber: '+111111111',
+      e164PhoneNumber: '+222222222',
+      address,
+    } as Recipient
+    const tree = renderContact(recipient, {
+      identity: { addressToVerifiedBy: { [address]: 'valora' } },
+    })
+
+    const subtitle = tree.getByTestId('ContactItem/SecondaryValue')
+    expect(subtitle).toHaveTextContent('0x0123...6789', { exact: false })
+    expect(subtitle).toHaveTextContent('Valora', { exact: false })
+  })
+
+  it('inlines just the verifier for address-only recipients with a known verifier', () => {
+    const address = '0x0123456789012345678901234567890123456789'
+    const recipient = { address } as Recipient
+    const tree = renderContact(recipient, {
+      identity: { addressToVerifiedBy: { [address]: 'minipay' } },
+    })
+
+    const subtitle = tree.getByTestId('ContactItem/SecondaryValue')
+    // No address in the subtitle — it's already in the primary slot for address-only recipients
+    expect(subtitle).toHaveTextContent('MiniPay', { exact: false })
+  })
+
   it('logs an error if no name/phone/address exist', () => {
     const recipient = {} as Recipient
-    const tree = render(<ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />)
+    const tree = renderContact(recipient)
     expect(Logger.error).toHaveBeenCalledTimes(1)
     expect(tree.toJSON()).toBeNull()
   })

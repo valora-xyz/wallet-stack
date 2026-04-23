@@ -5,7 +5,7 @@ import { formatShortenedAddress } from 'src/account/utils'
 import {
   AddressToDisplayNameType,
   AddressToE164NumberType,
-  AddressToVerificationStatus,
+  AddressToVerifiedByType,
   E164NumberToAddressType,
 } from 'src/identity/reducer'
 import { RecipientVerificationStatus } from 'src/identity/types'
@@ -168,7 +168,7 @@ export function getRecipientFromAddress(
 export function getRecipientVerificationStatus(
   recipient: Recipient,
   e164NumberToAddress: E164NumberToAddressType,
-  addressToVerificationStatus: AddressToVerificationStatus
+  addressToVerifiedBy: AddressToVerifiedByType
 ): RecipientVerificationStatus {
   // phone recipients should always have a number, the extra check is to ensure typing
   if (recipient.recipientType === RecipientType.PhoneNumber && recipientHasNumber(recipient)) {
@@ -183,18 +183,14 @@ export function getRecipientVerificationStatus(
 
     return RecipientVerificationStatus.VERIFIED
   }
-  if (recipientHasAddress(recipient) && recipient.address in addressToVerificationStatus) {
-    switch (addressToVerificationStatus[recipient.address]) {
-      case true:
-        return RecipientVerificationStatus.VERIFIED
-      case false:
-        return RecipientVerificationStatus.UNVERIFIED
-      case undefined:
-        return RecipientVerificationStatus.UNKNOWN
-    }
-  } else {
-    return RecipientVerificationStatus.UNKNOWN
+  if (recipientHasAddress(recipient)) {
+    const entry = addressToVerifiedBy[recipient.address.toLowerCase()]
+    if (entry === undefined) return RecipientVerificationStatus.UNKNOWN
+    return entry === null
+      ? RecipientVerificationStatus.UNVERIFIED
+      : RecipientVerificationStatus.VERIFIED
   }
+  return RecipientVerificationStatus.UNKNOWN
 }
 
 type PreparedRecipient = Recipient & {
