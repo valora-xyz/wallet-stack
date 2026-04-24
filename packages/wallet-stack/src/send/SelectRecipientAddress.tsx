@@ -103,11 +103,7 @@ function SelectRecipientAddress({ route }: Props) {
               <VerifierIcon verifier={verifier} />
               <View style={styles.rowContent}>
                 <Text style={styles.address}>{formatShortenedAddress(address)}</Text>
-                <Text style={styles.verifier}>
-                  {t('selectRecipientAddress.verifiedBy', {
-                    verifier: VERIFIERS[verifier].name,
-                  })}
-                </Text>
+                <Text style={styles.verifier}>{VERIFIERS[verifier].name}</Text>
               </View>
             </View>
           </Touchable>

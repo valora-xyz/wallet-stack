@@ -53,8 +53,8 @@ describe('SelectRecipientAddress', () => {
 
     expect(getByTestId(`SelectRecipientAddress/Row/${mockAccount2.toLowerCase()}`)).toBeTruthy()
     expect(getByTestId(`SelectRecipientAddress/Row/${mockAccount3.toLowerCase()}`)).toBeTruthy()
-    expect(getByText('selectRecipientAddress.verifiedBy, {"verifier":"Valora"}')).toBeTruthy()
-    expect(getByText('selectRecipientAddress.verifiedBy, {"verifier":"MiniPay"}')).toBeTruthy()
+    expect(getByText('Valora')).toBeTruthy()
+    expect(getByText('MiniPay')).toBeTruthy()
     expect(
       getByText(`selectRecipientAddress.explanation, {"name":"${mockRecipient.displayNumber}"}`)
     ).toBeTruthy()
