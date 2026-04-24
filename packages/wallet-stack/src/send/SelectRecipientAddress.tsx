@@ -23,26 +23,21 @@ import { Spacing } from 'src/styles/styles'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SelectRecipientAddress>
 
-type Verifier = 'valora' | 'minipay'
+const VERIFIERS = {
+  valora: { name: 'Valora', icon: valora },
+  minipay: { name: 'MiniPay', icon: miniPay },
+} as const
 
-const VERIFIER_NAMES: Record<Verifier, string> = {
-  valora: 'Valora',
-  minipay: 'MiniPay',
-}
+type Verifier = keyof typeof VERIFIERS
 
 const ICON_SIZE = 40
 
-const VERIFIER_ICONS: Record<Verifier, number> = {
-  valora,
-  minipay: miniPay,
-}
-
 function isKnownVerifier(verifier: string | undefined): verifier is Verifier {
-  return !!verifier && verifier in VERIFIER_NAMES
+  return !!verifier && Object.hasOwn(VERIFIERS, verifier)
 }
 
 function VerifierIcon({ verifier }: { verifier: Verifier }) {
-  return <Image source={VERIFIER_ICONS[verifier]} style={styles.icon} resizeMode="contain" />
+  return <Image source={VERIFIERS[verifier].icon} style={styles.icon} resizeMode="contain" />
 }
 
 function SelectRecipientAddress({ route }: Props) {
@@ -110,7 +105,7 @@ function SelectRecipientAddress({ route }: Props) {
                 <Text style={styles.address}>{formatShortenedAddress(address)}</Text>
                 <Text style={styles.verifier}>
                   {t('selectRecipientAddress.verifiedBy', {
-                    verifier: VERIFIER_NAMES[verifier],
+                    verifier: VERIFIERS[verifier].name,
                   })}
                 </Text>
               </View>
