@@ -2229,6 +2229,12 @@
       "invite": "Invite"
     }
   },
+  "sendInvite": {
+    "title": "Invite {{contact}} to {{appName}}",
+    "body": "Send them a link to {{appName}} so they can get a wallet and start receiving crypto.",
+    "cta": "Share invite",
+    "errorRetry": "Couldn't open the share sheet. Please try again."
+  },
   "transactionStatus": {
     "transactionIsCompleted": "Completed",
     "transactionIsPending": "Pending",

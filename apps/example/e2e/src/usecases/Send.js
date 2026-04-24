@@ -39,13 +39,8 @@ export default Send = () => {
       await expect(element(by.text(recipientAddressDisplay)).atIndex(0)).toBeVisible()
     })
 
-    it('Then tapping a recipient should show send button', async () => {
+    it('Then tapping a recipient should navigate to Send Enter Amount screen', async () => {
       await element(by.text(recipientAddressDisplay)).atIndex(0).tap()
-      await waitForElementById('SendOrInviteButton', { timeout: 30_000 })
-    })
-
-    it('Then tapping send button should navigate to Send Enter Amount screen', async () => {
-      await element(by.id('SendOrInviteButton')).tap()
       await waitForElementById('SendEnterAmount/TokenAmountInput', { timeout: 30_000 })
     })
 
@@ -122,8 +117,7 @@ export default Send = () => {
       await launchApp()
     })
 
-    // Only one configuration can be tested at once; this test covers the invite flow when no share URL is present.
-    it('Then should not be able to invite via SMS without share url', async () => {
+    it('Then should auto-navigate to the invite screen for an unverified phone number', async () => {
       await waitForElementById('HomeAction-Send', { timeout: 30_000, tap: true })
       await waitForElementById('SendSelectRecipientSearchInput', {
         timeout: 30_000,
@@ -132,8 +126,7 @@ export default Send = () => {
       await element(by.id('SendSelectRecipientSearchInput')).replaceText('3605551234') // Fake phone cannot be verified
       await element(by.id('SendSelectRecipientSearchInput')).tapReturnKey()
       await element(by.text('(360) 555-1234')).tap()
-      await expect(element(by.text('Invite'))).not.toBeVisible()
-      await expect(element(by.text('Continue'))).toBeVisible()
+      await waitForElementById('SendInvite/ShareButton', { timeout: 30_000 })
     })
   })
 
@@ -209,13 +202,8 @@ export default Send = () => {
       await isElementVisible('RecipientItem', 0)
     })
 
-    it('Then tapping a recipient should show send button', async () => {
+    it('Then tapping a recipient should navigate to Send Enter Amount screen', async () => {
       await element(by.id('RecipientItem')).atIndex(0).tap()
-      await waitForElementById('SendOrInviteButton', { timeout: 30_000 })
-    })
-
-    it('Then tapping send button should navigate to Send Enter Amount screen', async () => {
-      await element(by.id('SendOrInviteButton')).tap()
       await waitForElementById('SendEnterAmount/TokenAmountInput', { timeout: 30_000 })
     })
 
