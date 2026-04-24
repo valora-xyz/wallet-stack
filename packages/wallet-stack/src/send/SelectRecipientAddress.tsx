@@ -28,7 +28,7 @@ const VERIFIERS = {
   minipay: { name: 'MiniPay', icon: miniPay },
 } as const
 
-type Verifier = keyof typeof VERIFIERS
+export type Verifier = keyof typeof VERIFIERS
 
 const ICON_SIZE = 40
 
