@@ -197,7 +197,7 @@ describe('SendSelectRecipient', () => {
     })
     expect(getByTestId('SelectRecipient/NoResults')).toBeTruthy()
   })
-  it('navigates to send amount when search result next button is pressed', async () => {
+  it('navigates to send amount when a verified phone recipient is tapped in search results', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -233,7 +233,7 @@ describe('SendSelectRecipient', () => {
       isMiniPayRecipient: false,
     })
   })
-  it('navigates to send amount when address recipient is pressed', async () => {
+  it('navigates to send amount when an address is tapped and the user phone number is not verified', async () => {
     const store = createMockStore({
       ...defaultStore,
       identity: {
@@ -268,7 +268,7 @@ describe('SendSelectRecipient', () => {
     })
   })
 
-  it('does not show unknown address info text when searching for known app address', async () => {
+  it('dispatches address verification when an address is tapped and the user phone number is verified', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -301,7 +301,7 @@ describe('SendSelectRecipient', () => {
 
     expect(store.getActions()).toEqual([fetchAddressVerification(mockAccount2.toLowerCase())])
   })
-  it('does not show unknown address info text when searching for phone number', async () => {
+  it('does not navigate when an unverified phone recipient is tapped and no share URL is configured', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -378,7 +378,7 @@ describe('SendSelectRecipient', () => {
     expect(searchInput.props.value).toBe(mockE164Number2Invite)
   })
 
-  it('shows unknown address info text when searching for unknown address', async () => {
+  it('navigates and dispatches address verification when an unknown address is tapped and the user phone number is verified', async () => {
     // addressToVerifiedBy entry is `null` → checked and not verified
     const store = createMockStore({
       ...storeWithPhoneVerified,
@@ -473,7 +473,7 @@ describe('SendSelectRecipient', () => {
     await expect(pasteButtonAfterPress).rejects.toThrow()
   })
 
-  it('navigates to send amount when phone number recipient with single address', async () => {
+  it('navigates to send amount when a verified phone recipient with a single address is tapped', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
@@ -512,7 +512,7 @@ describe('SendSelectRecipient', () => {
       isMiniPayRecipient: false,
     })
   })
-  it('navigates to send amount with isMiniPayRecipient when address is verified by minipay', async () => {
+  it('navigates with isMiniPayRecipient when address is verified by minipay', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
       identity: {
