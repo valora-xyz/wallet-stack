@@ -174,14 +174,6 @@
             },
             "type": "object"
         },
-        "AddressValidationType": {
-            "enum": [
-                "full",
-                "none",
-                "partial"
-            ],
-            "type": "string"
-        },
         "Alert": {
             "additionalProperties": false,
             "properties": {
@@ -241,12 +233,6 @@
                                 "accountSetupFailed",
                                 "accountUnlockFailed",
                                 "addressLookupFailure",
-                                "addressValidationError",
-                                "addressValidationFullOwnAddress",
-                                "addressValidationFullPoorlyFormatted",
-                                "addressValidationNoMatch",
-                                "addressValidationPartialOwnAddress",
-                                "addressValidationPartialPoorlyFormatted",
                                 "cashOutLimitExceeded",
                                 "dappShortcuts.claimRewardFailure",
                                 "failedFetchMnemonic",
@@ -269,7 +255,6 @@
                                 "pinInputCanceled",
                                 "providerFetchFailed",
                                 "qrFailedInvalidAddress",
-                                "qrFailedInvalidRecipient",
                                 "revokePhoneNumber.revokeError",
                                 "sendInvite.errorRetry",
                                 "sendPaymentFailed",
@@ -3528,6 +3513,7 @@
                 "SelectCountry",
                 "SelectLocalCurrency",
                 "SelectProvider",
+                "SelectRecipientAddress",
                 "SendConfirmation",
                 "SendEnterAmount",
                 "SendInvite",
@@ -3550,8 +3536,6 @@
                 "TokenImport",
                 "TransactionDetailsScreen",
                 "UpgradeScreen",
-                "ValidateRecipientAccount",
-                "ValidateRecipientIntro",
                 "VerificationCodeInputScreen",
                 "VerificationStartScreen",
                 "WalletConnectRequest",
@@ -3562,36 +3546,6 @@
                 "WithdrawSpend"
             ],
             "type": "string"
-        },
-        "SecureSendDetails": {
-            "additionalProperties": false,
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "addressValidationType": {
-                    "$ref": "#/definitions/AddressValidationType"
-                },
-                "isFetchingAddresses": {
-                    "type": "boolean"
-                },
-                "lastFetchSuccessful": {
-                    "type": "boolean"
-                },
-                "validationSuccessful": {
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "addressValidationType"
-            ],
-            "type": "object"
-        },
-        "SecureSendPhoneNumberMapping": {
-            "additionalProperties": {
-                "$ref": "#/definitions/SecureSendDetails"
-            },
-            "type": "object"
         },
         "SendingFiatAccountStatus": {
             "enum": [
@@ -5584,9 +5538,6 @@
                         "string"
                     ]
                 },
-                "secureSendPhoneNumberMapping": {
-                    "$ref": "#/definitions/SecureSendPhoneNumberMapping"
-                },
                 "shouldRefreshStoredPasswordHash": {
                     "type": "boolean"
                 }
@@ -5600,7 +5551,6 @@
                 "e164NumberToAddress",
                 "importContactsProgress",
                 "lastSavedContactsHash",
-                "secureSendPhoneNumberMapping",
                 "shouldRefreshStoredPasswordHash"
             ],
             "type": "object"
@@ -5732,6 +5682,7 @@
                         "SelectCountry",
                         "SelectLocalCurrency",
                         "SelectProvider",
+                        "SelectRecipientAddress",
                         "SendConfirmation",
                         "SendEnterAmount",
                         "SendInvite",
@@ -5753,8 +5704,6 @@
                         "TokenImport",
                         "TransactionDetailsScreen",
                         "UpgradeScreen",
-                        "ValidateRecipientAccount",
-                        "ValidateRecipientIntro",
                         "VerificationCodeInputScreen",
                         "VerificationStartScreen",
                         "WalletConnectRequest",

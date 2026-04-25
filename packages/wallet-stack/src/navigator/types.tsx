@@ -9,7 +9,7 @@ import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { Screens } from 'src/navigator/Screens'
 import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
-import { Recipient } from 'src/recipients/recipient'
+import { MobileRecipient, Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
 import type { SwapTransaction } from 'src/swap/types'
 import type { SerializedTokenBalance } from 'src/tokens/slice'
@@ -45,10 +45,9 @@ type SendEnterAmountParams = {
   isMiniPayRecipient?: boolean
 }
 
-interface ValidateRecipientParams {
-  requesterAddress?: string
+interface SelectRecipientAddressParams {
+  recipient: MobileRecipient
   origin: SendOrigin
-  recipient: Recipient
   forceTokenId?: boolean
   defaultTokenIdOverride?: string
 }
@@ -262,6 +261,7 @@ export type StackParamList = {
     }
   }
   [Screens.SendInvite]: { recipient: Recipient; shareUrl: string }
+  [Screens.SelectRecipientAddress]: SelectRecipientAddressParams
   [Screens.SendSelectRecipient]:
     | {
         forceTokenId?: boolean
@@ -301,8 +301,6 @@ export type StackParamList = {
     transaction: TokenTransaction
   }
   [Screens.UpgradeScreen]: undefined
-  [Screens.ValidateRecipientIntro]: ValidateRecipientParams
-  [Screens.ValidateRecipientAccount]: ValidateRecipientParams
   [Screens.VerificationStartScreen]:
     | {
         hasOnboarded?: boolean

@@ -259,14 +259,6 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [SendEvents.send_amount_continue]: `when next button pressed on amount enter page`,
   [SendEvents.send_confirm_back]: `when back button pressed on send confirmation screen`,
   [SendEvents.send_confirm_send]: `when send button pressed on send confirmation screen`,
-  [SendEvents.send_secure_start]: `when either secure send scan or manual confirm button pressed`,
-  [SendEvents.send_secure_back]: `when back button is pressed during secure send`,
-  [SendEvents.send_secure_cancel]: `when secure send flow is canceled`,
-  [SendEvents.send_secure_info]: `when "help" button is pressed`,
-  [SendEvents.send_secure_info_dismissed]: `when "help" button is dismissed`,
-  [SendEvents.send_secure_submit]: `when an account is submitted for validation`,
-  [SendEvents.send_secure_incorrect]: `when there's been an error validating the account`,
-  [SendEvents.send_secure_complete]: `when an account has been validated`,
   [SendEvents.send_tx_start]: `issued from the sendPayment saga, after a user confirms their intent to send and right before we build and send the transaction to the network`,
   [SendEvents.send_tx_complete]: `when a send transaction has successfully completed`,
   [SendEvents.send_tx_error]: `when there is an error sending a transaction`,
@@ -292,6 +284,9 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [SendEvents.send_select_recipient_send_press]: `When the send button is pressed after selecting a recipient`,
   [SendEvents.send_select_recipient_invite_press]: `When the invite button is pressed after selecting a recipient`,
   [SendEvents.send_select_recipient_recent_press]: `When a recent recipient is pressed`,
+  [SendEvents.send_select_recipient_address_open]: `When the address picker screen is shown (a phone recipient has multiple verified addresses)`,
+  [SendEvents.send_select_recipient_address_select]: `When a verified address is picked from the address picker screen`,
+  [SendEvents.send_select_recipient_address_back]: `When the back button is pressed on the address picker screen`,
   [JumpstartEvents.jumpstart_reclaim_press]:
     'When user taps on "Reclaim" button on the Jumpstart screen',
   [JumpstartEvents.jumpstart_reclaim_start]:
@@ -578,6 +573,14 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
 
   // Legacy event docs
   //  The below events had docs, but are no longer produced by the latest app version.
+  // [SendEvents.send_secure_start]: `when either secure send scan or manual confirm button pressed`,
+  // [SendEvents.send_secure_back]: `when back button is pressed during secure send`,
+  // [SendEvents.send_secure_cancel]: `when secure send flow is canceled`,
+  // [SendEvents.send_secure_info]: `when "help" button is pressed`,
+  // [SendEvents.send_secure_info_dismissed]: `when "help" button is dismissed`,
+  // [SendEvents.send_secure_submit]: `when an account is submitted for validation`,
+  // [SendEvents.send_secure_incorrect]: `when there's been an error validating the account`,
+  // [SendEvents.send_secure_complete]: `when an account has been validated`,
   // [HomeEvents.home_send]: `when "send" button is pressed from home screen send or request bar (NOT from home screen actions)`,
   // [HomeEvents.view_nft_home_assets]: `When "NFTs" is clicked in Home Assets Pages`,
   // [DappExplorerEvents.dapp_open_info]: `when a user taps on the help icon`,
