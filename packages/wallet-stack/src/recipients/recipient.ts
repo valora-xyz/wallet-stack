@@ -185,10 +185,9 @@ export function getRecipientVerificationStatus(
   }
   if (recipientHasAddress(recipient)) {
     const entry = addressToVerifiedBy[recipient.address.toLowerCase()]
-    if (entry === undefined) return RecipientVerificationStatus.UNKNOWN
-    return entry === null
-      ? RecipientVerificationStatus.UNVERIFIED
-      : RecipientVerificationStatus.VERIFIED
+    if (entry) return RecipientVerificationStatus.VERIFIED
+    if (entry === null) return RecipientVerificationStatus.UNVERIFIED
+    return RecipientVerificationStatus.UNKNOWN
   }
   return RecipientVerificationStatus.UNKNOWN
 }
