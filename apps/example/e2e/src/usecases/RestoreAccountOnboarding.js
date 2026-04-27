@@ -28,7 +28,7 @@ export default RestoreAccountOnboarding = () => {
 
       // wait for connecting banner to go away
       // TODO measure how long this take
-      await waitFor(element(by.id('connectingToCelo')))
+      await waitFor(element(by.id('connectingToCeloBanner')))
         .not.toBeVisible()
         .withTimeout(20000)
 
