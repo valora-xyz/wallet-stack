@@ -308,6 +308,33 @@ describe('SendEnterAmount', () => {
       expect(queryByText('sendEnterAmountScreen.miniPayFilterChip')).toBeFalsy()
     })
 
+    it('should not select a default token when isMiniPayRecipient is true and user has no MiniPay tokens', () => {
+      jest.mocked(getDynamicConfigParams).mockReturnValue({
+        miniPayTokenIds: ['celo-alfajores:0xNOT_HELD_BY_USER'],
+      })
+
+      const { getByText, queryByTestId, getByTestId } = render(
+        <Provider store={store}>
+          <MockedNavigator
+            component={SendEnterAmount}
+            params={{ ...params, isMiniPayRecipient: true }}
+          />
+        </Provider>
+      )
+
+      // "Select token" placeholder is rendered in place of the selected token
+      expect(getByText('tokenEnterAmount.selectToken')).toBeTruthy()
+      // Amount input, percentage options, and Review button are not rendered
+      expect(queryByTestId('SendEnterAmount/TokenAmountInput')).toBeNull()
+      expect(queryByTestId('SendEnterAmount/AmountOptions')).toBeNull()
+      expect(queryByTestId('SendEnterAmount/ReviewButton')).toBeNull()
+      // MiniPay filter chip is still present (inside the token picker)
+      expect(getByText('sendEnterAmountScreen.miniPayFilterChip')).toBeTruthy()
+      // Tapping the token row opens the picker
+      fireEvent.press(getByTestId('SendEnterAmount/TokenSelect'))
+      expect(getByTestId('TokenBottomSheet')).toBeTruthy()
+    })
+
     it('should include isMiniPayRecipient in send_amount_continue analytics', async () => {
       jest.mocked(usePrepareSendTransactions).mockReturnValue({
         prepareTransactionsResult: mockPrepareTransactionsResultPossible,
