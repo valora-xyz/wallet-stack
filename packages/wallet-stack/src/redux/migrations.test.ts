@@ -1966,12 +1966,22 @@ describe('Redux persist migrations', () => {
       ...v256Schema,
       identity: {
         ...v256Schema.identity,
-        addressToVerificationStatus: { '0xabc': true },
+        addressToVerificationStatus: {
+          '0xAAA': true,
+          '0xbbb': false,
+          '0xccc': undefined,
+        },
+        addressToVerifiedBy: {
+          '0xddd': 'minipay',
+        },
       },
     }
     const migratedSchema = migrations[257](oldSchema)
     expect(migratedSchema.identity.addressToVerificationStatus).toBeUndefined()
-    // Other identity fields survive
-    expect(migratedSchema.identity.addressToVerifiedBy).toBeDefined()
+    expect(migratedSchema.identity.addressToVerifiedBy).toStrictEqual({
+      '0xddd': 'minipay',
+      '0xaaa': 'valora', // `true` carried over (and lowercased)
+      // `false` and `undefined` entries are dropped — `false` was ambiguous in the old schema
+    })
   })
 })
