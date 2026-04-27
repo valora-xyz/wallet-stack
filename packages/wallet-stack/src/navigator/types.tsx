@@ -9,7 +9,7 @@ import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { Screens } from 'src/navigator/Screens'
 import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
-import { Recipient } from 'src/recipients/recipient'
+import { MobileRecipient, Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
 import type { SwapTransaction } from 'src/swap/types'
 import type { SerializedTokenBalance } from 'src/tokens/slice'
@@ -46,7 +46,7 @@ type SendEnterAmountParams = {
 }
 
 interface SelectRecipientAddressParams {
-  recipient: Recipient & { e164PhoneNumber: string }
+  recipient: MobileRecipient
   origin: SendOrigin
   forceTokenId?: boolean
   defaultTokenIdOverride?: string

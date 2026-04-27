@@ -16,7 +16,7 @@ import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { getDisplayName } from 'src/recipients/recipient'
-import { VERIFIER_ICONS, VERIFIER_NAMES, Verifier, isKnownVerifier } from 'src/recipients/verifier'
+import { VERIFIERS, Verifier, isKnownVerifier } from 'src/recipients/verifier'
 import { useSelector } from 'src/redux/hooks'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -27,7 +27,7 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SelectRecipientAddre
 const ICON_SIZE = 40
 
 function VerifierIcon({ verifier }: { verifier: Verifier }) {
-  return <Image source={VERIFIER_ICONS[verifier]} style={styles.icon} resizeMode="contain" />
+  return <Image source={VERIFIERS[verifier].icon} style={styles.icon} resizeMode="contain" />
 }
 
 function SelectRecipientAddress({ route }: Props) {
@@ -95,7 +95,7 @@ function SelectRecipientAddress({ route }: Props) {
                 <Text style={styles.address}>{formatShortenedAddress(address)}</Text>
                 <View style={styles.verifier}>
                   <VerifiedBadge color={Colors.contentSecondary} />
-                  <Text style={styles.verifierName}>{VERIFIER_NAMES[verifier]}</Text>
+                  <Text style={styles.verifierName}>{VERIFIERS[verifier].name}</Text>
                 </View>
               </View>
             </View>

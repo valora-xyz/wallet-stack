@@ -71,6 +71,7 @@ import { NftOrigin } from 'src/nfts/types'
 import { NotificationReceiveState } from 'src/notifications/types'
 import { PointsActivityId } from 'src/points/types'
 import { RecipientType } from 'src/recipients/recipient'
+import { Verifier } from 'src/recipients/verifier'
 import { AmountEnteredIn, QrCode } from 'src/send/types'
 import { Field, SwapType } from 'src/swap/types'
 import { TokenActionName } from 'src/tokens/types'
@@ -585,7 +586,7 @@ interface SendEventsProperties {
     addressCount: number
   }
   [SendEvents.send_select_recipient_address_select]: {
-    verifier: 'valora' | 'minipay'
+    verifier: Verifier
   }
   [SendEvents.send_select_recipient_address_back]: undefined
 }
