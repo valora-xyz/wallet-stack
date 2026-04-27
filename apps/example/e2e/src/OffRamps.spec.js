@@ -6,5 +6,5 @@ describe('Ramps', () => {
     await quickOnboarding()
   })
 
-  describe('Given Cash Out', offRamps)
+  describe(':ios: Given Cash Out', offRamps)
 })

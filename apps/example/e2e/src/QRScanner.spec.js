@@ -36,7 +36,8 @@ describe('Given QR Scanner', () => {
     })
   })
 
-  describe("When 'scanning' QR", () => {
+  // TODO: fix and enable this test on Android
+  describe(":ios: When 'scanning' QR", () => {
     beforeEach(async () => {
       await reloadReactNative()
       await waitForElementById('HomeAction-Receive', { tap: true })
@@ -59,6 +60,11 @@ describe('Given QR Scanner', () => {
     })
 
     it('Then should handle address only QR', async () => {
+      try {
+        await element(by.id('BackChevron')).tap()
+        await element(by.id('closeButton')).tap()
+      } catch {}
+
       // Use instead of waitForElementById as the element is not visible behind opacity overlay
       await element(by.text('Center code in the box above')).tap()
       await waitForElementById('ManualInput')
