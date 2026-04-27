@@ -1,30 +1,20 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import { getFontScaleSync } from 'react-native-device-info'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Share from 'react-native-share'
 import { isAddressFormat } from 'src/account/utils'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
 import { getAppConfig } from 'src/appConfig'
 import BackButton from 'src/components/BackButton'
-import Button, { BtnSizes } from 'src/components/Button'
-import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
 import CustomHeader from 'src/components/header/CustomHeader'
 import CircledIcon from 'src/icons/CircledIcon'
 import { importContacts } from 'src/identity/actions'
-import { getAddressFromPhoneNumber } from 'src/identity/contactMapping'
-import { AddressValidationType } from 'src/identity/reducer'
-import { getAddressValidationType } from 'src/identity/secureSend'
-import {
-  addressToVerifiedBySelector,
-  e164NumberToAddressSelector,
-  secureSendPhoneNumberMappingSelector,
-} from 'src/identity/selectors'
+import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
@@ -42,7 +32,6 @@ import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
-import Logger from 'src/utils/Logger'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendSelectRecipient>
 
@@ -167,45 +156,6 @@ const getStartedStyles = StyleSheet.create({
   },
 })
 
-function SendOrInviteButton({
-  recipient,
-  recipientVerificationStatus,
-  shareUrl,
-  onPress,
-}: {
-  recipient: Recipient | null
-  recipientVerificationStatus: RecipientVerificationStatus
-  shareUrl: string | null
-  onPress: (shouldInviteRecipient: boolean) => void
-}) {
-  const { t } = useTranslation()
-
-  const sendOrInviteButtonDisabled =
-    (!!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN) ||
-    // If the phone number is present and unverified and no share URL is found, disable the send/invite button
-    (recipient?.recipientType === RecipientType.PhoneNumber &&
-      recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED &&
-      !shareUrl)
-
-  const shouldInviteRecipient =
-    !sendOrInviteButtonDisabled &&
-    recipient?.recipientType === RecipientType.PhoneNumber &&
-    recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED
-  return (
-    <Button
-      testID="SendOrInviteButton"
-      style={styles.sendOrInviteButton}
-      onPress={() => onPress(shouldInviteRecipient)}
-      disabled={sendOrInviteButtonDisabled}
-      text={
-        shouldInviteRecipient
-          ? t('sendSelectRecipient.buttons.invite')
-          : t('sendSelectRecipient.buttons.send')
-      }
-      size={BtnSizes.FULL}
-    />
-  )
-}
 enum SelectRecipientView {
   Recent = 'Recent',
   Contacts = 'Contacts',
@@ -214,7 +164,6 @@ enum SelectRecipientView {
 function SendSelectRecipient({ route }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const secureSendPhoneNumberMapping = useSelector(secureSendPhoneNumberMappingSelector)
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
   const shareUrl = getAppConfig().experimental?.inviteFriends?.shareUrl ?? null
@@ -222,19 +171,14 @@ function SendSelectRecipient({ route }: Props) {
   const forceTokenId = route.params?.forceTokenId
   const defaultTokenIdOverride = route.params?.defaultTokenIdOverride
 
-  const [showSendOrInviteButton, setShowSendOrInviteButton] = useState(false)
-
   const [showSearchResults, setShowSearchResults] = useState(false)
 
   const [activeView, setActiveView] = useState(SelectRecipientView.Recent)
 
   const onSearch = (searchQuery: string) => {
-    // Always unset the selected recipient and hide the send/invite button
-    // when the search query is changed in order to prevent edge cases
-    // where the button appears but is bound to a recipient that is
-    // not present on the page.
+    // Clear any in-flight selection so a stale recipient can't auto-navigate
+    // once the user starts typing a different query.
     unsetSelectedRecipient()
-    setShowSendOrInviteButton(false)
     setShowSearchResults(!!searchQuery)
   }
   const { contactRecipients, recentRecipients } = useSendRecipients()
@@ -243,17 +187,31 @@ function SendSelectRecipient({ route }: Props) {
   const { recipientVerificationStatus, recipient, setSelectedRecipient, unsetSelectedRecipient } =
     useFetchRecipientVerificationStatus()
 
-  const showUnknownAddressInfo =
-    showSendOrInviteButton &&
-    showSearchResults &&
-    recipient &&
-    recipient.recipientType !== RecipientType.PhoneNumber &&
-    recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED
+  useEffect(() => {
+    // Auto-navigate once verification resolves. The picker stays mounted so the
+    // user's search text and selection are preserved when they come back.
+    if (!recipient || recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN) {
+      return
+    }
 
-  const setSelectedRecipientWrapper = (selectedRecipient: Recipient) => {
-    setSelectedRecipient(selectedRecipient)
-    setShowSendOrInviteButton(true)
-  }
+    const isUnverifiedPhone =
+      recipient.recipientType === RecipientType.PhoneNumber &&
+      recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED
+
+    if (isUnverifiedPhone) {
+      if (shareUrl) {
+        navigate(Screens.SendInvite, { recipient, shareUrl })
+      }
+      // Without shareUrl there's no invite flow and no send flow for an
+      // unverified phone — stay on the picker so the user can pick someone else.
+      return
+    }
+
+    AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
+      recipientType: recipient.recipientType,
+    })
+    nextScreen(recipient)
+  }, [recipient, recipientVerificationStatus, shareUrl])
 
   const onContactsPermissionGranted = () => {
     dispatch(importContacts())
@@ -268,7 +226,6 @@ function SendSelectRecipient({ route }: Props) {
     AppAnalytics.track(SendEvents.send_select_recipient_recent_press, {
       recipientType: recentRecipient.recipientType,
     })
-    setSelectedRecipient(recentRecipient)
     nextScreen(recentRecipient)
   }
 
@@ -276,35 +233,28 @@ function SendSelectRecipient({ route }: Props) {
     // use the address from the recipient object
     let address: string | null | undefined = selectedRecipient.address
 
-    // if not present there must be a phone number, route through secure send or get
-    // the secure send mapped address
+    // if not present there must be a phone number, route through the address picker
+    // when multiple verified addresses exist, otherwise go directly to amount entry
     if (!address && recipientHasNumber(selectedRecipient)) {
-      const addressValidationType: AddressValidationType = getAddressValidationType(
-        selectedRecipient,
-        secureSendPhoneNumberMapping
-      )
-      if (addressValidationType !== AddressValidationType.NONE) {
-        navigate(Screens.ValidateRecipientIntro, {
-          defaultTokenIdOverride,
+      const phoneAddresses = e164NumberToAddress[selectedRecipient.e164PhoneNumber] ?? []
+      const verifiedAddresses = phoneAddresses.filter((a) => !!addressToVerifiedBy[a])
+
+      if (verifiedAddresses.length > 1) {
+        navigate(Screens.SelectRecipientAddress, {
           forceTokenId,
+          defaultTokenIdOverride,
           recipient: selectedRecipient,
           origin: SendOrigin.AppSendFlow,
         })
         return
       }
-      address = getAddressFromPhoneNumber(
-        selectedRecipient.e164PhoneNumber,
-        e164NumberToAddress,
-        secureSendPhoneNumberMapping,
-        undefined
-      )
+
+      address = verifiedAddresses[0] ?? phoneAddresses[0]
     }
 
     if (!address) {
       // this should never happen
-      throw new Error(
-        'No address found, this should never happen. Should have routed to invite or secure send.'
-      )
+      throw new Error('No address found, this should never happen. Should have routed to invite.')
     }
 
     navigate(Screens.SendEnterAmount, {
@@ -320,40 +270,6 @@ function SendSelectRecipient({ route }: Props) {
     })
   }
 
-  const onPressSendOrInvite = async (shouldInviteRecipient: boolean) => {
-    if (!recipient) return
-
-    // Invites
-    if (shouldInviteRecipient) {
-      if (!shareUrl) {
-        Logger.warn('SendSelectRecipient', 'No share URL found for invite')
-        return
-      }
-
-      AppAnalytics.track(SendEvents.send_select_recipient_invite_press, {
-        recipientType: recipient.recipientType,
-      })
-
-      try {
-        await Share.open({
-          message: t('inviteWithSmsMessage.shareMessage', { shareUrl }),
-          url: shareUrl,
-          failOnCancel: false,
-        })
-      } catch (error) {
-        Logger.warn('SendSelectRecipient', 'Share sheet failed', error)
-      }
-
-      return
-    }
-
-    // Sends
-    AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
-      recipientType: recipient.recipientType,
-    })
-    nextScreen(recipient)
-  }
-
   const renderSearchResults = () => {
     if (mergedRecipients.length) {
       return (
@@ -362,7 +278,7 @@ function SendSelectRecipient({ route }: Props) {
           <RecipientPicker
             testID={'SelectRecipient/AllRecipientsPicker'}
             recipients={mergedRecipients}
-            onSelectRecipient={setSelectedRecipientWrapper}
+            onSelectRecipient={setSelectedRecipient}
             selectedRecipient={recipient}
             isSelectedRecipientLoading={
               !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
@@ -409,7 +325,7 @@ function SendSelectRecipient({ route }: Props) {
           <RecipientPicker
             testID={'SelectRecipient/ContactRecipientPicker'}
             recipients={contactRecipients}
-            onSelectRecipient={setSelectedRecipientWrapper}
+            onSelectRecipient={setSelectedRecipient}
             selectedRecipient={recipient}
             isSelectedRecipientLoading={
               !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
@@ -439,22 +355,6 @@ function SendSelectRecipient({ route }: Props) {
           </>
         )}
       </KeyboardAwareScrollView>
-      {showUnknownAddressInfo && (
-        <InLineNotification
-          variant={NotificationVariant.Info}
-          description={t('sendSelectRecipient.unknownAddressInfo')}
-          testID="UnknownAddressInfo"
-          style={styles.unknownAddressInfo}
-        />
-      )}
-      {showSendOrInviteButton && (
-        <SendOrInviteButton
-          recipient={recipient}
-          recipientVerificationStatus={recipientVerificationStatus}
-          onPress={onPressSendOrInvite}
-          shareUrl={shareUrl}
-        />
-      )}
     </SafeAreaView>
   )
 }
@@ -495,14 +395,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: Spacing.Regular16,
     textAlign: 'center',
-  },
-  unknownAddressInfo: {
-    margin: Spacing.Regular16,
-    marginBottom: variables.contentPadding,
-  },
-  sendOrInviteButton: {
-    margin: Spacing.Regular16,
-    marginTop: variables.contentPadding,
   },
 })
 

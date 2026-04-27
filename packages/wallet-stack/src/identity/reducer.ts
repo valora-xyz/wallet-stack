@@ -1,4 +1,3 @@
-import dotProp from 'dot-prop-immutable'
 import { RehydrateAction } from 'redux-persist'
 import { Actions as AccountActions, ClearStoredAccountAction } from 'src/account/actions'
 import { ActionTypes, Actions } from 'src/identity/actions'
@@ -32,24 +31,6 @@ export interface ImportContactProgress {
   total: number
 }
 
-export enum AddressValidationType {
-  FULL = 'full',
-  PARTIAL = 'partial',
-  NONE = 'none',
-}
-
-export interface SecureSendPhoneNumberMapping {
-  [e164Number: string]: SecureSendDetails
-}
-
-export interface SecureSendDetails {
-  address?: string
-  addressValidationType: AddressValidationType
-  isFetchingAddresses?: boolean
-  lastFetchSuccessful?: boolean
-  validationSuccessful?: boolean
-}
-
 export interface AddressToVerificationStatus {
   [address: string]: boolean | undefined
 }
@@ -67,8 +48,6 @@ interface State {
   // Has the user already been asked for contacts permission
   askedContactsPermission: boolean
   importContactsProgress: ImportContactProgress
-  // Contacts found during the matchmaking process
-  secureSendPhoneNumberMapping: SecureSendPhoneNumberMapping
   // Mapping of address to verification status; undefined entries represent a loading state
   addressToVerificationStatus: AddressToVerificationStatus
   // Mapping of address to the entity that verified it (e.g. "valora", "minipay")
@@ -87,7 +66,6 @@ const initialState: State = {
     current: 0,
     total: 0,
   },
-  secureSendPhoneNumberMapping: {},
   addressToVerificationStatus: {},
   addressToVerifiedBy: {},
   lastSavedContactsHash: null,
@@ -159,66 +137,11 @@ export const reducer = (
           status: success ? ImportContactsStatus.Done : ImportContactsStatus.Failed,
         },
       }
-    case Actions.VALIDATE_RECIPIENT_ADDRESS_SUCCESS:
-      return {
-        ...state,
-        // Overwrite the previous mapping when a new address is validated
-        secureSendPhoneNumberMapping: dotProp.set(
-          state.secureSendPhoneNumberMapping,
-          `${action.e164Number}`,
-          {
-            address: action.validatedAddress,
-            addressValidationType: AddressValidationType.NONE,
-            validationSuccessful: true,
-          }
-        ),
-      }
-    case Actions.VALIDATE_RECIPIENT_ADDRESS_RESET:
-      return {
-        ...state,
-        secureSendPhoneNumberMapping: dotProp.set(
-          state.secureSendPhoneNumberMapping,
-          `${action.e164Number}.validationSuccessful`,
-          false
-        ),
-      }
-    case Actions.REQUIRE_SECURE_SEND:
-      return {
-        ...state,
-        // Erase the previous mapping when new validation is required
-        secureSendPhoneNumberMapping: dotProp.set(
-          state.secureSendPhoneNumberMapping,
-          `${action.e164Number}`,
-          {
-            address: undefined,
-            addressValidationType: action.addressValidationType,
-          }
-        ),
-      }
-    case Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS:
-      return {
-        ...state,
-        secureSendPhoneNumberMapping: dotProp.set(
-          state.secureSendPhoneNumberMapping,
-          `${action.e164Number}.isFetchingAddresses`,
-          true
-        ),
-      }
-    case Actions.END_FETCHING_ADDRESSES:
-      return {
-        ...state,
-        secureSendPhoneNumberMapping: dotProp.merge(
-          state.secureSendPhoneNumberMapping,
-          `${action.e164Number}`,
-          { isFetchingAddresses: false, lastFetchSuccessful: action.lastFetchSuccessful }
-        ),
-      }
     case AccountActions.CLEAR_STORED_ACCOUNT:
       return {
         ...initialState,
         addressToE164Number: state.addressToE164Number,
         e164NumberToAddress: state.e164NumberToAddress,
-        secureSendPhoneNumberMapping: state.secureSendPhoneNumberMapping,
       }
     case Actions.FETCH_ADDRESS_VERIFICATION_STATUS:
       // If the current status is false or does not exist, we set it to undefined

@@ -13,24 +13,14 @@ import {
   FetchAddressesAndValidateAction,
   addressVerificationStatusReceived,
   contactsSaved,
-  endFetchingAddresses,
   endImportContacts,
-  requireSecureSend,
   updateE164PhoneNumberAddresses,
   updateImportContactsProgress,
 } from 'src/identity/actions'
-import {
-  AddressToE164NumberType,
-  AddressValidationType,
-  E164NumberToAddressType,
-  SecureSendPhoneNumberMapping,
-} from 'src/identity/reducer'
-import { checkIfValidationRequired } from 'src/identity/secureSend'
+import { AddressToE164NumberType, E164NumberToAddressType } from 'src/identity/reducer'
 import {
   addressToVerificationStatusSelector,
-  e164NumberToAddressSelector,
   lastSavedContactsHashSelector,
-  secureSendPhoneNumberMappingSelector,
 } from 'src/identity/selectors'
 import { ImportContactsStatus } from 'src/identity/types'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
@@ -144,17 +134,10 @@ function* updateUserContact(e164NumberToRecipients: NumberToRecipient) {
   yield* put(setUserContactDetails(userRecipient.contactId, userRecipient.thumbnailPath || null))
 }
 
-export function* fetchAddressesAndValidateSaga({
-  e164Number,
-  requesterAddress,
-}: FetchAddressesAndValidateAction) {
+export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAndValidateAction) {
   AppAnalytics.track(IdentityEvents.phone_number_lookup_start)
   try {
     Logger.debug(TAG + '@fetchAddressesAndValidate', `Fetching addresses for number`)
-    const oldE164NumberToAddress: E164NumberToAddressType = yield* select(
-      e164NumberToAddressSelector
-    )
-    const oldAddresses = oldE164NumberToAddress[e164Number] || []
 
     // Clear existing entries for those numbers so our mapping consumers know new status is pending.
     yield* put(updateE164PhoneNumberAddresses({ [e164Number]: undefined }, {}))
@@ -186,28 +169,6 @@ export function* fetchAddressesAndValidateSaga({
       walletAddresses.map((a) => (addressToE164NumberUpdates[a] = e164Number))
     }
 
-    const userAddress = yield* select(walletAddressSelector)
-    if (!userAddress) {
-      throw new Error('Wallet address not set')
-    }
-    const secureSendPossibleAddresses = [...walletAddresses]
-    const secureSendPhoneNumberMapping = yield* select(secureSendPhoneNumberMappingSelector)
-    // If fetch is being done as part of a payment request from an unverified address,
-    // the unverified address should be considered in the Secure Send check
-    if (requesterAddress && !secureSendPossibleAddresses.includes(requesterAddress)) {
-      secureSendPossibleAddresses.push(requesterAddress)
-    }
-
-    const addressValidationType = checkIfValidationRequired(
-      oldAddresses,
-      secureSendPossibleAddresses,
-      userAddress,
-      secureSendPhoneNumberMapping,
-      e164Number
-    )
-    if (addressValidationType !== AddressValidationType.NONE) {
-      yield* put(requireSecureSend(e164Number, addressValidationType))
-    }
     yield* put(
       updateE164PhoneNumberAddresses(
         e164NumberToAddressUpdates,
@@ -215,13 +176,11 @@ export function* fetchAddressesAndValidateSaga({
         addressToVerifiedByUpdates
       )
     )
-    yield* put(endFetchingAddresses(e164Number, true))
     AppAnalytics.track(IdentityEvents.phone_number_lookup_complete)
   } catch (err) {
     const error = ensureError(err)
     Logger.debug(TAG + '@fetchAddressesAndValidate', `Error fetching addresses`, error)
     yield* put(showErrorOrFallback(error, ErrorMessages.ADDRESS_LOOKUP_FAILURE))
-    yield* put(endFetchingAddresses(e164Number, false))
     AppAnalytics.track(IdentityEvents.phone_number_lookup_error, {
       error: error.message,
     })
@@ -338,51 +297,6 @@ function* fetchAddressVerification(address: string) {
     Logger.warn(`${TAG}/fetchAddressVerification`, 'Unable to look up address', error)
     throw new Error('Unable to fetch verification status for this address')
   }
-}
-
-// Only use with multiple addresses if user has
-// gone through SecureSend
-export function getAddressFromPhoneNumber(
-  e164Number: string,
-  e164NumberToAddress: E164NumberToAddressType,
-  secureSendPhoneNumberMapping: SecureSendPhoneNumberMapping,
-  requesterAddress?: string
-): string | null | undefined {
-  const addresses = e164NumberToAddress[e164Number]
-
-  // If there are no verified addresses for the number,
-  // use the requester's given address
-  if (!addresses && requesterAddress) {
-    return requesterAddress
-  }
-
-  // If address is null (unverified) or undefined (in the process
-  // of being updated) then just return that falsy value
-  if (!addresses) {
-    return addresses
-  }
-
-  // If there are multiple addresses, need to determine which to use
-  if (addresses.length > 1) {
-    // Check if the user has gone through Secure Send and validated a
-    // recipient address
-    const validatedAddress = secureSendPhoneNumberMapping[e164Number]
-      ? secureSendPhoneNumberMapping[e164Number].address
-      : undefined
-
-    // If they have not, they shouldn't have been able to
-    // get to this point
-    if (!validatedAddress) {
-      throw new Error(
-        'Multiple addresses but none were validated. Should have routed through Secure Send.'
-      )
-    }
-
-    return validatedAddress
-  }
-
-  // Normal case when there is only one address in the mapping
-  return addresses[0]
 }
 
 export function* saveContacts() {

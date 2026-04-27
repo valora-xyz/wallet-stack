@@ -102,15 +102,11 @@ import PointsIntro from 'src/points/PointsIntro'
 import { NavigatorScreen } from 'src/public/navigate'
 import { RootState } from 'src/redux/reducers'
 import { store } from 'src/redux/store'
+import SelectRecipientAddress from 'src/send/SelectRecipientAddress'
 import SendConfirmation, { sendConfirmationScreenNavOptions } from 'src/send/SendConfirmation'
 import SendEnterAmount from 'src/send/SendEnterAmount'
+import SendInvite from 'src/send/SendInvite'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
-import ValidateRecipientAccount, {
-  validateRecipientAccountScreenNavOptions,
-} from 'src/send/ValidateRecipientAccount'
-import ValidateRecipientIntro, {
-  validateRecipientIntroScreenNavOptions,
-} from 'src/send/ValidateRecipientIntro'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import styles from 'src/styles/styles'
@@ -242,19 +238,19 @@ const sendScreens = (Navigator: typeof Stack) => (
       options={sendConfirmationScreenNavOptions as NativeStackNavigationOptions}
     />
     <Navigator.Screen
-      name={Screens.ValidateRecipientIntro}
-      component={ValidateRecipientIntro}
-      options={validateRecipientIntroScreenNavOptions}
-    />
-    <Navigator.Screen
-      name={Screens.ValidateRecipientAccount}
-      component={ValidateRecipientAccount}
-      options={validateRecipientAccountScreenNavOptions}
+      name={Screens.SelectRecipientAddress}
+      component={SelectRecipientAddress}
+      options={SelectRecipientAddress.navigationOptions as NativeStackNavigationOptions}
     />
     <Navigator.Screen
       name={Screens.SendEnterAmount}
       component={SendEnterAmount}
       options={noHeader}
+    />
+    <Navigator.Screen
+      name={Screens.SendInvite}
+      component={SendInvite}
+      options={SendInvite.navigationOptions}
     />
   </>
 )

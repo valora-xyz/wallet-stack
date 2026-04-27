@@ -2077,4 +2077,8 @@ export const migrations = {
       addressToVerifiedBy: {},
     },
   }),
+  256: (state: any) => ({
+    ...state,
+    identity: _.omit(state.identity, 'secureSendPhoneNumberMapping'),
+  }),
 }

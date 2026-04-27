@@ -7,12 +7,7 @@ import {
   WALLET_SINGLE_VERIFIED_ADDRESS,
 } from '../utils/consts'
 import { launchApp } from '../utils/retries'
-import {
-  enterPinUiIfNecessary,
-  quickOnboarding,
-  scrollIntoView,
-  waitForElementById,
-} from '../utils/utils'
+import { enterPinUiIfNecessary, quickOnboarding, waitForElementById } from '../utils/utils'
 
 const { E2E_WALLET_PRIVATE_KEY, E2E_WALLET_SINGLE_VERIFIED_MNEMONIC } = process.env
 
@@ -60,8 +55,8 @@ const fundWallet = async (senderPrivateKey, recipientAddress, stableToken, amoun
   console.log('Funding TX receipt', receipt)
 }
 
-export default SecureSend = () => {
-  describe('Secure send flow with phone number lookup', () => {
+export default SelectRecipientAddress = () => {
+  describe('Select recipient address flow with phone number lookup', () => {
     beforeAll(async () => {
       // fund wallet for send
       await fundWallet(
@@ -85,20 +80,11 @@ export default SecureSend = () => {
       )
       await element(by.id('RecipientItem')).tap()
 
-      await waitForElementById('SendOrInviteButton', { timeout: 30_000, tap: true })
-
-      // Use the last digits of the account to confirm the sender.
-      await waitForElementById('confirmAccountButton', { timeout: 30_000, tap: true })
-      for (let index = 0; index < 4; index++) {
-        const character = WALLET_MULTIPLE_VERIFIED_ADDRESS.charAt(
-          WALLET_MULTIPLE_VERIFIED_ADDRESS.length - (4 - index)
-        )
-        await element(by.id(`SingleDigitInput/digit${index}`)).replaceText(character)
-      }
-
-      // Scroll to see submit button
-      await scrollIntoView('Submit', 'KeyboardAwareScrollView', 50)
-      await element(by.id('ConfirmAccountButton')).tap()
+      // Pick the target address from the verified address picker.
+      await waitForElementById(
+        `SelectRecipientAddress/Row/${WALLET_MULTIPLE_VERIFIED_ADDRESS.toLowerCase()}`,
+        { timeout: 30_000, tap: true }
+      )
 
       // Select the currency
       await waitForElementById('SendEnterAmount/TokenSelect', {

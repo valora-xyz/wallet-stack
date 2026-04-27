@@ -71,6 +71,7 @@ import { NftOrigin } from 'src/nfts/types'
 import { NotificationReceiveState } from 'src/notifications/types'
 import { PointsActivityId } from 'src/points/types'
 import { RecipientType } from 'src/recipients/recipient'
+import { Verifier } from 'src/send/SelectRecipientAddress'
 import { AmountEnteredIn, QrCode } from 'src/send/types'
 import { Field, SwapType } from 'src/swap/types'
 import { TokenActionName } from 'src/tokens/types'
@@ -521,31 +522,6 @@ interface SendEventsProperties {
         isTokenManuallyImported: boolean
       }
 
-  [SendEvents.send_secure_start]: {
-    confirmByScan: boolean
-  }
-  [SendEvents.send_secure_back]: undefined
-  [SendEvents.send_secure_cancel]: undefined
-  [SendEvents.send_secure_submit]: {
-    partialAddressValidation: boolean
-    address: string
-  }
-  [SendEvents.send_secure_complete]: {
-    confirmByScan: boolean
-    partialAddressValidation?: boolean
-  }
-  [SendEvents.send_secure_incorrect]: {
-    confirmByScan: boolean
-    partialAddressValidation?: boolean
-    error: string
-  }
-  [SendEvents.send_secure_info]: {
-    partialAddressValidation: boolean
-  }
-  [SendEvents.send_secure_info_dismissed]: {
-    partialAddressValidation: boolean
-  }
-
   [SendEvents.send_tx_start]: undefined
   [SendEvents.send_tx_complete]: {
     txId: string
@@ -605,6 +581,14 @@ interface SendEventsProperties {
   [SendEvents.send_select_recipient_recent_press]: {
     recipientType: RecipientType
   }
+
+  [SendEvents.send_select_recipient_address_open]: {
+    addressCount: number
+  }
+  [SendEvents.send_select_recipient_address_select]: {
+    verifier: Verifier
+  }
+  [SendEvents.send_select_recipient_address_back]: undefined
 }
 
 interface FeeEventsProperties {
