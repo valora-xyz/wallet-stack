@@ -4,6 +4,7 @@ import React, { useMemo, type ReactNode } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { formatShortenedAddress } from 'src/account/utils'
 import BackButton from 'src/components/BackButton'
 import ContactCircle from 'src/components/ContactCircle'
 import CustomHeader from 'src/components/header/CustomHeader'
@@ -14,8 +15,10 @@ import InfoIcon from 'src/icons/InfoIcon'
 import WalletIcon from 'src/icons/navigator/Wallet'
 import PhoneIcon from 'src/icons/Phone'
 import UserIcon from 'src/icons/User'
+import VerifiedBadge from 'src/icons/VerifiedBadge'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
-import { getDisplayDetail, type Recipient } from 'src/recipients/recipient'
+import { type Recipient } from 'src/recipients/recipient'
+import { useVerifierName } from 'src/recipients/verifier'
 import colors, { type ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
@@ -70,7 +73,7 @@ export function ReviewSummaryItem(props: {
   label: string
   icon: ReactNode
   primaryValue: string
-  secondaryValue?: string
+  secondaryValue?: ReactNode
   testID?: string
   onPress?: () => void
 }) {
@@ -96,12 +99,21 @@ export function ReviewSummaryItem(props: {
 
             {!!props.secondaryValue && (
               <View style={styles.reviewSummaryItemSecondaryValueWrapper}>
-                <Text
-                  style={styles.reviewSummaryItemSecondaryValue}
-                  testID={`${props.testID}/SecondaryValue`}
-                >
-                  {props.secondaryValue}
-                </Text>
+                {typeof props.secondaryValue === 'string' ? (
+                  <Text
+                    style={styles.reviewSummaryItemSecondaryValue}
+                    testID={`${props.testID}/SecondaryValue`}
+                  >
+                    {props.secondaryValue}
+                  </Text>
+                ) : (
+                  <View
+                    style={styles.reviewSummaryItemSecondaryValueContent}
+                    testID={`${props.testID}/SecondaryValue`}
+                  >
+                    {props.secondaryValue}
+                  </View>
+                )}
                 {!!props.onPress && <InfoIcon size={14} color={colors.contentSecondary} />}
               </View>
             )}
@@ -109,6 +121,24 @@ export function ReviewSummaryItem(props: {
         </>
       </Touchable>
     </View>
+  )
+}
+
+function renderAddressAndVerifier(
+  shortAddress: string | undefined,
+  verifierName: string | undefined
+): ReactNode {
+  if (!shortAddress && !verifierName) return undefined
+  return (
+    <>
+      {!!shortAddress && <Text style={styles.reviewSummaryItemSecondaryValue}>{shortAddress}</Text>}
+      {!!verifierName && (
+        <>
+          <VerifiedBadge color={colors.contentSecondary} />
+          <Text style={styles.reviewSummaryItemSecondaryValue}>{verifierName}</Text>
+        </>
+      )}
+    </>
   )
 }
 
@@ -120,20 +150,30 @@ export function ReviewSummaryItemContact({
   recipient: Recipient
 }) {
   const { t } = useTranslation()
+  const verifierName = useVerifierName(recipient.address)
   const contact = useMemo(() => {
     const phone = recipient.displayNumber || recipient.e164PhoneNumber
+    // For recipients with a phone mapping, surface the resolved on-chain address (and verifier,
+    // if known) as a subtitle so the user can verify the actual destination they are signing.
+    const shortAddress = recipient.address ? formatShortenedAddress(recipient.address) : undefined
+    const phoneSubtitle = renderAddressAndVerifier(shortAddress, verifierName)
+
     if (recipient.name) {
-      return { title: recipient.name, subtitle: getDisplayDetail(recipient), icon: UserIcon }
+      return { title: recipient.name, subtitle: phoneSubtitle, icon: UserIcon }
     }
 
     if (phone) {
-      return { title: phone, icon: PhoneIcon }
+      return { title: phone, subtitle: phoneSubtitle, icon: PhoneIcon }
     }
 
     if (recipient.address) {
-      return { title: recipient.address, icon: WalletIcon }
+      return {
+        title: recipient.address,
+        subtitle: renderAddressAndVerifier(undefined, verifierName),
+        icon: WalletIcon,
+      }
     }
-  }, [recipient])
+  }, [recipient, verifierName])
 
   // This should never happen
   if (!contact) {
@@ -477,6 +517,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.Smallest8,
     alignItems: 'center',
+  },
+  reviewSummaryItemSecondaryValueContent: {
+    flexDirection: 'row',
+    gap: Spacing.Tiny4,
+    alignItems: 'center',
+    flexShrink: 1,
   },
   reviewDetails: {
     gap: Spacing.Regular16,

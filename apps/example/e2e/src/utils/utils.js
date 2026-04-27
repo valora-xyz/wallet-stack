@@ -113,7 +113,7 @@ export async function quickOnboarding({
     }
 
     // Restore existing wallet
-    await waitFor(element(by.id('connectingToCelo')))
+    await waitFor(element(by.id('connectingToCeloBanner')))
       .not.toBeVisible()
       .withTimeout(20000)
 

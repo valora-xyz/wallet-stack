@@ -174,7 +174,7 @@ describe('SendConfirmation', () => {
   it('shows the unknown address warning when the recipient address is not a known app user', () => {
     const { getByTestId } = renderScreen(mockSendConfirmationProps, {
       identity: {
-        addressToVerificationStatus: { [mockAccount]: false },
+        addressToVerifiedBy: { [mockAccount]: null },
       },
     })
 
@@ -184,7 +184,7 @@ describe('SendConfirmation', () => {
   it('does not show the unknown address warning when the recipient address is verified', () => {
     const { queryByTestId } = renderScreen(mockSendConfirmationProps, {
       identity: {
-        addressToVerificationStatus: { [mockAccount]: true },
+        addressToVerifiedBy: { [mockAccount]: 'valora' },
       },
     })
 
@@ -193,7 +193,7 @@ describe('SendConfirmation', () => {
 
   it('does not show the unknown address warning when the address has not been looked up yet', () => {
     const { queryByTestId } = renderScreen(mockSendConfirmationProps, {
-      identity: { addressToVerificationStatus: {} },
+      identity: { addressToVerifiedBy: {} },
     })
 
     expect(queryByTestId('UnknownAddressInfo')).toBeNull()

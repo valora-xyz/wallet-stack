@@ -15,7 +15,6 @@ export enum Actions {
   CANCEL_IMPORT_CONTACTS = 'IDENTITY/CANCEL_IMPORT_CONTACTS',
   END_IMPORT_CONTACTS = 'IDENTITY/END_IMPORT_CONTACTS',
   FETCH_ADDRESS_VERIFICATION_STATUS = 'IDENTITY/FETCH_ADDRESS_VERIFICATION_STATUS',
-  ADDRESS_VERIFICATION_STATUS_RECEIVED = 'IDENTITY/ADDRESS_VERIFICATION_STATUS_RECEIVED',
   CONTACTS_SAVED = 'IDENTITY/CONTACTS_SAVED',
   STORED_PASSWORD_REFRESHED = 'IDENTITY/STORED_PASSWORD_REFRESHED',
 }
@@ -58,12 +57,6 @@ export interface FetchAddressVerificationAction {
   address: string
 }
 
-export interface AddressVerificationStatusReceivedAction {
-  type: Actions.ADDRESS_VERIFICATION_STATUS_RECEIVED
-  address: string
-  addressVerified: boolean
-}
-
 interface ContactsSavedAction {
   type: Actions.CONTACTS_SAVED
   hash: string
@@ -81,22 +74,12 @@ export type ActionTypes =
   | EndImportContactsAction
   | FetchAddressesAndValidateAction
   | FetchAddressVerificationAction
-  | AddressVerificationStatusReceivedAction
   | ContactsSavedAction
   | StoredPasswordRefreshedAction
 
 export const fetchAddressesAndValidate = (e164Number: string): FetchAddressesAndValidateAction => ({
   type: Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS,
   e164Number,
-})
-
-export const addressVerificationStatusReceived = (
-  address: string,
-  addressVerified: boolean
-): AddressVerificationStatusReceivedAction => ({
-  type: Actions.ADDRESS_VERIFICATION_STATUS_RECEIVED,
-  address,
-  addressVerified,
 })
 
 export const fetchAddressVerification = (address: string): FetchAddressVerificationAction => ({

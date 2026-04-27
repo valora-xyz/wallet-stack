@@ -47,7 +47,6 @@ import {
   mockClaimRewardTransaction,
   mockCusdAddress,
   mockCusdTokenId,
-  mockDisplayNumber2,
   mockE164Number2,
   mockEarnClaimRewardTransaction,
   mockEarnDepositTransaction,
@@ -326,8 +325,8 @@ describe('TransactionDetailsScreen', () => {
     const nameComponent = getByTestId('TransferSent/name')
     expect(getElementText(nameComponent)).toEqual(mockName)
 
-    const numberComponent = getByTestId('TransferSent/number')
-    expect(getElementText(numberComponent)).toEqual(mockDisplayNumber2)
+    const addressComponent = getByTestId('TransferSent/address')
+    expect(getElementText(addressComponent)).toEqual('0x8C3b...ca4E')
 
     expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.01 CELO', {
       exact: false,
@@ -359,8 +358,8 @@ describe('TransactionDetailsScreen', () => {
     const nameComponent = getByTestId('TransferReceived/name')
     expect(getElementText(nameComponent)).toEqual(mockName)
 
-    const numberComponent = getByTestId('TransferReceived/number')
-    expect(getElementText(numberComponent)).toEqual(mockDisplayNumber2)
+    const addressComponent = getByTestId('TransferReceived/address')
+    expect(getElementText(addressComponent)).toEqual('0x8C3b...ca4E')
 
     const totalComponent = getByTestId('TotalLineItem/Total')
     expect(getElementText(totalComponent)).toEqual('€4.00')
@@ -381,7 +380,8 @@ describe('TransactionDetailsScreen', () => {
     const nameComponent = getByTestId('RewardReceived/name')
     expect(getElementText(nameComponent)).toEqual('feedItemRewardReceivedTitle')
 
-    expect(queryByTestId('RewardReceived/number')).toBeNull()
+    // Rewards senders don't have a known verifier, so the verifier composite isn't shown.
+    expect(queryByTestId('RewardReceived/VerifierBadge')).toBeNull()
 
     const totalComponent = getByTestId('TotalLineItem/Total')
     expect(getElementText(totalComponent)).toEqual('€4.00')

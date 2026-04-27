@@ -69,6 +69,7 @@ import {
   v253Schema,
   v254Schema,
   v255Schema,
+  v256Schema,
   v28Schema,
   v2Schema,
   v35Schema,
@@ -1958,5 +1959,29 @@ describe('Redux persist migrations', () => {
     }
     const migratedSchema = migrations[256](oldSchema)
     expect(migratedSchema.identity.secureSendPhoneNumberMapping).toBeUndefined()
+  })
+
+  it('works from 256 to 257', () => {
+    const oldSchema = {
+      ...v256Schema,
+      identity: {
+        ...v256Schema.identity,
+        addressToVerificationStatus: {
+          '0xAAA': true,
+          '0xbbb': false,
+          '0xccc': undefined,
+        },
+        addressToVerifiedBy: {
+          '0xddd': 'minipay',
+        },
+      },
+    }
+    const migratedSchema = migrations[257](oldSchema)
+    expect(migratedSchema.identity.addressToVerificationStatus).toBeUndefined()
+    expect(migratedSchema.identity.addressToVerifiedBy).toStrictEqual({
+      '0xddd': 'minipay',
+      '0xaaa': 'valora', // `true` carried over (and lowercased)
+      // `false` and `undefined` entries are dropped — `false` was ambiguous in the old schema
+    })
   })
 })

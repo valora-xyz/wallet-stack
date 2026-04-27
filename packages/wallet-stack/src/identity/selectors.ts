@@ -1,8 +1,6 @@
 import { RootState } from 'src/redux/reducers'
 
 export const e164NumberToAddressSelector = (state: RootState) => state.identity.e164NumberToAddress
-export const addressToVerificationStatusSelector = (state: RootState) =>
-  state.identity.addressToVerificationStatus
 export const addressToE164NumberSelector = (state: RootState) => state.identity.addressToE164Number
 export const addressToVerifiedBySelector = (state: RootState) => state.identity.addressToVerifiedBy
 export const importContactsProgressSelector = (state: RootState) =>

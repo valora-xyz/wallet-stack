@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react'
+import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, Keyboard, StyleSheet, Text, View } from 'react-native'
 import ContactCircle from 'src/components/ContactCircle'
@@ -6,18 +6,11 @@ import Touchable from 'src/components/Touchable'
 import PhoneIcon from 'src/icons/Phone'
 import WalletIcon from 'src/icons/navigator/Wallet'
 import {
-  addressToVerificationStatusSelector,
-  e164NumberToAddressSelector,
-} from 'src/identity/selectors'
-import Checkmark from 'src/icons/Checkmark'
-import {
   Recipient,
-  RecipientType,
   getDisplayDetail,
   getDisplayName,
   recipientHasNumber,
 } from 'src/recipients/recipient'
-import { useSelector } from 'src/redux/hooks'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
@@ -29,8 +22,6 @@ interface Props {
   selected?: boolean
 }
 
-const ICON_SIZE = 10
-
 function RecipientItem({ recipient, onSelectRecipient, loading, selected }: Props) {
   const { t } = useTranslation()
 
@@ -38,17 +29,6 @@ function RecipientItem({ recipient, onSelectRecipient, loading, selected }: Prop
     Keyboard.dismiss()
     onSelectRecipient(recipient)
   }
-
-  const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
-  const addressToVerificationStatus = useSelector(addressToVerificationStatusSelector)
-
-  // TODO(ACT-980): avoid icon flash when a known contact is clicked
-  const showAppIcon = useMemo(() => {
-    if (recipient.recipientType === RecipientType.PhoneNumber) {
-      return recipient.e164PhoneNumber && !!e164NumberToAddress[recipient.e164PhoneNumber]
-    }
-    return recipient.address && addressToVerificationStatus[recipient.address]
-  }, [e164NumberToAddress, recipient])
 
   return (
     <Touchable onPress={onPress} testID="RecipientItem">
@@ -62,11 +42,6 @@ function RecipientItem({ recipient, onSelectRecipient, loading, selected }: Prop
             borderColor={Colors.borderPrimary}
             DefaultIcon={() => renderDefaultIcon(recipient)} // no need to honor color props here since the color we need match the defaults
           />
-          {!!showAppIcon && (
-            <View style={styles.appIcon} testID="RecipientItem/AppIcon">
-              <Checkmark color={Colors.contentTertiary} height={ICON_SIZE} width={ICON_SIZE} />
-            </View>
-          )}
         </View>
         <View style={styles.contentContainer}>
           <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.name}>
@@ -120,14 +95,6 @@ const styles = StyleSheet.create({
   rightIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  appIcon: {
-    position: 'absolute',
-    top: 22,
-    left: 22,
-    backgroundColor: Colors.accent,
-    borderRadius: 100,
-    padding: 2,
   },
 })
 

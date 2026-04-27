@@ -9,13 +9,14 @@ import { SendEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
 import Touchable from 'src/components/Touchable'
 import CustomHeader from 'src/components/header/CustomHeader'
+import VerifiedBadge from 'src/icons/VerifiedBadge'
 import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
-import { miniPay, valora } from 'src/images/Images'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { getDisplayName } from 'src/recipients/recipient'
+import { VERIFIERS, Verifier, isKnownVerifier } from 'src/recipients/verifier'
 import { useSelector } from 'src/redux/hooks'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -23,18 +24,7 @@ import { Spacing } from 'src/styles/styles'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SelectRecipientAddress>
 
-const VERIFIERS = {
-  valora: { name: 'Valora', icon: valora },
-  minipay: { name: 'MiniPay', icon: miniPay },
-} as const
-
-export type Verifier = keyof typeof VERIFIERS
-
 const ICON_SIZE = 40
-
-function isKnownVerifier(verifier: string | undefined): verifier is Verifier {
-  return !!verifier && Object.hasOwn(VERIFIERS, verifier)
-}
 
 function VerifierIcon({ verifier }: { verifier: Verifier }) {
   return <Image source={VERIFIERS[verifier].icon} style={styles.icon} resizeMode="contain" />
@@ -103,7 +93,10 @@ function SelectRecipientAddress({ route }: Props) {
               <VerifierIcon verifier={verifier} />
               <View style={styles.rowContent}>
                 <Text style={styles.address}>{formatShortenedAddress(address)}</Text>
-                <Text style={styles.verifier}>{VERIFIERS[verifier].name}</Text>
+                <View style={styles.verifier}>
+                  <VerifiedBadge color={Colors.contentSecondary} />
+                  <Text style={styles.verifierName}>{VERIFIERS[verifier].name}</Text>
+                </View>
               </View>
             </View>
           </Touchable>
@@ -156,6 +149,11 @@ const styles = StyleSheet.create({
     ...typeScale.labelMedium,
   },
   verifier: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.Tiny4,
+  },
+  verifierName: {
     ...typeScale.bodySmall,
     color: Colors.contentSecondary,
   },
