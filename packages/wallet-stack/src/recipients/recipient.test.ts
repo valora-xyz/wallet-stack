@@ -76,15 +76,16 @@ describe('getRecipientVerificationStatus', () => {
     { recipient: mockRecipient, type: 'with phone number' },
   ])('address recipient $type', ({ recipient }) => {
     it('returns appropriate status', () => {
-      expect(getRecipientVerificationStatus(recipient, {}, { [recipient.address]: true })).toEqual(
+      const key = recipient.address.toLowerCase()
+      expect(getRecipientVerificationStatus(recipient, {}, { [key]: 'valora' })).toEqual(
         RecipientVerificationStatus.VERIFIED
       )
-      expect(getRecipientVerificationStatus(recipient, {}, { [recipient.address]: false })).toEqual(
+      expect(getRecipientVerificationStatus(recipient, {}, { [key]: null })).toEqual(
         RecipientVerificationStatus.UNVERIFIED
       )
-      expect(
-        getRecipientVerificationStatus(recipient, {}, { [recipient.address]: undefined })
-      ).toEqual(RecipientVerificationStatus.UNKNOWN)
+      expect(getRecipientVerificationStatus(recipient, {}, { [key]: undefined })).toEqual(
+        RecipientVerificationStatus.UNKNOWN
+      )
       expect(getRecipientVerificationStatus(recipient, {}, {})).toEqual(
         RecipientVerificationStatus.UNKNOWN
       )

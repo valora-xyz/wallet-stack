@@ -31,12 +31,11 @@ export interface ImportContactProgress {
   total: number
 }
 
-export interface AddressToVerificationStatus {
-  [address: string]: boolean | undefined
-}
-
 export interface AddressToVerifiedByType {
-  [address: string]: string | undefined
+  // undefined = never checked / unknown
+  // null      = checked, no known verifier
+  // string    = checked, verified by that verifier (e.g. "valora", "minipay")
+  [address: string]: string | null | undefined
 }
 
 interface State {
@@ -48,8 +47,6 @@ interface State {
   // Has the user already been asked for contacts permission
   askedContactsPermission: boolean
   importContactsProgress: ImportContactProgress
-  // Mapping of address to verification status; undefined entries represent a loading state
-  addressToVerificationStatus: AddressToVerificationStatus
   // Mapping of address to the entity that verified it (e.g. "valora", "minipay")
   addressToVerifiedBy: AddressToVerifiedByType
   lastSavedContactsHash: string | null
@@ -66,7 +63,6 @@ const initialState: State = {
     current: 0,
     total: 0,
   },
-  addressToVerificationStatus: {},
   addressToVerifiedBy: {},
   lastSavedContactsHash: null,
   shouldRefreshStoredPasswordHash: false,
@@ -144,21 +140,11 @@ export const reducer = (
         e164NumberToAddress: state.e164NumberToAddress,
       }
     case Actions.FETCH_ADDRESS_VERIFICATION_STATUS:
-      // If the current status is false or does not exist, we set it to undefined
-      // to mark it as being in a loading state.
       return {
         ...state,
-        addressToVerificationStatus: {
-          ...state.addressToVerificationStatus,
-          [action.address]: state.addressToVerificationStatus[action.address] || undefined,
-        },
-      }
-    case Actions.ADDRESS_VERIFICATION_STATUS_RECEIVED:
-      return {
-        ...state,
-        addressToVerificationStatus: {
-          ...state.addressToVerificationStatus,
-          [action.address]: action.addressVerified,
+        addressToVerifiedBy: {
+          ...state.addressToVerifiedBy,
+          [action.address]: undefined,
         },
       }
     case Actions.CONTACTS_SAVED:

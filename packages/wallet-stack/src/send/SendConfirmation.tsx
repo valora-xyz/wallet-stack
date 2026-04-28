@@ -24,7 +24,7 @@ import {
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
-import { addressToVerificationStatusSelector } from 'src/identity/selectors'
+import { addressToVerifiedBySelector } from 'src/identity/selectors'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencyCode, getLocalCurrencySymbol } from 'src/localCurrency/selectors'
 import { noHeader } from 'src/navigator/Headers'
@@ -91,11 +91,11 @@ export default function SendConfirmation({ route: { params } }: Props) {
   const localAmount = useTokenToLocalAmount(tokenAmount, tokenId)
   const usdAmount = useAmountAsUsd(tokenAmount, tokenId)
   const walletAddress = useSelector(walletAddressSelector)
-  const addressToVerificationStatus = useSelector(addressToVerificationStatusSelector)
+  const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
   const showUnknownAddressInfo =
     recipient.recipientType === RecipientType.Address &&
     !!recipient.address &&
-    addressToVerificationStatus[recipient.address] === false
+    addressToVerifiedBy[recipient.address] === null
 
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, tokenInfo!.networkId))
   const {

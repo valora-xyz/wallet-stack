@@ -143,7 +143,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 256,
+          "version": 257,
         },
         "account": {
           "acceptedTerms": false,
@@ -244,7 +244,6 @@ describe('store state', () => {
         "identity": {
           "addressToDisplayName": {},
           "addressToE164Number": {},
-          "addressToVerificationStatus": {},
           "addressToVerifiedBy": {},
           "askedContactsPermission": false,
           "e164NumberToAddress": {},

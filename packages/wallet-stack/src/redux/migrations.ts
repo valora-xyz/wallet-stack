@@ -2081,4 +2081,25 @@ export const migrations = {
     ...state,
     identity: _.omit(state.identity, 'secureSendPhoneNumberMapping'),
   }),
+  257: (state: any) => {
+    // Carry over previously confirmed verifications (all Valora)
+    const oldMap: Record<string, boolean | undefined> =
+      state.identity?.addressToVerificationStatus ?? {}
+    const carriedOver: Record<string, string> = {}
+    for (const [address, verified] of Object.entries(oldMap)) {
+      if (verified === true) {
+        carriedOver[address.toLowerCase()] = 'valora'
+      }
+    }
+    return {
+      ...state,
+      identity: {
+        ..._.omit(state.identity, 'addressToVerificationStatus'),
+        addressToVerifiedBy: {
+          ...state.identity.addressToVerifiedBy,
+          ...carriedOver,
+        },
+      },
+    }
+  },
 }

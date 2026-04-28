@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LayoutAnimation, StyleSheet, Text, View } from 'react-native'
+import { formatShortenedAddress } from 'src/account/utils'
 import AccountNumber from 'src/components/AccountNumber'
 import Expandable from 'src/components/Expandable'
 import Touchable from 'src/components/Touchable'
+import VerifiedBadge from 'src/icons/VerifiedBadge'
 import { Screens } from 'src/navigator/Screens'
 import { getDisplayName, Recipient, recipientHasNumber } from 'src/recipients/recipient'
+import { useVerifierName } from 'src/recipients/verifier'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
-import { getDisplayNumberInternational } from 'src/utils/phoneNumbers'
+import { Spacing } from 'src/styles/styles'
 
 interface Props {
   type: 'sent' | 'received' | 'withdrawn'
@@ -36,10 +39,29 @@ export default function UserSection({
   }
 
   const displayName = getDisplayName(recipient, t)
-  const displayNumber = recipientHasNumber(recipient)
-    ? getDisplayNumberInternational(recipient.e164PhoneNumber)
-    : undefined
   const address = recipient.address || ''
+
+  const verifierName = useVerifierName(recipient.address)
+
+  // Show short address in the secondary row when the primary (displayName) isn't already
+  // a formatted address — i.e., when the recipient has a name or phone number so the
+  // address would add information rather than duplicating the primary.
+  const hasIdentity = !!recipient.name || recipientHasNumber(recipient)
+  const shortAddress =
+    hasIdentity && recipient.address ? formatShortenedAddress(recipient.address) : undefined
+
+  const secondaryContent = verifierName ? (
+    <View style={styles.secondaryContent}>
+      {!!shortAddress && <Text style={styles.secondaryText}>{shortAddress}</Text>}
+      <VerifiedBadge
+        color={colors.contentSecondary}
+        testID={testID ? `${testID}/VerifierBadge` : undefined}
+      />
+      <Text style={styles.secondaryText}>{verifierName}</Text>
+    </View>
+  ) : shortAddress ? (
+    <Text style={styles.secondaryText}>{shortAddress}</Text>
+  ) : null
 
   const sectionLabel = {
     received: t('receivedFrom'),
@@ -54,16 +76,14 @@ export default function UserSection({
           <Text style={styles.sectionLabel}>{sectionLabel}</Text>
           <Touchable onPress={toggleExpanded} disabled={!expandable}>
             <>
-              <Expandable isExpandable={expandable && !displayNumber} isExpanded={expanded}>
+              <Expandable isExpandable={expandable && !secondaryContent} isExpanded={expanded}>
                 <Text style={styles.username} testID={`${testID}/name`}>
                   {displayName}
                 </Text>
               </Expandable>
-              {!!displayNumber && (
-                <Expandable isExpandable={expandable && !!displayNumber} isExpanded={expanded}>
-                  <Text style={styles.phoneNumber} testID={`${testID}/number`}>
-                    {displayNumber}
-                  </Text>
+              {!!secondaryContent && (
+                <Expandable isExpandable={expandable} isExpanded={expanded}>
+                  <View testID={`${testID}/address`}>{secondaryContent}</View>
                 </Expandable>
               )}
             </>
@@ -104,9 +124,15 @@ const styles = StyleSheet.create({
   username: {
     ...typeScale.bodyMedium,
   },
-  phoneNumber: {
+  secondaryText: {
     ...typeScale.bodySmall,
     color: colors.contentSecondary,
+  },
+  secondaryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.Tiny4,
+    flexShrink: 1,
   },
   avatarContainer: {
     flex: 1,

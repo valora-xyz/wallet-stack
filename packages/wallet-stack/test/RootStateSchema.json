@@ -162,15 +162,12 @@
             },
             "type": "object"
         },
-        "AddressToVerificationStatus": {
-            "additionalProperties": {
-                "type": "boolean"
-            },
-            "type": "object"
-        },
         "AddressToVerifiedByType": {
             "additionalProperties": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "type": "object"
         },
@@ -5517,9 +5514,6 @@
                 "addressToE164Number": {
                     "$ref": "#/definitions/AddressToE164NumberType"
                 },
-                "addressToVerificationStatus": {
-                    "$ref": "#/definitions/AddressToVerificationStatus"
-                },
                 "addressToVerifiedBy": {
                     "$ref": "#/definitions/AddressToVerifiedByType"
                 },
@@ -5545,7 +5539,6 @@
             "required": [
                 "addressToDisplayName",
                 "addressToE164Number",
-                "addressToVerificationStatus",
                 "addressToVerifiedBy",
                 "askedContactsPermission",
                 "e164NumberToAddress",

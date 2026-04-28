@@ -11,15 +11,20 @@ import {
   Actions,
   FetchAddressVerificationAction,
   FetchAddressesAndValidateAction,
-  addressVerificationStatusReceived,
   contactsSaved,
   endImportContacts,
   updateE164PhoneNumberAddresses,
   updateImportContactsProgress,
 } from 'src/identity/actions'
-import { AddressToE164NumberType, E164NumberToAddressType } from 'src/identity/reducer'
 import {
-  addressToVerificationStatusSelector,
+  AddressToE164NumberType,
+  AddressToVerifiedByType,
+  E164NumberToAddressType,
+} from 'src/identity/reducer'
+import {
+  addressToE164NumberSelector,
+  addressToVerifiedBySelector,
+  e164NumberToAddressSelector,
   lastSavedContactsHashSelector,
 } from 'src/identity/selectors'
 import { ImportContactsStatus } from 'src/identity/types'
@@ -139,6 +144,13 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
   try {
     Logger.debug(TAG + '@fetchAddressesAndValidate', `Fetching addresses for number`)
 
+    // Snapshot the previous mappings before we clear them so we can prune stale entries
+    // after the fresh response arrives (see the pruning block below).
+    const prevE164NumberToAddress = yield* select(e164NumberToAddressSelector)
+    const prevAddressToE164Number = yield* select(addressToE164NumberSelector)
+    const prevAddressToVerifiedBy = yield* select(addressToVerifiedBySelector)
+    const prevAddresses = prevE164NumberToAddress[e164Number] ?? []
+
     // Clear existing entries for those numbers so our mapping consumers know new status is pending.
     yield* put(updateE164PhoneNumberAddresses({ [e164Number]: undefined }, {}))
 
@@ -148,10 +160,26 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
     // it includes addresses verified by both CPV and SocialConnect.
     // The `addresses` field is used for backward compatibility.
     const walletAddresses = verifiedAddresses ? verifiedAddresses.map((v) => v.address) : addresses
+    const walletAddressSet = new Set(walletAddresses)
 
     const e164NumberToAddressUpdates: E164NumberToAddressType = {}
     const addressToE164NumberUpdates: AddressToE164NumberType = {}
-    const addressToVerifiedByUpdates: Record<string, string> = {}
+    const addressToVerifiedByUpdates: AddressToVerifiedByType = {}
+
+    // Prune addresses previously associated with this phone number but no longer present
+    // in the fresh response.
+    for (const prevAddress of prevAddresses) {
+      if (!walletAddressSet.has(prevAddress)) {
+        // Clear the reverse mapping for this number.
+        if (prevAddressToE164Number[prevAddress] === e164Number) {
+          addressToE164NumberUpdates[prevAddress] = null
+        }
+        // Clear verifier info.
+        if (prevAddress in prevAddressToVerifiedBy) {
+          addressToVerifiedByUpdates[prevAddress] = null
+        }
+      }
+    }
 
     if (verifiedAddresses) {
       for (const { address, verifiedBy } of verifiedAddresses) {
@@ -188,14 +216,20 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
 }
 
 export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificationAction) {
+  const normalizedAddress = address.toLowerCase()
   try {
-    const addressToVerificationStatus = yield* select(addressToVerificationStatusSelector)
-    if (!(address in addressToVerificationStatus && addressToVerificationStatus[address])) {
-      AppAnalytics.track(IdentityEvents.address_lookup_start)
-      const addressVerified = yield* call(fetchAddressVerification, address)
-      yield* put(addressVerificationStatusReceived(address, addressVerified))
-      AppAnalytics.track(IdentityEvents.address_lookup_complete)
-    }
+    AppAnalytics.track(IdentityEvents.address_lookup_start)
+    const { addressVerified, verifiedBy } = yield* call(fetchAddressVerification, normalizedAddress)
+    // Older backend responses omit `verifiedBy` and only signal Valora-verified addresses,
+    // so fall back to 'valora' when verification is confirmed without a verifier.
+    yield* put(
+      updateE164PhoneNumberAddresses(
+        {},
+        {},
+        { [normalizedAddress]: addressVerified ? (verifiedBy ?? 'valora') : null }
+      )
+    )
+    AppAnalytics.track(IdentityEvents.address_lookup_complete)
   } catch (err) {
     const error = ensureError(err)
     Logger.debug(
@@ -203,13 +237,8 @@ export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificat
       `Error fetching address verification`,
       error
     )
-    AppAnalytics.track(IdentityEvents.address_lookup_error, {
-      error: error.message,
-    })
-    // Setting this address to "false" does not mean that the address
-    // if definitely unverified; we set it to false to indicate that
-    // the request is finished, and possibly unverified.
-    yield* put(addressVerificationStatusReceived(address, false))
+    yield* put(showErrorOrFallback(error, ErrorMessages.ADDRESS_LOOKUP_FAILURE))
+    AppAnalytics.track(IdentityEvents.address_lookup_error, { error: error.message })
   }
 }
 
@@ -291,8 +320,9 @@ function* fetchAddressVerification(address: string) {
       )
     }
 
-    const { data }: { data: { addressVerified: boolean } } = yield* call([response, 'json'])
-    return data.addressVerified
+    const { data }: { data: { addressVerified: boolean; verifiedBy?: string | null } } =
+      yield* call([response, 'json'])
+    return { addressVerified: data.addressVerified, verifiedBy: data.verifiedBy }
   } catch (error) {
     Logger.warn(`${TAG}/fetchAddressVerification`, 'Unable to look up address', error)
     throw new Error('Unable to fetch verification status for this address')

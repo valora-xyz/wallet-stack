@@ -6,13 +6,12 @@ import { call, select } from 'redux-saga/effects'
 import { setUserContactDetails } from 'src/account/actions'
 import { defaultCountryCodeSelector, e164NumberSelector } from 'src/account/selectors'
 import { showError, showErrorOrFallback } from 'src/alert/actions'
-import { IdentityEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { IdentityEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
 import {
   Actions,
-  addressVerificationStatusReceived,
   contactsSaved,
   fetchAddressVerification,
   fetchAddressesAndValidate,
@@ -25,7 +24,9 @@ import {
   saveContacts,
 } from 'src/identity/contactMapping'
 import {
-  addressToVerificationStatusSelector,
+  addressToE164NumberSelector,
+  addressToVerifiedBySelector,
+  e164NumberToAddressSelector,
   lastSavedContactsHashSelector,
 } from 'src/identity/selectors'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
@@ -93,12 +94,19 @@ describe('Fetch Addresses Saga', () => {
       mockFetch.resetMocks()
     })
 
+    const emptyMappingProviders: [any, any][] = [
+      [select(e164NumberToAddressSelector), {}],
+      [select(addressToE164NumberSelector), {}],
+      [select(addressToVerifiedBySelector), {}],
+    ]
+
     it('fetches and caches addresses correctly', async () => {
       const updatedAccount = '0xAbC'
       mockFetch.mockResponseOnce(JSON.stringify({ data: { addresses: [updatedAccount] } }))
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
+          ...emptyMappingProviders,
           [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
         ])
@@ -131,6 +139,7 @@ describe('Fetch Addresses Saga', () => {
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
+          ...emptyMappingProviders,
           [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
         ])
@@ -162,6 +171,7 @@ describe('Fetch Addresses Saga', () => {
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
+          ...emptyMappingProviders,
           [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
         ])
@@ -176,11 +186,44 @@ describe('Fetch Addresses Saga', () => {
         .run()
     })
 
+    it('prunes stale address mappings no longer returned by the fresh lookup', async () => {
+      mockFetch.mockResponseOnce(
+        JSON.stringify({
+          data: {
+            addresses: ['0xkept'],
+            verifiedAddresses: [{ address: '0xkept', verifiedBy: 'valora' }],
+          },
+        })
+      )
+
+      await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
+        .provide([
+          [select(e164NumberToAddressSelector), { [mockE164Number]: ['0xstale', '0xkept'] }],
+          [
+            select(addressToE164NumberSelector),
+            { '0xstale': mockE164Number, '0xkept': mockE164Number },
+          ],
+          [select(addressToVerifiedBySelector), { '0xstale': 'valora', '0xkept': 'valora' }],
+          [select(walletAddressSelector), '0xxyz'],
+          [call(retrieveSignedMessage), 'some signed message'],
+        ])
+        .put(updateE164PhoneNumberAddresses({ [mockE164Number]: undefined }, {}))
+        .put(
+          updateE164PhoneNumberAddresses(
+            { [mockE164Number]: ['0xkept'] },
+            { '0xstale': null, '0xkept': mockE164Number },
+            { '0xstale': null, '0xkept': 'valora' }
+          )
+        )
+        .run()
+    })
+
     it('handles lookup errors correctly', async () => {
       mockFetch.mockReject()
 
       await expectSaga(fetchAddressesAndValidateSaga, fetchAddressesAndValidate(mockE164Number))
         .provide([
+          ...emptyMappingProviders,
           [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
         ])
@@ -195,48 +238,64 @@ describe('Fetch Address Verification Saga', () => {
     mockFetch.resetMocks()
   })
 
-  it('fetches and stores verified address', async () => {
-    mockFetch.mockResponseOnce(JSON.stringify({ data: { addressVerified: true } }))
+  it('records the `verifiedBy` value returned by the backend', async () => {
+    mockFetch.mockResponseOnce(
+      JSON.stringify({ data: { addressVerified: true, verifiedBy: 'minipay' } })
+    )
 
     await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
       .provide([
-        [select(addressToVerificationStatusSelector), {}],
         [select(walletAddressSelector), '0xxyz'],
         [call(retrieveSignedMessage), 'some signed message'],
       ])
-      .put(addressVerificationStatusReceived(mockAccount, true))
+      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'minipay' }))
       .run()
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
     expect(mockFetch).toHaveBeenCalledWith(
-      `${networkConfig.checkAddressVerifiedUrl}?address=${mockAccount}&clientPlatform=android&clientVersion=0.0.1`,
-      {
+      `${networkConfig.checkAddressVerifiedUrl}?address=${mockAccount.toLowerCase()}&clientPlatform=android&clientVersion=0.0.1`,
+      expect.objectContaining({
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+        headers: expect.objectContaining({
           authorization: `${networkConfig.authHeaderIssuer} 0xxyz:some signed message`,
-        },
-        signal: expect.any(AbortSignal),
-      }
+        }),
+      })
     )
   })
 
-  it('skips fetching if address already known', async () => {
-    await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
-      .provide([[select(addressToVerificationStatusSelector), { [mockAccount]: true }]])
-      .run()
+  it('falls back to `valora` when the backend confirms the address without a `verifiedBy` field', async () => {
+    mockFetch.mockResponseOnce(JSON.stringify({ data: { addressVerified: true } }))
 
-    expect(mockFetch).toHaveBeenCalledTimes(0)
-  })
-
-  it('handles errors gracefully', async () => {
-    mockFetch.mockReject()
     await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
       .provide([
-        [select(addressToVerificationStatusSelector), {}],
         [select(walletAddressSelector), '0xxyz'],
         [call(retrieveSignedMessage), 'some signed message'],
       ])
+      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'valora' }))
+      .run()
+  })
+
+  it('records `null` (checked, not verified) when the backend returns false', async () => {
+    mockFetch.mockResponseOnce(JSON.stringify({ data: { addressVerified: false } }))
+
+    await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
+      .provide([
+        [select(walletAddressSelector), '0xxyz'],
+        [call(retrieveSignedMessage), 'some signed message'],
+      ])
+      .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: null }))
+      .run()
+  })
+
+  it('does not touch `addressToVerifiedBy` on network errors — the check is inconclusive, not negative', async () => {
+    mockFetch.mockReject()
+    await expectSaga(fetchAddressVerificationSaga, fetchAddressVerification(mockAccount))
+      .provide([
+        [select(walletAddressSelector), '0xxyz'],
+        [call(retrieveSignedMessage), 'some signed message'],
+      ])
+      .not.put.actionType(Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES)
+      .put(showErrorOrFallback(expect.anything(), ErrorMessages.ADDRESS_LOOKUP_FAILURE))
       .run()
     expect(AppAnalytics.track).toHaveBeenCalledWith(IdentityEvents.address_lookup_error, {
       error: 'Unable to fetch verification status for this address',
