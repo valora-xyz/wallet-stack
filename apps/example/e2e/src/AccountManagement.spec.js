@@ -9,6 +9,6 @@ describe('Account', () => {
   })
 
   describe('Support', Support)
-  describe('Settings :ios:', Settings)
-  describe('Reset Account :ios:', ResetAccount)
+  describe('Settings', Settings)
+  describe('Reset Account', ResetAccount)
 })
