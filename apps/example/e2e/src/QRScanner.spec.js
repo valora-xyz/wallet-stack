@@ -60,11 +60,6 @@ describe('Given QR Scanner', () => {
     })
 
     it('Then should handle address only QR', async () => {
-      try {
-        await element(by.id('BackChevron')).tap()
-        await element(by.id('closeButton')).tap()
-      } catch {}
-
       // Use instead of waitForElementById as the element is not visible behind opacity overlay
       await element(by.text('Center code in the box above')).tap()
       await waitForElementById('ManualInput')
