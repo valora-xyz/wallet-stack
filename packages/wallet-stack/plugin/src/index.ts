@@ -3,6 +3,7 @@ import { ConfigPlugin, withPlugins } from '@expo/config-plugins'
 import { withAndroidUserAgent } from './withAndroidUserAgent'
 import { withAndroidWindowSoftInputModeAdjustNothing } from './withAndroidWindowSoftInputModeAdjustNothing'
 import { withIosAppDelegateResetKeychain } from './withIosAppDelegateResetKeychain'
+import { withIosLiquidGlassCompat } from './withIosLiquidGlassCompat'
 import { withIosUserAgent } from './withIosUserAgent'
 
 /**
@@ -13,6 +14,7 @@ const withMobileApp: ConfigPlugin<{ appName?: string }> = (config, props = {}) =
     // iOS
     withIosAppDelegateResetKeychain,
     [withIosUserAgent, props],
+    withIosLiquidGlassCompat,
 
     // Android
     [withAndroidUserAgent, props],
