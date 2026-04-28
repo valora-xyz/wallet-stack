@@ -1,5 +1,10 @@
+// See useWallet.ts for why we lazy-require the internal module rather than
+// using top-level runtime imports.
 import React from 'react'
-import BaseButton, { BtnSizes, BtnTypes, ButtonProps, TextSizes } from '../../components/Button'
+import type * as InternalButton from '../../components/Button'
+import type { ButtonProps } from '../../components/Button'
+
+const loadInternal = (): typeof InternalButton => require('../../components/Button')
 
 export type ButtonSize = 'small' | 'medium' | 'full'
 export type ButtonType = 'primary' | 'secondary' | 'tertiary'
@@ -11,8 +16,9 @@ export interface CustomButtonProps extends Omit<ButtonProps, 'size' | 'type' | '
   textSize?: ButtonTextSize
 }
 
-function toInternalBtnType(type?: ButtonType): BtnTypes | undefined {
+function toInternalBtnType(type?: ButtonType): InternalButton.BtnTypes | undefined {
   if (!type) return undefined
+  const { BtnTypes } = loadInternal()
   switch (type) {
     case 'primary':
       return BtnTypes.PRIMARY
@@ -26,8 +32,9 @@ function toInternalBtnType(type?: ButtonType): BtnTypes | undefined {
   }
 }
 
-function toInternalBtnSize(size?: ButtonSize): BtnSizes | undefined {
+function toInternalBtnSize(size?: ButtonSize): InternalButton.BtnSizes | undefined {
   if (!size) return undefined
+  const { BtnSizes } = loadInternal()
   switch (size) {
     case 'small':
       return BtnSizes.SMALL
@@ -41,8 +48,9 @@ function toInternalBtnSize(size?: ButtonSize): BtnSizes | undefined {
   }
 }
 
-function toInternalTextSize(size?: ButtonTextSize): TextSizes | undefined {
+function toInternalTextSize(size?: ButtonTextSize): InternalButton.TextSizes | undefined {
   if (!size) return undefined
+  const { TextSizes } = loadInternal()
   switch (size) {
     case 'small':
       return TextSizes.SMALL
@@ -55,6 +63,7 @@ function toInternalTextSize(size?: ButtonTextSize): TextSizes | undefined {
 }
 
 export function Button(props: CustomButtonProps) {
+  const { default: BaseButton } = loadInternal()
   return (
     <BaseButton
       {...props}
