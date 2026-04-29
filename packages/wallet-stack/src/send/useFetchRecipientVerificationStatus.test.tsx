@@ -121,7 +121,9 @@ describe('useFetchRecipientVerificationStatus', () => {
     it('reports loading while addressLookupLoading[address] is true', () => {
       const { result } = setupHook({
         app: { phoneNumberVerified: true },
-        identity: { lookupLoading: { phoneNumber: {}, address: { [mockAccount.toLowerCase()]: true } } },
+        identity: {
+          lookupLoading: { phoneNumber: {}, address: { [mockAccount.toLowerCase()]: true } },
+        },
       })
       act(() => {
         result.current.setSelectedRecipient(addressRecipient)
@@ -132,7 +134,9 @@ describe('useFetchRecipientVerificationStatus', () => {
     it('stops loading once addressLookupLoading[address] is false (saga finished, success or error)', () => {
       const { result } = setupHook({
         app: { phoneNumberVerified: true },
-        identity: { lookupLoading: { phoneNumber: {}, address: { [mockAccount.toLowerCase()]: false } } },
+        identity: {
+          lookupLoading: { phoneNumber: {}, address: { [mockAccount.toLowerCase()]: false } },
+        },
       })
       act(() => {
         result.current.setSelectedRecipient(addressRecipient)
