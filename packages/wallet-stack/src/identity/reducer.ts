@@ -38,7 +38,7 @@ export interface AddressToVerifiedByType {
   [address: string]: string | null | undefined
 }
 
-export interface LookupLoadingType {
+interface LookupLoadingType {
   phoneNumber: { [e164PhoneNumber: string]: boolean | undefined }
   address: { [address: string]: boolean | undefined }
 }

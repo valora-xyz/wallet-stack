@@ -58,9 +58,9 @@ export interface FetchAddressVerificationAction {
   address: string
 }
 
-export type LookupKind = 'phoneNumber' | 'address'
+type LookupKind = 'phoneNumber' | 'address'
 
-export interface LookupSetLoadingAction {
+interface LookupSetLoadingAction {
   type: Actions.LOOKUP_SET_LOADING
   kind: LookupKind
   key: string
