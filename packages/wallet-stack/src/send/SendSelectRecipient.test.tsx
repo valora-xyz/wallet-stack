@@ -197,6 +197,56 @@ describe('SendSelectRecipient', () => {
     })
     expect(getByTestId('SelectRecipient/NoResults')).toBeTruthy()
   })
+  describe('selection spinner', () => {
+    it('shows the spinner on the tapped phone-recipient row while the lookup is in flight', async () => {
+      const store = createMockStore({
+        ...storeWithPhoneVerified,
+        identity: {
+          lookupLoading: { phoneNumber: { [mockE164Number2Invite]: true }, address: {} },
+        },
+      })
+
+      const { getByTestId, queryByTestId } = render(
+        <Provider store={store}>
+          <SendSelectRecipient {...mockScreenProps({})} />
+        </Provider>
+      )
+
+      await act(() => {
+        fireEvent.changeText(getByTestId('SendSelectRecipientSearchInput'), 'George Bogart')
+      })
+      await act(() => {
+        fireEvent.press(getByTestId('RecipientItem'))
+      })
+
+      expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeTruthy()
+    })
+
+    it('hides the spinner once the lookup loading flag clears, even if no mapping arrived (error path)', async () => {
+      // No mapping in `e164NumberToAddress`, no entry in `phoneNumberLookupLoading` — mirroring
+      // the post-error state once the saga's `finally` block has cleared the flag.
+      const store = createMockStore({
+        ...storeWithPhoneVerified,
+        identity: { lookupLoading: { phoneNumber: {}, address: {} } },
+      })
+
+      const { getByTestId, queryByTestId } = render(
+        <Provider store={store}>
+          <SendSelectRecipient {...mockScreenProps({})} />
+        </Provider>
+      )
+
+      await act(() => {
+        fireEvent.changeText(getByTestId('SendSelectRecipientSearchInput'), 'George Bogart')
+      })
+      await act(() => {
+        fireEvent.press(getByTestId('RecipientItem'))
+      })
+
+      expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
+    })
+  })
+
   it('navigates to send amount when a verified phone recipient is tapped in search results', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,

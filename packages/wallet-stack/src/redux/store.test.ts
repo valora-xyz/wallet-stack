@@ -7,7 +7,12 @@ import * as createMigrateModule from 'src/redux/createMigrate'
 import { migrations } from 'src/redux/migrations'
 import { RootState } from 'src/redux/reducers'
 import { rootSaga } from 'src/redux/sagas'
-import { _persistConfig, setupStore, timeBetweenStoreSizeEvents } from 'src/redux/store'
+import {
+  _persistConfig,
+  setupStore,
+  stripIdentityTransients,
+  timeBetweenStoreSizeEvents,
+} from 'src/redux/store'
 import * as accountCheckerModule from 'src/utils/accountChecker'
 import Logger from 'src/utils/Logger'
 import { getLatestSchema, vNeg1Schema } from 'test/schemas'
@@ -102,6 +107,42 @@ describe('persistConfig', () => {
   })
 })
 
+describe('stripIdentityTransients', () => {
+  const baseIdentityState = {
+    addressToE164Number: { '0xabc': '+15551234567' },
+    e164NumberToAddress: { '+15551234567': ['0xabc'] },
+    addressToDisplayName: {},
+    askedContactsPermission: false,
+    importContactsProgress: { status: 0, current: 0, total: 0 },
+    addressToVerifiedBy: { '0xabc': 'valora' },
+    lookupLoading: {
+      phoneNumber: { '+15551234567': true, '+15559999999': false },
+      address: { '0xabc': true, '0xdef': false },
+    },
+    lastSavedContactsHash: null,
+    shouldRefreshStoredPasswordHash: false,
+  } as any
+
+  it('strips lookupLoading from identity when serializing to storage', () => {
+    // redux-persist's createTransform: `in` runs on state → storage, `out` runs on storage → state.
+    const persisted = stripIdentityTransients.in(baseIdentityState, 'identity', baseIdentityState)
+    expect(persisted).not.toHaveProperty('lookupLoading')
+    // Other identity fields are preserved
+    expect(persisted).toMatchObject({
+      addressToE164Number: { '0xabc': '+15551234567' },
+      e164NumberToAddress: { '+15551234567': ['0xabc'] },
+      addressToVerifiedBy: { '0xabc': 'valora' },
+    })
+  })
+
+  it('passes the storage → state path through unchanged', () => {
+    const stored = { ...baseIdentityState }
+    delete stored.lookupLoading
+    const restored = stripIdentityTransients.out(stored, 'identity', stored)
+    expect(restored).toEqual(stored)
+  })
+})
+
 describe('store state', () => {
   // This test ensures the vNeg1Schema can be successfully migrated to the latest version
   // and validates against the latest RootState schema
@@ -143,7 +184,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 257,
+          "version": 258,
         },
         "account": {
           "acceptedTerms": false,
@@ -253,6 +294,10 @@ describe('store state', () => {
             "total": 0,
           },
           "lastSavedContactsHash": null,
+          "lookupLoading": {
+            "address": {},
+            "phoneNumber": {},
+          },
           "shouldRefreshStoredPasswordHash": true,
         },
         "imports": {

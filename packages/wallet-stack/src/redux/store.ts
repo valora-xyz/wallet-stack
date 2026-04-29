@@ -2,7 +2,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { configureStore, Middleware } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
-import { getStoredState, PersistConfig, persistReducer, persistStore } from 'redux-persist'
+import {
+  createTransform,
+  getStoredState,
+  PersistConfig,
+  persistReducer,
+  persistStore,
+} from 'redux-persist'
 import FSStorage from 'redux-persist-fs-storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import AppAnalytics from 'src/analytics/AppAnalytics'
@@ -26,14 +32,30 @@ export const timeBetweenStoreSizeEvents = ONE_MINUTE_IN_MILLIS
 // the entire state is serialized in a session
 let lastEventTime = 0
 
+// Strip transient identity fields before they hit storage. `lookupLoading` tracks whether a
+// lookup saga is currently in flight — only meaningful within a single session, so persisting
+// it would just create churn and risk restoring a phantom in-flight flag after a crash mid-fetch.
+export const stripIdentityTransients = createTransform<
+  ReducersRootState['identity'],
+  Omit<ReducersRootState['identity'], 'lookupLoading'>
+>(
+  (inboundState) => {
+    const { lookupLoading: _drop, ...persistable } = inboundState
+    return persistable
+  },
+  (outboundState) => outboundState as ReducersRootState['identity'],
+  { whitelist: ['identity'] }
+)
+
 const persistConfig: PersistConfig<ReducersRootState> = {
   key: 'root',
   // default is -1, increment as we make migrations
   // See https://github.com/valora-xyz/wallet/tree/main/WALLET.md#redux-state-migration
-  version: 257,
+  version: 258,
   keyPrefix: `reduxStore-`, // the redux-persist default is `persist:` which doesn't work with some file systems.
   storage: FSStorage(),
   blacklist: ['networkInfo', 'alert', 'imports', 'keylessBackup', transactionFeedV2Api.reducerPath],
+  transforms: [stripIdentityTransients],
   stateReconciler: autoMergeLevel2,
   migrate: async (...args) => {
     const migrate = createMigrate(migrations)

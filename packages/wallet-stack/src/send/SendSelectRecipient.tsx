@@ -184,8 +184,13 @@ function SendSelectRecipient({ route }: Props) {
   const { contactRecipients, recentRecipients } = useSendRecipients()
   const { mergedRecipients, searchQuery, setSearchQuery } = useMergedSearchRecipients(onSearch)
 
-  const { recipientVerificationStatus, recipient, setSelectedRecipient, unsetSelectedRecipient } =
-    useFetchRecipientVerificationStatus()
+  const {
+    recipientVerificationStatus,
+    recipient,
+    setSelectedRecipient,
+    unsetSelectedRecipient,
+    isSelectedRecipientLoading,
+  } = useFetchRecipientVerificationStatus()
 
   useEffect(() => {
     // Auto-navigate once verification resolves. The picker stays mounted so the
@@ -280,9 +285,7 @@ function SendSelectRecipient({ route }: Props) {
             recipients={mergedRecipients}
             onSelectRecipient={setSelectedRecipient}
             selectedRecipient={recipient}
-            isSelectedRecipientLoading={
-              !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
-            }
+            isSelectedRecipientLoading={isSelectedRecipientLoading}
           />
         </>
       )
@@ -327,9 +330,7 @@ function SendSelectRecipient({ route }: Props) {
             recipients={contactRecipients}
             onSelectRecipient={setSelectedRecipient}
             selectedRecipient={recipient}
-            isSelectedRecipientLoading={
-              !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
-            }
+            isSelectedRecipientLoading={isSelectedRecipientLoading}
           />
         ) : (
           <>
@@ -344,9 +345,7 @@ function SendSelectRecipient({ route }: Props) {
                 title={t('sendSelectRecipient.recents')}
                 onSelectRecipient={onSelectRecentRecipient}
                 selectedRecipient={recipient}
-                isSelectedRecipientLoading={
-                  !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
-                }
+                isSelectedRecipientLoading={isSelectedRecipientLoading}
                 style={styles.recentRecipientPicker}
               />
             ) : (

@@ -38,6 +38,11 @@ export interface AddressToVerifiedByType {
   [address: string]: string | null | undefined
 }
 
+export interface LookupLoadingType {
+  phoneNumber: { [e164PhoneNumber: string]: boolean | undefined }
+  address: { [address: string]: boolean | undefined }
+}
+
 interface State {
   addressToE164Number: AddressToE164NumberType
   // Note: Do not access values in this directly, use the `getAddressFromPhoneNumber` helper in contactMapping
@@ -49,6 +54,10 @@ interface State {
   importContactsProgress: ImportContactProgress
   // Mapping of address to the entity that verified it (e.g. "valora", "minipay")
   addressToVerifiedBy: AddressToVerifiedByType
+  // Per-key flags indicating an in-flight identity lookup. `phoneNumber` is keyed by E.164
+  // (set by `fetchAddressesAndValidate`); `address` is keyed by lower-cased address (set by
+  // `fetchAddressVerification`). Each saga sets its flag at start and clears it in `finally`.
+  lookupLoading: LookupLoadingType
   lastSavedContactsHash: string | null
   shouldRefreshStoredPasswordHash: boolean
 }
@@ -64,6 +73,7 @@ const initialState: State = {
     total: 0,
   },
   addressToVerifiedBy: {},
+  lookupLoading: { phoneNumber: {}, address: {} },
   lastSavedContactsHash: null,
   shouldRefreshStoredPasswordHash: false,
 }
@@ -145,6 +155,17 @@ export const reducer = (
         addressToVerifiedBy: {
           ...state.addressToVerifiedBy,
           [action.address]: undefined,
+        },
+      }
+    case Actions.LOOKUP_SET_LOADING:
+      return {
+        ...state,
+        lookupLoading: {
+          ...state.lookupLoading,
+          [action.kind]: {
+            ...state.lookupLoading[action.kind],
+            [action.key]: action.loading,
+          },
         },
       }
     case Actions.CONTACTS_SAVED:

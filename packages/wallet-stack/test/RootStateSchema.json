@@ -1955,6 +1955,28 @@
             ],
             "type": "object"
         },
+        "LookupLoadingType": {
+            "additionalProperties": false,
+            "properties": {
+                "address": {
+                    "additionalProperties": {
+                        "type": "boolean"
+                    },
+                    "type": "object"
+                },
+                "phoneNumber": {
+                    "additionalProperties": {
+                        "type": "boolean"
+                    },
+                    "type": "object"
+                }
+            },
+            "required": [
+                "address",
+                "phoneNumber"
+            ],
+            "type": "object"
+        },
         "NetworkId": {
             "enum": [
                 "arbitrum-one",
@@ -5532,6 +5554,9 @@
                         "string"
                     ]
                 },
+                "lookupLoading": {
+                    "$ref": "#/definitions/LookupLoadingType"
+                },
                 "shouldRefreshStoredPasswordHash": {
                     "type": "boolean"
                 }
@@ -5544,6 +5569,7 @@
                 "e164NumberToAddress",
                 "importContactsProgress",
                 "lastSavedContactsHash",
+                "lookupLoading",
                 "shouldRefreshStoredPasswordHash"
             ],
             "type": "object"

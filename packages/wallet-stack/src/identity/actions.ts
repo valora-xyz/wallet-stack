@@ -15,6 +15,7 @@ export enum Actions {
   CANCEL_IMPORT_CONTACTS = 'IDENTITY/CANCEL_IMPORT_CONTACTS',
   END_IMPORT_CONTACTS = 'IDENTITY/END_IMPORT_CONTACTS',
   FETCH_ADDRESS_VERIFICATION_STATUS = 'IDENTITY/FETCH_ADDRESS_VERIFICATION_STATUS',
+  LOOKUP_SET_LOADING = 'IDENTITY/LOOKUP_SET_LOADING',
   CONTACTS_SAVED = 'IDENTITY/CONTACTS_SAVED',
   STORED_PASSWORD_REFRESHED = 'IDENTITY/STORED_PASSWORD_REFRESHED',
 }
@@ -57,6 +58,15 @@ export interface FetchAddressVerificationAction {
   address: string
 }
 
+export type LookupKind = 'phoneNumber' | 'address'
+
+export interface LookupSetLoadingAction {
+  type: Actions.LOOKUP_SET_LOADING
+  kind: LookupKind
+  key: string
+  loading: boolean
+}
+
 interface ContactsSavedAction {
   type: Actions.CONTACTS_SAVED
   hash: string
@@ -74,6 +84,7 @@ export type ActionTypes =
   | EndImportContactsAction
   | FetchAddressesAndValidateAction
   | FetchAddressVerificationAction
+  | LookupSetLoadingAction
   | ContactsSavedAction
   | StoredPasswordRefreshedAction
 
@@ -85,6 +96,17 @@ export const fetchAddressesAndValidate = (e164Number: string): FetchAddressesAnd
 export const fetchAddressVerification = (address: string): FetchAddressVerificationAction => ({
   type: Actions.FETCH_ADDRESS_VERIFICATION_STATUS,
   address,
+})
+
+export const lookupSetLoading = (
+  kind: LookupKind,
+  key: string,
+  loading: boolean
+): LookupSetLoadingAction => ({
+  type: Actions.LOOKUP_SET_LOADING,
+  kind,
+  key,
+  loading,
 })
 
 export const updateE164PhoneNumberAddresses = (

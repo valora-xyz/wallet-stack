@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
 import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
-import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
+import {
+  addressToVerifiedBySelector,
+  e164NumberToAddressSelector,
+  lookupLoadingSelector,
+} from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { Recipient, RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -14,6 +18,7 @@ const useFetchRecipientVerificationStatus = () => {
 
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
+  const lookupLoading = useSelector(lookupLoadingSelector)
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
   const dispatch = useDispatch()
 
@@ -51,11 +56,24 @@ const useFetchRecipientVerificationStatus = () => {
     }
   }, [e164NumberToAddress, addressToVerifiedBy, recipient, recipientVerificationStatus])
 
+  // True while the saga for the selected recipient is in flight. Both lookup sagas
+  // (`fetchAddressesAndValidate` for phone recipients, `fetchAddressVerification` for address
+  // recipients) set their respective flag on start and clear it in `finally`, so a failed lookup
+  // resolves the spinner identically to a successful one.
+  const isSelectedRecipientLoading = !recipient
+    ? false
+    : recipient.recipientType === RecipientType.PhoneNumber && recipient.e164PhoneNumber
+      ? !!lookupLoading.phoneNumber[recipient.e164PhoneNumber]
+      : recipient.address
+        ? !!lookupLoading.address[recipient.address.toLowerCase()]
+        : false
+
   return {
     recipient,
     setSelectedRecipient,
     unsetSelectedRecipient,
     recipientVerificationStatus,
+    isSelectedRecipientLoading,
   }
 }
 

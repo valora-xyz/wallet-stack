@@ -15,6 +15,7 @@ import {
   contactsSaved,
   fetchAddressVerification,
   fetchAddressesAndValidate,
+  lookupSetLoading,
   updateE164PhoneNumberAddresses,
 } from 'src/identity/actions'
 import {
@@ -110,6 +111,7 @@ describe('Fetch Addresses Saga', () => {
           [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
         ])
+        .put(lookupSetLoading('phoneNumber', mockE164Number, true))
         .put(updateE164PhoneNumberAddresses({ [mockE164Number]: undefined }, {}))
         .put(
           updateE164PhoneNumberAddresses(
@@ -118,6 +120,7 @@ describe('Fetch Addresses Saga', () => {
             {}
           )
         )
+        .put(lookupSetLoading('phoneNumber', mockE164Number, false))
         .run()
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -227,7 +230,9 @@ describe('Fetch Addresses Saga', () => {
           [select(walletAddressSelector), '0xxyz'],
           [call(retrieveSignedMessage), 'some signed message'],
         ])
+        .put(lookupSetLoading('phoneNumber', mockE164Number, true))
         .put(showErrorOrFallback(expect.anything(), ErrorMessages.ADDRESS_LOOKUP_FAILURE))
+        .put(lookupSetLoading('phoneNumber', mockE164Number, false))
         .run()
     })
   })
@@ -248,7 +253,9 @@ describe('Fetch Address Verification Saga', () => {
         [select(walletAddressSelector), '0xxyz'],
         [call(retrieveSignedMessage), 'some signed message'],
       ])
+      .put(lookupSetLoading('address', mockAccount.toLowerCase(), true))
       .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'minipay' }))
+      .put(lookupSetLoading('address', mockAccount.toLowerCase(), false))
       .run()
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -295,7 +302,9 @@ describe('Fetch Address Verification Saga', () => {
         [call(retrieveSignedMessage), 'some signed message'],
       ])
       .not.put.actionType(Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES)
+      .put(lookupSetLoading('address', mockAccount.toLowerCase(), true))
       .put(showErrorOrFallback(expect.anything(), ErrorMessages.ADDRESS_LOOKUP_FAILURE))
+      .put(lookupSetLoading('address', mockAccount.toLowerCase(), false))
       .run()
     expect(AppAnalytics.track).toHaveBeenCalledWith(IdentityEvents.address_lookup_error, {
       error: 'Unable to fetch verification status for this address',
