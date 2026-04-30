@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { getLocalCurrencyCode, usdToLocalCurrencyRateSelector } from 'src/localCurrency/selectors'
@@ -9,8 +9,10 @@ import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useSelector } from 'src/redux/hooks'
 import EnterAmount, { ProceedArgs, SendProceed } from 'src/send/EnterAmount'
+import SelectedRecipientCard from 'src/send/SelectedRecipientCard'
 import { lastUsedTokenIdSelector } from 'src/send/selectors'
 import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
+import { useRecipientLookup } from 'src/send/useRecipientLookup'
 import useSendFilterChips from 'src/send/useSendFilterChips'
 import { sortedTokensWithBalanceOrShowZeroBalanceSelector } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
@@ -26,11 +28,26 @@ function SendEnterAmount({ route }: Props) {
   const {
     defaultTokenIdOverride,
     origin,
-    recipient,
+    recipient: initialRecipient,
     isFromScan,
     forceTokenId,
-    isMiniPayRecipient,
+    isMiniPayRecipient: initialIsMiniPayRecipient,
+    skipRecipientLookup,
   } = route.params
+
+  // Local state lets the user swap addresses (via SelectedRecipientCard) without re-navigating,
+  // so the typed amount is preserved.
+  const [selectedAddress, setSelectedAddress] = useState(initialRecipient.address)
+  const [isMiniPayRecipient, setIsMiniPayRecipient] = useState(initialIsMiniPayRecipient ?? false)
+  const recipient = useMemo(
+    () => ({ ...initialRecipient, address: selectedAddress }),
+    [initialRecipient, selectedAddress]
+  )
+
+  const { status: lookupStatus, verifiedAddresses } = useRecipientLookup(recipient, {
+    skipFetch: skipRecipientLookup,
+  })
+
   // explicitly allow zero state tokens to be shown for exploration purposes for
   // new users with no balance
   const tokens = useSelector(sortedTokensWithBalanceOrShowZeroBalanceSelector)
@@ -112,6 +129,11 @@ function SendEnterAmount({ route }: Props) {
     })
   }
 
+  const handleSelectAddress = useCallback((address: string, isMiniPay: boolean) => {
+    setSelectedAddress(address)
+    setIsMiniPayRecipient(isMiniPay)
+  }, [])
+
   return (
     <EnterAmount
       tokens={tokens}
@@ -123,8 +145,18 @@ function SendEnterAmount({ route }: Props) {
       prepareTransactionError={prepareTransactionError}
       tokenSelectionDisabled={!!forceTokenId}
       onPressProceed={handleReviewSend}
+      disableProceed={lookupStatus === 'loading'}
       ProceedComponent={SendProceed}
       filterChips={filterChips}
+      recipientSlot={
+        <SelectedRecipientCard
+          recipient={recipient}
+          status={lookupStatus}
+          verifiedAddresses={verifiedAddresses}
+          originalAddress={initialRecipient.address}
+          onSelectAddress={handleSelectAddress}
+        />
+      }
     />
   )
 }

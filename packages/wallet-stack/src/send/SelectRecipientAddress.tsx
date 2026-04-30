@@ -56,6 +56,7 @@ function SelectRecipientAddress({ route }: Props) {
       },
       origin,
       isMiniPayRecipient: verifier === 'minipay',
+      skipRecipientLookup: true,
     })
   }
 

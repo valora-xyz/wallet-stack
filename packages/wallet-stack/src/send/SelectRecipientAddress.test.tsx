@@ -116,6 +116,7 @@ describe('SelectRecipientAddress', () => {
       },
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
     expect(AppAnalytics.track).toHaveBeenCalledWith(
       SendEvents.send_select_recipient_address_select,
@@ -137,6 +138,7 @@ describe('SelectRecipientAddress', () => {
       },
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: true,
+      skipRecipientLookup: true,
     })
     expect(AppAnalytics.track).toHaveBeenCalledWith(
       SendEvents.send_select_recipient_address_select,

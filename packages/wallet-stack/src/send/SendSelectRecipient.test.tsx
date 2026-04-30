@@ -1,5 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard'
-import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
+import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
@@ -237,6 +237,39 @@ describe('SendSelectRecipient', () => {
     })
   })
 
+  it('passes skipRecipientLookup=false when a recent recipient is tapped (cached mappings may be stale)', async () => {
+    const store = createMockStore({
+      ...defaultStore,
+      send: {
+        recentRecipients: [{ ...mockRecipient, address: mockAccount2.toLowerCase() }],
+      },
+      identity: {
+        addressToVerifiedBy: { [mockAccount2.toLowerCase()]: 'valora' },
+      },
+    })
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <SendSelectRecipient {...mockScreenProps({})} />
+      </Provider>
+    )
+
+    await act(() => {
+      fireEvent.press(
+        within(getByTestId('SelectRecipient/RecentRecipientPicker')).getByTestId('RecipientItem')
+      )
+    })
+
+    expect(AppAnalytics.track).toHaveBeenCalledWith(
+      SendEvents.send_select_recipient_recent_press,
+      { recipientType: mockRecipient.recipientType }
+    )
+    expect(navigate).toHaveBeenCalledWith(
+      Screens.SendEnterAmount,
+      expect.objectContaining({ skipRecipientLookup: false })
+    )
+  })
+
   it('navigates to send amount when a verified phone recipient is tapped in search results', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
@@ -271,6 +304,7 @@ describe('SendSelectRecipient', () => {
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
   })
   it('navigates to send amount when an address is tapped and the user phone number is not verified', async () => {
@@ -305,6 +339,7 @@ describe('SendSelectRecipient', () => {
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
   })
 
@@ -550,6 +585,7 @@ describe('SendSelectRecipient', () => {
       },
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
   })
   it('navigates with isMiniPayRecipient when address is verified by minipay', async () => {
@@ -587,6 +623,7 @@ describe('SendSelectRecipient', () => {
       },
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: true,
+      skipRecipientLookup: true,
     })
   })
   it('navigates to address picker when phone number recipient has multiple verified addresses', async () => {
@@ -677,6 +714,7 @@ describe('SendSelectRecipient', () => {
       },
       origin: SendOrigin.AppSendFlow,
       isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
   })
   it.each([{ searchAddress: mockAccount2 }, { searchAddress: mockAccount3 }])(
@@ -731,6 +769,7 @@ describe('SendSelectRecipient', () => {
         },
         origin: SendOrigin.AppSendFlow,
         isMiniPayRecipient: searchAddress.toLowerCase() === mockAccount3.toLowerCase(),
+        skipRecipientLookup: true,
       })
     }
   )
