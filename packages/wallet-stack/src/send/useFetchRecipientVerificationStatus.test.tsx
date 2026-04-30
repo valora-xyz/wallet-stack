@@ -1,12 +1,22 @@
 import { act, renderHook } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
-import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
+import {
+  fetchAddressVerification,
+  fetchAddressesAndValidate,
+  recipientLookupResolved,
+} from 'src/identity/actions'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { Recipient, RecipientType } from 'src/recipients/recipient'
+import { setupStore } from 'src/redux/store'
 import useFetchRecipientVerificationStatus from 'src/send/useFetchRecipientVerificationStatus'
-import { createMockStore } from 'test/utils'
+import { getMockStoreData } from 'test/utils'
 import { mockAccount, mockE164Number, mockName } from 'test/values'
+
+jest.mock('src/redux/sagas', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  rootSaga: jest.fn(function* () {}),
+}))
 
 const phoneRecipient: Recipient = {
   name: mockName,
@@ -20,19 +30,15 @@ const addressRecipient: Recipient = {
   recipientType: RecipientType.Address,
 }
 
-function setupHook(
-  storeOverrides: Parameters<typeof createMockStore>[0] = {},
-  beforeMount?: () => void
-) {
-  const store = createMockStore(storeOverrides)
-  store.dispatch = jest.fn(store.dispatch)
-  if (beforeMount) beforeMount()
+function setupHook(storeOverrides: Parameters<typeof getMockStoreData>[0] = {}) {
+  const { store } = setupStore(getMockStoreData(storeOverrides))
+  const dispatchSpy = jest.spyOn(store, 'dispatch')
   const { result, rerender } = renderHook(() => useFetchRecipientVerificationStatus(), {
     wrapper: ({ children }: { children: React.ReactNode }) => (
       <Provider store={store}>{children}</Provider>
     ),
   })
-  return { result, rerender, store }
+  return { result, rerender, store, dispatchSpy }
 }
 
 describe('useFetchRecipientVerificationStatus', () => {
@@ -49,34 +55,23 @@ describe('useFetchRecipientVerificationStatus', () => {
 
   describe('phone-number recipient', () => {
     it('dispatches fetchAddressesAndValidate when selected', () => {
-      const { result, store } = setupHook()
+      const { result, dispatchSpy } = setupHook()
       act(() => {
         result.current.setSelectedRecipient(phoneRecipient)
       })
-      expect(store.dispatch).toHaveBeenCalledWith(fetchAddressesAndValidate(mockE164Number))
+      expect(dispatchSpy).toHaveBeenCalledWith(fetchAddressesAndValidate(mockE164Number))
     })
 
-    it('reports loading while recipientLookupLoading is true', () => {
-      const { result } = setupHook({
-        identity: { recipientLookupLoading: true },
-      })
+    it('reports loading once the lookup is dispatched and stops once it resolves', () => {
+      const { result, store } = setupHook()
+
       act(() => {
         result.current.setSelectedRecipient(phoneRecipient)
       })
       expect(result.current.isSelectedRecipientLoading).toBe(true)
-    })
 
-    it('stops loading when recipientLookupLoading becomes false (saga finished, success or error)', () => {
-      // Mirrors the saga's `finally` branch: the loading flag clears regardless of whether the
-      // request succeeded, so the picker spinner should stop.
-      const { result } = setupHook({
-        identity: {
-          recipientLookupLoading: false,
-          e164NumberToAddress: {},
-        },
-      })
       act(() => {
-        result.current.setSelectedRecipient(phoneRecipient)
+        store.dispatch(recipientLookupResolved())
       })
       expect(result.current.isSelectedRecipientLoading).toBe(false)
     })
@@ -84,13 +79,13 @@ describe('useFetchRecipientVerificationStatus', () => {
 
   describe('address recipient', () => {
     it('dispatches fetchAddressVerification when phone is verified', () => {
-      const { result, store } = setupHook({
+      const { result, dispatchSpy } = setupHook({
         app: { phoneNumberVerified: true },
       })
       act(() => {
         result.current.setSelectedRecipient(addressRecipient)
       })
-      expect(store.dispatch).toHaveBeenCalledWith(fetchAddressVerification(mockAccount))
+      expect(dispatchSpy).toHaveBeenCalledWith(fetchAddressVerification(mockAccount))
     })
 
     it('marks address recipient as unverified when phone is not verified', () => {
@@ -104,36 +99,28 @@ describe('useFetchRecipientVerificationStatus', () => {
       expect(result.current.isSelectedRecipientLoading).toBe(false)
     })
 
-    it('reports loading while recipientLookupLoading is true', () => {
-      const { result } = setupHook({
-        app: { phoneNumberVerified: true },
-        identity: { recipientLookupLoading: true },
-      })
+    it('reports loading once the lookup is dispatched and stops once it resolves', () => {
+      const { result, store } = setupHook({ app: { phoneNumberVerified: true } })
+
       act(() => {
         result.current.setSelectedRecipient(addressRecipient)
       })
       expect(result.current.isSelectedRecipientLoading).toBe(true)
-    })
 
-    it('stops loading once recipientLookupLoading is false (saga finished, success or error)', () => {
-      const { result } = setupHook({
-        app: { phoneNumberVerified: true },
-        identity: { recipientLookupLoading: false },
-      })
       act(() => {
-        result.current.setSelectedRecipient(addressRecipient)
+        store.dispatch(recipientLookupResolved())
       })
       expect(result.current.isSelectedRecipientLoading).toBe(false)
     })
   })
 
   it('clears recipient and verification status on unset', () => {
-    const { result } = setupHook({
-      identity: { recipientLookupLoading: true },
-    })
+    const { result } = setupHook()
     act(() => {
       result.current.setSelectedRecipient(phoneRecipient)
     })
+    expect(result.current.isSelectedRecipientLoading).toBe(true)
+
     act(() => {
       result.current.unsetSelectedRecipient()
     })
