@@ -10,7 +10,7 @@ import { Spacing } from 'src/styles/styles'
 
 const ICON_SIZE = 40
 
-export interface Entry {
+interface Entry {
   address: string
   verifier: Verifier
 }
