@@ -80,9 +80,7 @@ function SelectedRecipientCard({
         <View style={styles.secondaryRow} testID="SelectedRecipientCard/Unverified">
           <Text style={[styles.secondaryText, styles.warningText]}>{shortAddress}</Text>
           <AttentionIcon size={14} color={Colors.warningPrimary} />
-          <Text style={[styles.secondaryText, styles.warningText]}>
-            {t('unverifiedAddress')}
-          </Text>
+          <Text style={[styles.secondaryText, styles.warningText]}>{t('unverifiedAddress')}</Text>
         </View>
       )
     }

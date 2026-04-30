@@ -260,10 +260,9 @@ describe('SendSelectRecipient', () => {
       )
     })
 
-    expect(AppAnalytics.track).toHaveBeenCalledWith(
-      SendEvents.send_select_recipient_recent_press,
-      { recipientType: mockRecipient.recipientType }
-    )
+    expect(AppAnalytics.track).toHaveBeenCalledWith(SendEvents.send_select_recipient_recent_press, {
+      recipientType: mockRecipient.recipientType,
+    })
     expect(navigate).toHaveBeenCalledWith(
       Screens.SendEnterAmount,
       expect.objectContaining({ skipRecipientLookup: false })

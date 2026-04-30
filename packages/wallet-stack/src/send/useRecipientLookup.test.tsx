@@ -78,32 +78,44 @@ describe('useRecipientLookup', () => {
   })
 
   it('returns "verified" when the address has a known verifier', () => {
-    const { result } = setupHook(addressRecipient, { skipFetch: true }, {
-      identity: {
-        addressToVerifiedBy: { [mockAccount.toLowerCase()]: 'valora' },
-      },
-    })
+    const { result } = setupHook(
+      addressRecipient,
+      { skipFetch: true },
+      {
+        identity: {
+          addressToVerifiedBy: { [mockAccount.toLowerCase()]: 'valora' },
+        },
+      }
+    )
     expect(result.current.status).toBe('verified')
   })
 
   it('returns "unverified" when the address is known to be unverified (verifier=null)', () => {
-    const { result } = setupHook(addressRecipient, { skipFetch: true }, {
-      identity: {
-        addressToVerifiedBy: { [mockAccount.toLowerCase()]: null },
-      },
-    })
+    const { result } = setupHook(
+      addressRecipient,
+      { skipFetch: true },
+      {
+        identity: {
+          addressToVerifiedBy: { [mockAccount.toLowerCase()]: null },
+        },
+      }
+    )
     expect(result.current.status).toBe('unverified')
   })
 
   it('returns the verified addresses linked to a phone recipient, filtering out unverified ones', () => {
-    const { result, store } = setupHook(phoneRecipient, { skipFetch: true }, {
-      identity: {
-        addressToVerifiedBy: {
-          [mockAccount.toLowerCase()]: 'valora',
-          [mockAccount2.toLowerCase()]: null,
+    const { result, store } = setupHook(
+      phoneRecipient,
+      { skipFetch: true },
+      {
+        identity: {
+          addressToVerifiedBy: {
+            [mockAccount.toLowerCase()]: 'valora',
+            [mockAccount2.toLowerCase()]: null,
+          },
         },
-      },
-    })
+      }
+    )
     act(() => {
       store.dispatch(
         updateE164PhoneNumberAddresses(

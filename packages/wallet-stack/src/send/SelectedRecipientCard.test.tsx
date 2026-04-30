@@ -52,10 +52,9 @@ describe('SelectedRecipientCard', () => {
 
   it('shows an unverified warning subtitle when the resolved address is known-unverified', () => {
     const { getByTestId } = renderCard({ status: 'unverified' })
-    expect(getByTestId('SelectedRecipientCard/Unverified')).toHaveTextContent(
-      'unverifiedAddress',
-      { exact: false }
-    )
+    expect(getByTestId('SelectedRecipientCard/Unverified')).toHaveTextContent('unverifiedAddress', {
+      exact: false,
+    })
   })
 
   it('is not tappable when there is only one address option (the current one)', () => {
