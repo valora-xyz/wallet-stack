@@ -11,6 +11,7 @@ import CustomHeader from 'src/components/header/CustomHeader'
 import SkeletonPlaceholder from 'src/components/SkeletonPlaceholder'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import Touchable from 'src/components/Touchable'
+import AttentionIcon from 'src/icons/Attention'
 import InfoIcon from 'src/icons/InfoIcon'
 import WalletIcon from 'src/icons/navigator/Wallet'
 import PhoneIcon from 'src/icons/Phone'
@@ -126,17 +127,31 @@ export function ReviewSummaryItem(props: {
 
 function renderAddressAndVerifier(
   shortAddress: string | undefined,
-  verifierName: string | undefined
+  verifierName: string | null | undefined
 ): ReactNode {
-  if (!shortAddress && !verifierName) return undefined
+  if (!shortAddress && verifierName === undefined) return undefined
+  const isUnverified = verifierName === null
   return (
     <>
-      {!!shortAddress && <Text style={styles.reviewSummaryItemSecondaryValue}>{shortAddress}</Text>}
-      {!!verifierName && (
+      {!!shortAddress && (
+        <Text style={[styles.reviewSummaryItemSecondaryValue, isUnverified && styles.warningText]}>
+          {shortAddress}
+        </Text>
+      )}
+      {isUnverified ? (
         <>
-          <VerifiedBadge color={colors.contentSecondary} />
-          <Text style={styles.reviewSummaryItemSecondaryValue}>{verifierName}</Text>
+          <AttentionIcon size={14} color={colors.warningPrimary} />
+          <Text style={[styles.reviewSummaryItemSecondaryValue, styles.warningText]}>
+            <Trans i18nKey="unverifiedAddress" />
+          </Text>
         </>
+      ) : (
+        !!verifierName && (
+          <>
+            <VerifiedBadge color={colors.contentSecondary} />
+            <Text style={styles.reviewSummaryItemSecondaryValue}>{verifierName}</Text>
+          </>
+        )
       )}
     </>
   )
@@ -155,6 +170,7 @@ export function ReviewSummaryItemContact({
     const phone = recipient.displayNumber || recipient.e164PhoneNumber
     // For recipients with a phone mapping, surface the resolved on-chain address (and verifier,
     // if known) as a subtitle so the user can verify the actual destination they are signing.
+    // When the address is known to be unverified, swap the verified badge for a warning.
     const shortAddress = recipient.address ? formatShortenedAddress(recipient.address) : undefined
     const phoneSubtitle = renderAddressAndVerifier(shortAddress, verifierName)
 
@@ -169,7 +185,9 @@ export function ReviewSummaryItemContact({
     if (recipient.address) {
       return {
         title: recipient.address,
-        subtitle: renderAddressAndVerifier(undefined, verifierName),
+        // For plain wallet recipients, suppress the unverified warning
+        // by collapsing `null` to `undefined`.
+        subtitle: renderAddressAndVerifier(undefined, verifierName ?? undefined),
         icon: WalletIcon,
       }
     }
@@ -512,6 +530,9 @@ const styles = StyleSheet.create({
   reviewSummaryItemSecondaryValue: {
     ...typeScale.bodySmall,
     color: colors.contentSecondary,
+  },
+  warningText: {
+    color: colors.warningPrimary,
   },
   reviewSummaryItemSecondaryValueWrapper: {
     flexDirection: 'row',

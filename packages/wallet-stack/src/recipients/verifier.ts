@@ -13,8 +13,10 @@ export function isKnownVerifier(verifier: string | null | undefined): verifier i
   return !!verifier && Object.hasOwn(VERIFIERS, verifier)
 }
 
-export function useVerifierName(address: string | undefined): string | undefined {
+export function useVerifierName(address: string | undefined): string | null | undefined {
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
-  const verifier = address ? addressToVerifiedBy[address.toLowerCase()] : undefined
-  return isKnownVerifier(verifier) ? VERIFIERS[verifier].name : undefined
+  if (!address) return undefined
+  const verifier = addressToVerifiedBy[address.toLowerCase()]
+  if (isKnownVerifier(verifier)) return VERIFIERS[verifier].name
+  return verifier === null ? null : undefined
 }

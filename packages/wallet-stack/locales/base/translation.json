@@ -2174,6 +2174,7 @@
     "recipient": "Recipient",
     "explanation": "<0>{{name}}</0> has more than one wallet linked to the phone number. Choose which one to send to."
   },
+  "unverifiedAddress": "Unverified",
   "sendSelectRecipient": {
     "searchText": "Search by name, phone, wallet...",
     "searchInputLabel": "To",

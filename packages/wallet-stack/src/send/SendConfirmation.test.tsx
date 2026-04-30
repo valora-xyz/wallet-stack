@@ -23,6 +23,7 @@ import {
   mockCusdTokenBalance,
   mockCusdTokenId,
   mockPoofTokenId,
+  mockRecipient,
   mockTokenBalances,
   mockTokenTransactionData,
 } from 'test/values'
@@ -174,7 +175,27 @@ describe('SendConfirmation', () => {
   it('shows the unknown address warning when the recipient address is not a known app user', () => {
     const { getByTestId } = renderScreen(mockSendConfirmationProps, {
       identity: {
-        addressToVerifiedBy: { [mockAccount]: null },
+        addressToVerifiedBy: { [mockAccount.toLowerCase()]: null },
+      },
+    })
+
+    expect(getByTestId('UnknownAddressInfo')).toBeTruthy()
+  })
+
+  it('shows the unknown address warning for phone recipients whose resolved address is known-unverified', () => {
+    const phoneRecipientProps = getMockStackScreenProps(Screens.SendConfirmation, {
+      ...mockBaseScreenProps,
+      transactionData: {
+        ...mockTokenTransactionData,
+        recipient: { ...mockRecipient, address: mockAccount },
+      },
+      prepareTransactionsResult: getSerializablePreparedTransactionsPossible(
+        mockPrepareTransactionsResultPossible
+      ),
+    })
+    const { getByTestId } = renderScreen(phoneRecipientProps, {
+      identity: {
+        addressToVerifiedBy: { [mockAccount.toLowerCase()]: null },
       },
     })
 
@@ -184,7 +205,7 @@ describe('SendConfirmation', () => {
   it('does not show the unknown address warning when the recipient address is verified', () => {
     const { queryByTestId } = renderScreen(mockSendConfirmationProps, {
       identity: {
-        addressToVerifiedBy: { [mockAccount]: 'valora' },
+        addressToVerifiedBy: { [mockAccount.toLowerCase()]: 'valora' },
       },
     })
 
