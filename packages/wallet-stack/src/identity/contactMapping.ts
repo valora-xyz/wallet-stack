@@ -13,7 +13,7 @@ import {
   FetchAddressesAndValidateAction,
   contactsSaved,
   endImportContacts,
-  lookupSetLoading,
+  recipientLookupResolved,
   updateE164PhoneNumberAddresses,
   updateImportContactsProgress,
 } from 'src/identity/actions'
@@ -142,7 +142,6 @@ function* updateUserContact(e164NumberToRecipients: NumberToRecipient) {
 
 export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAndValidateAction) {
   AppAnalytics.track(IdentityEvents.phone_number_lookup_start)
-  yield* put(lookupSetLoading('phoneNumber', e164Number, true))
   try {
     Logger.debug(TAG + '@fetchAddressesAndValidate', `Fetching addresses for number`)
 
@@ -215,13 +214,12 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
       error: error.message,
     })
   } finally {
-    yield* put(lookupSetLoading('phoneNumber', e164Number, false))
+    yield* put(recipientLookupResolved())
   }
 }
 
 export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificationAction) {
   const normalizedAddress = address.toLowerCase()
-  yield* put(lookupSetLoading('address', normalizedAddress, true))
   try {
     AppAnalytics.track(IdentityEvents.address_lookup_start)
     const { addressVerified, verifiedBy } = yield* call(fetchAddressVerification, normalizedAddress)
@@ -245,7 +243,7 @@ export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificat
     yield* put(showErrorOrFallback(error, ErrorMessages.ADDRESS_LOOKUP_FAILURE))
     AppAnalytics.track(IdentityEvents.address_lookup_error, { error: error.message })
   } finally {
-    yield* put(lookupSetLoading('address', normalizedAddress, false))
+    yield* put(recipientLookupResolved())
   }
 }
 

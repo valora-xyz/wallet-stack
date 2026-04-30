@@ -56,9 +56,9 @@ describe('useFetchRecipientVerificationStatus', () => {
       expect(store.dispatch).toHaveBeenCalledWith(fetchAddressesAndValidate(mockE164Number))
     })
 
-    it('reports loading while phoneNumberLookupLoading[phone] is true', () => {
+    it('reports loading while recipientLookupLoading is true', () => {
       const { result } = setupHook({
-        identity: { lookupLoading: { phoneNumber: { [mockE164Number]: true }, address: {} } },
+        identity: { recipientLookupLoading: true },
       })
       act(() => {
         result.current.setSelectedRecipient(phoneRecipient)
@@ -66,26 +66,12 @@ describe('useFetchRecipientVerificationStatus', () => {
       expect(result.current.isSelectedRecipientLoading).toBe(true)
     })
 
-    it('stops loading when phoneNumberLookupLoading[phone] becomes false (success)', () => {
-      const { result } = setupHook({
-        identity: {
-          lookupLoading: { phoneNumber: { [mockE164Number]: false }, address: {} },
-          e164NumberToAddress: { [mockE164Number]: [mockAccount] },
-        },
-      })
-      act(() => {
-        result.current.setSelectedRecipient(phoneRecipient)
-      })
-      expect(result.current.isSelectedRecipientLoading).toBe(false)
-    })
-
-    it('stops loading once phoneNumberLookupLoading[phone] is false (saga finished, success or error)', () => {
+    it('stops loading when recipientLookupLoading becomes false (saga finished, success or error)', () => {
       // Mirrors the saga's `finally` branch: the loading flag clears regardless of whether the
-      // request succeeded, so the picker spinner should stop. We override the cached mapping to
-      // empty here to make sure loading state is not tied to whether mapping data arrived.
+      // request succeeded, so the picker spinner should stop.
       const { result } = setupHook({
         identity: {
-          lookupLoading: { phoneNumber: { [mockE164Number]: false }, address: {} },
+          recipientLookupLoading: false,
           e164NumberToAddress: {},
         },
       })
@@ -118,12 +104,10 @@ describe('useFetchRecipientVerificationStatus', () => {
       expect(result.current.isSelectedRecipientLoading).toBe(false)
     })
 
-    it('reports loading while addressLookupLoading[address] is true', () => {
+    it('reports loading while recipientLookupLoading is true', () => {
       const { result } = setupHook({
         app: { phoneNumberVerified: true },
-        identity: {
-          lookupLoading: { phoneNumber: {}, address: { [mockAccount.toLowerCase()]: true } },
-        },
+        identity: { recipientLookupLoading: true },
       })
       act(() => {
         result.current.setSelectedRecipient(addressRecipient)
@@ -131,12 +115,10 @@ describe('useFetchRecipientVerificationStatus', () => {
       expect(result.current.isSelectedRecipientLoading).toBe(true)
     })
 
-    it('stops loading once addressLookupLoading[address] is false (saga finished, success or error)', () => {
+    it('stops loading once recipientLookupLoading is false (saga finished, success or error)', () => {
       const { result } = setupHook({
         app: { phoneNumberVerified: true },
-        identity: {
-          lookupLoading: { phoneNumber: {}, address: { [mockAccount.toLowerCase()]: false } },
-        },
+        identity: { recipientLookupLoading: false },
       })
       act(() => {
         result.current.setSelectedRecipient(addressRecipient)
@@ -147,7 +129,7 @@ describe('useFetchRecipientVerificationStatus', () => {
 
   it('clears recipient and verification status on unset', () => {
     const { result } = setupHook({
-      identity: { lookupLoading: { phoneNumber: { [mockE164Number]: true }, address: {} } },
+      identity: { recipientLookupLoading: true },
     })
     act(() => {
       result.current.setSelectedRecipient(phoneRecipient)

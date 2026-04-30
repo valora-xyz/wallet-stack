@@ -15,7 +15,7 @@ export enum Actions {
   CANCEL_IMPORT_CONTACTS = 'IDENTITY/CANCEL_IMPORT_CONTACTS',
   END_IMPORT_CONTACTS = 'IDENTITY/END_IMPORT_CONTACTS',
   FETCH_ADDRESS_VERIFICATION_STATUS = 'IDENTITY/FETCH_ADDRESS_VERIFICATION_STATUS',
-  LOOKUP_SET_LOADING = 'IDENTITY/LOOKUP_SET_LOADING',
+  RECIPIENT_LOOKUP_RESOLVED = 'IDENTITY/RECIPIENT_LOOKUP_RESOLVED',
   CONTACTS_SAVED = 'IDENTITY/CONTACTS_SAVED',
   STORED_PASSWORD_REFRESHED = 'IDENTITY/STORED_PASSWORD_REFRESHED',
 }
@@ -58,13 +58,8 @@ export interface FetchAddressVerificationAction {
   address: string
 }
 
-type LookupKind = 'phoneNumber' | 'address'
-
-interface LookupSetLoadingAction {
-  type: Actions.LOOKUP_SET_LOADING
-  kind: LookupKind
-  key: string
-  loading: boolean
+interface RecipientLookupResolvedAction {
+  type: Actions.RECIPIENT_LOOKUP_RESOLVED
 }
 
 interface ContactsSavedAction {
@@ -84,7 +79,7 @@ export type ActionTypes =
   | EndImportContactsAction
   | FetchAddressesAndValidateAction
   | FetchAddressVerificationAction
-  | LookupSetLoadingAction
+  | RecipientLookupResolvedAction
   | ContactsSavedAction
   | StoredPasswordRefreshedAction
 
@@ -98,15 +93,8 @@ export const fetchAddressVerification = (address: string): FetchAddressVerificat
   address,
 })
 
-export const lookupSetLoading = (
-  kind: LookupKind,
-  key: string,
-  loading: boolean
-): LookupSetLoadingAction => ({
-  type: Actions.LOOKUP_SET_LOADING,
-  kind,
-  key,
-  loading,
+export const recipientLookupResolved = (): RecipientLookupResolvedAction => ({
+  type: Actions.RECIPIENT_LOOKUP_RESOLVED,
 })
 
 export const updateE164PhoneNumberAddresses = (

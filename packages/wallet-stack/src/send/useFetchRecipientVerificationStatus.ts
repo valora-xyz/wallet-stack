@@ -4,7 +4,7 @@ import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identit
 import {
   addressToVerifiedBySelector,
   e164NumberToAddressSelector,
-  lookupLoadingSelector,
+  recipientLookupLoadingSelector,
 } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { Recipient, RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
@@ -18,7 +18,7 @@ const useFetchRecipientVerificationStatus = () => {
 
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
-  const lookupLoading = useSelector(lookupLoadingSelector)
+  const recipientLookupLoading = useSelector(recipientLookupLoadingSelector)
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
   const dispatch = useDispatch()
 
@@ -56,17 +56,7 @@ const useFetchRecipientVerificationStatus = () => {
     }
   }, [e164NumberToAddress, addressToVerifiedBy, recipient, recipientVerificationStatus])
 
-  // True while the saga for the selected recipient is in flight. Both lookup sagas
-  // (`fetchAddressesAndValidate` for phone recipients, `fetchAddressVerification` for address
-  // recipients) set their respective flag on start and clear it in `finally`, so a failed lookup
-  // resolves the spinner identically to a successful one.
-  const isSelectedRecipientLoading = !recipient
-    ? false
-    : recipient.recipientType === RecipientType.PhoneNumber && recipient.e164PhoneNumber
-      ? !!lookupLoading.phoneNumber[recipient.e164PhoneNumber]
-      : recipient.address
-        ? !!lookupLoading.address[recipient.address.toLowerCase()]
-        : false
+  const isSelectedRecipientLoading = !!recipient && recipientLookupLoading
 
   return {
     recipient,

@@ -3802,7 +3802,7 @@ export const v258Schema = {
   },
   identity: {
     ...v257Schema.identity,
-    lookupLoading: { phoneNumber: {}, address: {} },
+    recipientLookupLoading: false,
   },
 }
 

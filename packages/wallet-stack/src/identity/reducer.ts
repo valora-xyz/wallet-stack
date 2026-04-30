@@ -38,11 +38,6 @@ export interface AddressToVerifiedByType {
   [address: string]: string | null | undefined
 }
 
-interface LookupLoadingType {
-  phoneNumber: { [e164PhoneNumber: string]: boolean | undefined }
-  address: { [address: string]: boolean | undefined }
-}
-
 interface State {
   addressToE164Number: AddressToE164NumberType
   // Note: Do not access values in this directly, use the `getAddressFromPhoneNumber` helper in contactMapping
@@ -54,10 +49,8 @@ interface State {
   importContactsProgress: ImportContactProgress
   // Mapping of address to the entity that verified it (e.g. "valora", "minipay")
   addressToVerifiedBy: AddressToVerifiedByType
-  // Per-key flags indicating an in-flight identity lookup. `phoneNumber` is keyed by E.164
-  // (set by `fetchAddressesAndValidate`); `address` is keyed by lower-cased address (set by
-  // `fetchAddressVerification`). Each saga sets its flag at start and clears it in `finally`.
-  lookupLoading: LookupLoadingType
+  // Single boolean is safe because both lookup sagas use `takeLatest` — at most one in flight.
+  recipientLookupLoading: boolean
   lastSavedContactsHash: string | null
   shouldRefreshStoredPasswordHash: boolean
 }
@@ -73,7 +66,7 @@ const initialState: State = {
     total: 0,
   },
   addressToVerifiedBy: {},
-  lookupLoading: { phoneNumber: {}, address: {} },
+  recipientLookupLoading: false,
   lastSavedContactsHash: null,
   shouldRefreshStoredPasswordHash: false,
 }
@@ -95,6 +88,7 @@ export const reducer = (
           current: 0,
           total: 0,
         },
+        recipientLookupLoading: false,
       }
     }
     case Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES:
@@ -149,6 +143,11 @@ export const reducer = (
         addressToE164Number: state.addressToE164Number,
         e164NumberToAddress: state.e164NumberToAddress,
       }
+    case Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS:
+      return {
+        ...state,
+        recipientLookupLoading: true,
+      }
     case Actions.FETCH_ADDRESS_VERIFICATION_STATUS:
       return {
         ...state,
@@ -156,17 +155,12 @@ export const reducer = (
           ...state.addressToVerifiedBy,
           [action.address]: undefined,
         },
+        recipientLookupLoading: true,
       }
-    case Actions.LOOKUP_SET_LOADING:
+    case Actions.RECIPIENT_LOOKUP_RESOLVED:
       return {
         ...state,
-        lookupLoading: {
-          ...state.lookupLoading,
-          [action.kind]: {
-            ...state.lookupLoading[action.kind],
-            [action.key]: action.loading,
-          },
-        },
+        recipientLookupLoading: false,
       }
     case Actions.CONTACTS_SAVED:
       return {

@@ -201,9 +201,7 @@ describe('SendSelectRecipient', () => {
     it('shows the spinner on the tapped phone-recipient row while the lookup is in flight', async () => {
       const store = createMockStore({
         ...storeWithPhoneVerified,
-        identity: {
-          lookupLoading: { phoneNumber: { [mockE164Number2Invite]: true }, address: {} },
-        },
+        identity: { recipientLookupLoading: true },
       })
 
       const { getByTestId, queryByTestId } = render(
@@ -223,11 +221,11 @@ describe('SendSelectRecipient', () => {
     })
 
     it('hides the spinner once the lookup loading flag clears, even if no mapping arrived (error path)', async () => {
-      // No mapping in `e164NumberToAddress`, no entry in `phoneNumberLookupLoading` — mirroring
-      // the post-error state once the saga's `finally` block has cleared the flag.
+      // No mapping in `e164NumberToAddress`, recipientLookupLoading false — mirroring the
+      // post-error state once the saga's `finally` block has dispatched `recipientLookupResolved`.
       const store = createMockStore({
         ...storeWithPhoneVerified,
-        identity: { lookupLoading: { phoneNumber: {}, address: {} } },
+        identity: { recipientLookupLoading: false },
       })
 
       const { getByTestId, queryByTestId } = render(

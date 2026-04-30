@@ -2106,7 +2106,7 @@ export const migrations = {
     ...state,
     identity: {
       ...state.identity,
-      lookupLoading: { phoneNumber: {}, address: {} },
+      recipientLookupLoading: false,
     },
   }),
 }
