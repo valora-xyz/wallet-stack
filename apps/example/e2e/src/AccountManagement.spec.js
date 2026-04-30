@@ -3,7 +3,7 @@ import Settings from './usecases/Settings'
 import Support from './usecases/Support'
 import { quickOnboarding } from './utils/utils'
 
-describe('Account', () => {
+describe('Account :ios:', () => {
   beforeAll(async () => {
     await quickOnboarding()
   })
