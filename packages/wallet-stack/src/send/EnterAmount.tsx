@@ -256,7 +256,7 @@ export default function EnterAmount({
             onOpenTokenPicker={tokenSelectionDisabled ? undefined : onOpenTokenPicker}
           />
 
-          {recipientSlot && (
+          {!!recipientSlot && (
             <>
               <View style={styles.connectorLine} />
               {recipientSlot}
