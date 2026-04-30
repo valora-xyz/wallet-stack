@@ -75,10 +75,7 @@ function SelectRecipientAddress({ route }: Props) {
             <Text style={styles.explanationName} />
           </Trans>
         </Text>
-        <SelectRecipientAddressList
-          entries={verifiedEntries}
-          onSelectAddress={onSelectAddress}
-        />
+        <SelectRecipientAddressList entries={verifiedEntries} onSelectAddress={onSelectAddress} />
       </ScrollView>
     </SafeAreaView>
   )
