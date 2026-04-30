@@ -24,7 +24,7 @@ function VerifierIcon({ verifier }: { verifier: Verifier | null }) {
   return <Image source={VERIFIERS[verifier].icon} style={styles.icon} resizeMode="contain" />
 }
 
-export interface Entry {
+interface Entry {
   address: string
   verifier: Verifier | null
 }
