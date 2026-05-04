@@ -49,6 +49,8 @@ interface State {
   importContactsProgress: ImportContactProgress
   // Mapping of address to the entity that verified it (e.g. "valora", "minipay")
   addressToVerifiedBy: AddressToVerifiedByType
+  // Single boolean is safe because both lookup sagas use `takeLatest` — at most one in flight.
+  recipientLookupLoading: boolean
   lastSavedContactsHash: string | null
   shouldRefreshStoredPasswordHash: boolean
 }
@@ -64,6 +66,7 @@ const initialState: State = {
     total: 0,
   },
   addressToVerifiedBy: {},
+  recipientLookupLoading: false,
   lastSavedContactsHash: null,
   shouldRefreshStoredPasswordHash: false,
 }
@@ -85,6 +88,7 @@ export const reducer = (
           current: 0,
           total: 0,
         },
+        recipientLookupLoading: false,
       }
     }
     case Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES:
@@ -139,6 +143,11 @@ export const reducer = (
         addressToE164Number: state.addressToE164Number,
         e164NumberToAddress: state.e164NumberToAddress,
       }
+    case Actions.FETCH_ADDRESSES_AND_VALIDATION_STATUS:
+      return {
+        ...state,
+        recipientLookupLoading: true,
+      }
     case Actions.FETCH_ADDRESS_VERIFICATION_STATUS:
       return {
         ...state,
@@ -146,6 +155,12 @@ export const reducer = (
           ...state.addressToVerifiedBy,
           [action.address]: undefined,
         },
+        recipientLookupLoading: true,
+      }
+    case Actions.RECIPIENT_LOOKUP_RESOLVED:
+      return {
+        ...state,
+        recipientLookupLoading: false,
       }
     case Actions.CONTACTS_SAVED:
       return {

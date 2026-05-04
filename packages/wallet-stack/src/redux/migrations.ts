@@ -2102,4 +2102,11 @@ export const migrations = {
       },
     }
   },
+  258: (state: any) => ({
+    ...state,
+    identity: {
+      ...state.identity,
+      recipientLookupLoading: false,
+    },
+  }),
 }

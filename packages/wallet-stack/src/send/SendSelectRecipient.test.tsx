@@ -6,14 +6,19 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
 import { getAppConfig } from 'src/appConfig'
-import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
+import {
+  fetchAddressVerification,
+  fetchAddressesAndValidate,
+  recipientLookupResolved,
+} from 'src/identity/actions'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { RecipientType } from 'src/recipients/recipient'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
 import { getDynamicConfigParams } from 'src/statsig'
 import { StatsigDynamicConfigs } from 'src/statsig/types'
-import { createMockStore, getMockStackScreenProps } from 'test/utils'
+import { setupStore } from 'src/redux/store'
+import { createMockStore, getMockStackScreenProps, getMockStoreData } from 'test/utils'
 import {
   mockAccount,
   mockAccount2,
@@ -33,6 +38,10 @@ jest.mock('src/recipients/resolve-id')
 
 jest.mock('react-native-device-info', () => ({ getFontScaleSync: () => 1 }))
 jest.mock('src/statsig')
+jest.mock('src/redux/sagas', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  rootSaga: jest.fn(function* () {}),
+}))
 
 const mockScreenProps = ({
   defaultTokenIdOverride,
@@ -197,6 +206,37 @@ describe('SendSelectRecipient', () => {
     })
     expect(getByTestId('SelectRecipient/NoResults')).toBeTruthy()
   })
+  describe('selection spinner', () => {
+    it('shows the spinner while the lookup is in flight and hides it once the saga resolves (error path)', async () => {
+      // Reducer-backed store: tapping a recipient dispatches `fetchAddressesAndValidate`
+      // which flips `recipientLookupLoading` to true; dispatching `recipientLookupResolved`
+      // (the saga's `finally` branch) flips it back to false. We assert the row spinner
+      // tracks the actual state transition, including the no-mapping (error) end state.
+      const { store } = setupStore(getMockStoreData(storeWithPhoneVerified))
+
+      const { getByTestId, queryByTestId } = render(
+        <Provider store={store}>
+          <SendSelectRecipient {...mockScreenProps({})} />
+        </Provider>
+      )
+
+      await act(() => {
+        fireEvent.changeText(getByTestId('SendSelectRecipientSearchInput'), 'George Bogart')
+      })
+      await act(() => {
+        fireEvent.press(getByTestId('RecipientItem'))
+      })
+
+      expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeTruthy()
+
+      await act(() => {
+        store.dispatch(recipientLookupResolved())
+      })
+
+      expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
+    })
+  })
+
   it('navigates to send amount when a verified phone recipient is tapped in search results', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,

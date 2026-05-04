@@ -143,7 +143,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 257,
+          "version": 258,
         },
         "account": {
           "acceptedTerms": false,
@@ -253,6 +253,7 @@ describe('store state', () => {
             "total": 0,
           },
           "lastSavedContactsHash": null,
+          "recipientLookupLoading": false,
           "shouldRefreshStoredPasswordHash": true,
         },
         "imports": {

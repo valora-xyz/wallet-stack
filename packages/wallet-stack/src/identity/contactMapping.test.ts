@@ -15,6 +15,7 @@ import {
   contactsSaved,
   fetchAddressVerification,
   fetchAddressesAndValidate,
+  recipientLookupResolved,
   updateE164PhoneNumberAddresses,
 } from 'src/identity/actions'
 import {
@@ -118,6 +119,7 @@ describe('Fetch Addresses Saga', () => {
             {}
           )
         )
+        .put(recipientLookupResolved())
         .run()
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -228,6 +230,7 @@ describe('Fetch Addresses Saga', () => {
           [call(retrieveSignedMessage), 'some signed message'],
         ])
         .put(showErrorOrFallback(expect.anything(), ErrorMessages.ADDRESS_LOOKUP_FAILURE))
+        .put(recipientLookupResolved())
         .run()
     })
   })
@@ -249,6 +252,7 @@ describe('Fetch Address Verification Saga', () => {
         [call(retrieveSignedMessage), 'some signed message'],
       ])
       .put(updateE164PhoneNumberAddresses({}, {}, { [mockAccount.toLowerCase()]: 'minipay' }))
+      .put(recipientLookupResolved())
       .run()
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -296,6 +300,7 @@ describe('Fetch Address Verification Saga', () => {
       ])
       .not.put.actionType(Actions.UPDATE_E164_PHONE_NUMBER_ADDRESSES)
       .put(showErrorOrFallback(expect.anything(), ErrorMessages.ADDRESS_LOOKUP_FAILURE))
+      .put(recipientLookupResolved())
       .run()
     expect(AppAnalytics.track).toHaveBeenCalledWith(IdentityEvents.address_lookup_error, {
       error: 'Unable to fetch verification status for this address',

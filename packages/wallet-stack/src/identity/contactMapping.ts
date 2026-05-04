@@ -13,6 +13,7 @@ import {
   FetchAddressesAndValidateAction,
   contactsSaved,
   endImportContacts,
+  recipientLookupResolved,
   updateE164PhoneNumberAddresses,
   updateImportContactsProgress,
 } from 'src/identity/actions'
@@ -212,6 +213,8 @@ export function* fetchAddressesAndValidateSaga({ e164Number }: FetchAddressesAnd
     AppAnalytics.track(IdentityEvents.phone_number_lookup_error, {
       error: error.message,
     })
+  } finally {
+    yield* put(recipientLookupResolved())
   }
 }
 
@@ -239,6 +242,8 @@ export function* fetchAddressVerificationSaga({ address }: FetchAddressVerificat
     )
     yield* put(showErrorOrFallback(error, ErrorMessages.ADDRESS_LOOKUP_FAILURE))
     AppAnalytics.track(IdentityEvents.address_lookup_error, { error: error.message })
+  } finally {
+    yield* put(recipientLookupResolved())
   }
 }
 

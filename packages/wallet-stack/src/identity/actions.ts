@@ -15,6 +15,7 @@ export enum Actions {
   CANCEL_IMPORT_CONTACTS = 'IDENTITY/CANCEL_IMPORT_CONTACTS',
   END_IMPORT_CONTACTS = 'IDENTITY/END_IMPORT_CONTACTS',
   FETCH_ADDRESS_VERIFICATION_STATUS = 'IDENTITY/FETCH_ADDRESS_VERIFICATION_STATUS',
+  RECIPIENT_LOOKUP_RESOLVED = 'IDENTITY/RECIPIENT_LOOKUP_RESOLVED',
   CONTACTS_SAVED = 'IDENTITY/CONTACTS_SAVED',
   STORED_PASSWORD_REFRESHED = 'IDENTITY/STORED_PASSWORD_REFRESHED',
 }
@@ -57,6 +58,10 @@ export interface FetchAddressVerificationAction {
   address: string
 }
 
+interface RecipientLookupResolvedAction {
+  type: Actions.RECIPIENT_LOOKUP_RESOLVED
+}
+
 interface ContactsSavedAction {
   type: Actions.CONTACTS_SAVED
   hash: string
@@ -74,6 +79,7 @@ export type ActionTypes =
   | EndImportContactsAction
   | FetchAddressesAndValidateAction
   | FetchAddressVerificationAction
+  | RecipientLookupResolvedAction
   | ContactsSavedAction
   | StoredPasswordRefreshedAction
 
@@ -85,6 +91,10 @@ export const fetchAddressesAndValidate = (e164Number: string): FetchAddressesAnd
 export const fetchAddressVerification = (address: string): FetchAddressVerificationAction => ({
   type: Actions.FETCH_ADDRESS_VERIFICATION_STATUS,
   address,
+})
+
+export const recipientLookupResolved = (): RecipientLookupResolvedAction => ({
+  type: Actions.RECIPIENT_LOOKUP_RESOLVED,
 })
 
 export const updateE164PhoneNumberAddresses = (
