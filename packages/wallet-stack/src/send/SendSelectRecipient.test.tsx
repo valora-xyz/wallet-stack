@@ -14,10 +14,10 @@ import {
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { RecipientType } from 'src/recipients/recipient'
+import { setupStore } from 'src/redux/store'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
 import { getDynamicConfigParams } from 'src/statsig'
 import { StatsigDynamicConfigs } from 'src/statsig/types'
-import { setupStore } from 'src/redux/store'
 import { createMockStore, getMockStackScreenProps, getMockStoreData } from 'test/utils'
 import {
   mockAccount,
