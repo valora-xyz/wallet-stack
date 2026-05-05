@@ -102,7 +102,7 @@ describe('SelectRecipientAddress', () => {
     expect(queryByTestId(`SelectRecipientAddress/Row/${mockAccount3.toLowerCase()}`)).toBeNull()
   })
 
-  it('navigates to SendEnterAmount on Valora row tap with isMiniPayRecipient=false', () => {
+  it('navigates to SendEnterAmount on Valora row tap', () => {
     const { getByTestId } = renderScreen({})
     fireEvent.press(getByTestId(`SelectRecipientAddress/Row/${mockAccount2.toLowerCase()}`))
 
@@ -115,7 +115,7 @@ describe('SelectRecipientAddress', () => {
         address: mockAccount2.toLowerCase(),
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
     expect(AppAnalytics.track).toHaveBeenCalledWith(
       SendEvents.send_select_recipient_address_select,
@@ -123,7 +123,7 @@ describe('SelectRecipientAddress', () => {
     )
   })
 
-  it('navigates to SendEnterAmount on MiniPay row tap with isMiniPayRecipient=true', () => {
+  it('navigates to SendEnterAmount on MiniPay row tap', () => {
     const { getByTestId } = renderScreen({})
     fireEvent.press(getByTestId(`SelectRecipientAddress/Row/${mockAccount3.toLowerCase()}`))
 
@@ -136,7 +136,7 @@ describe('SelectRecipientAddress', () => {
         address: mockAccount3.toLowerCase(),
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: true,
+      skipRecipientLookup: true,
     })
     expect(AppAnalytics.track).toHaveBeenCalledWith(
       SendEvents.send_select_recipient_address_select,

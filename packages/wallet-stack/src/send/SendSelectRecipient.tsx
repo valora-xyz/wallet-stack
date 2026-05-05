@@ -215,7 +215,8 @@ function SendSelectRecipient({ route }: Props) {
     AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
       recipientType: recipient.recipientType,
     })
-    nextScreen(recipient)
+    // useFetchRecipientVerificationStatus already performed the lookup for search results.
+    nextScreen(recipient, true)
   }, [recipient, recipientVerificationStatus, shareUrl])
 
   const onContactsPermissionGranted = () => {
@@ -231,10 +232,11 @@ function SendSelectRecipient({ route }: Props) {
     AppAnalytics.track(SendEvents.send_select_recipient_recent_press, {
       recipientType: recentRecipient.recipientType,
     })
-    nextScreen(recentRecipient)
+    // Recents may carry stale mappings — let the enter-amount screen refresh.
+    nextScreen(recentRecipient, false)
   }
 
-  const nextScreen = (selectedRecipient: Recipient) => {
+  const nextScreen = (selectedRecipient: Recipient, skipRecipientLookup: boolean) => {
     // use the address from the recipient object
     let address: string | null | undefined = selectedRecipient.address
 
@@ -271,7 +273,7 @@ function SendSelectRecipient({ route }: Props) {
         address,
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: addressToVerifiedBy?.[address] === 'minipay',
+      skipRecipientLookup,
     })
   }
 
