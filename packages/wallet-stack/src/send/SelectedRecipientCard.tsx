@@ -12,7 +12,7 @@ import UserIcon from 'src/icons/User'
 import VerifiedBadge from 'src/icons/VerifiedBadge'
 import WalletIcon from 'src/icons/navigator/Wallet'
 import { Recipient } from 'src/recipients/recipient'
-import { type Verifier, useVerifierName } from 'src/recipients/verifier'
+import { useVerifierName } from 'src/recipients/verifier'
 import SelectRecipientAddressList, { type Entry } from 'src/send/SelectRecipientAddressList'
 import { type RecipientLookupStatus, type VerifiedAddressEntry } from 'src/send/useRecipientLookup'
 import Colors from 'src/styles/colors'
@@ -29,7 +29,7 @@ interface Props {
   // (e.g. came from recents and the mapping no longer holds), it stays selectable in the
   // sheet as an unverified option so the user can switch back after picking a verified one.
   originalAddress: string
-  onSelectAddress(address: string, isMiniPay: boolean): void
+  onSelectAddress(address: string): void
 }
 
 function SelectedRecipientCard({
@@ -59,9 +59,9 @@ function SelectedRecipientCard({
 
   const onPress = isTappable ? () => sheetRef.current?.snapToIndex(0) : undefined
 
-  const onSelectFromSheet = (address: string, verifier: Verifier | null) => {
+  const onSelectFromSheet = (address: string) => {
     sheetRef.current?.close()
-    onSelectAddress(address, verifier === 'minipay')
+    onSelectAddress(address)
   }
 
   const contact = useMemo(() => {

@@ -302,7 +302,6 @@ describe('SendSelectRecipient', () => {
       forceTokenId: undefined,
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
       skipRecipientLookup: true,
     })
   })
@@ -337,7 +336,6 @@ describe('SendSelectRecipient', () => {
       forceTokenId: undefined,
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
       skipRecipientLookup: true,
     })
   })
@@ -583,45 +581,6 @@ describe('SendSelectRecipient', () => {
         recipientType: 'PhoneNumber',
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
-      skipRecipientLookup: true,
-    })
-  })
-  it('navigates with isMiniPayRecipient when address is verified by minipay', async () => {
-    const store = createMockStore({
-      ...storeWithPhoneVerified,
-      identity: {
-        e164NumberToAddress: { [mockE164Number3]: [mockAccount3] },
-        addressToVerifiedBy: { [mockAccount3]: 'minipay' },
-      },
-    })
-
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <SendSelectRecipient {...mockScreenProps({})} />
-      </Provider>
-    )
-    const searchInput = getByTestId('SendSelectRecipientSearchInput')
-
-    await act(() => {
-      fireEvent.changeText(searchInput, mockE164Number3)
-    })
-    await act(() => {
-      fireEvent.press(getByTestId('RecipientItem'))
-    })
-
-    expect(navigate).toHaveBeenCalledWith(Screens.SendEnterAmount, {
-      isFromScan: false,
-      defaultTokenIdOverride: undefined,
-      forceTokenId: undefined,
-      recipient: {
-        address: mockAccount3,
-        displayNumber: '(415) 555-0123',
-        e164PhoneNumber: mockE164Number3,
-        recipientType: 'PhoneNumber',
-      },
-      origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: true,
       skipRecipientLookup: true,
     })
   })
@@ -712,7 +671,6 @@ describe('SendSelectRecipient', () => {
         recipientType: 'PhoneNumber',
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
       skipRecipientLookup: true,
     })
   })
@@ -767,7 +725,6 @@ describe('SendSelectRecipient', () => {
           thumbnailPath: undefined,
         },
         origin: SendOrigin.AppSendFlow,
-        isMiniPayRecipient: searchAddress.toLowerCase() === mockAccount3.toLowerCase(),
         skipRecipientLookup: true,
       })
     }

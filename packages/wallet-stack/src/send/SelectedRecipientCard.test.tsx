@@ -66,7 +66,7 @@ describe('SelectedRecipientCard', () => {
     expect(touchable).toBeDisabled()
   })
 
-  it('opens the sheet and invokes onSelectAddress with isMiniPay=true when tapping a minipay row', () => {
+  it('opens the sheet and invokes onSelectAddress when tapping a row', () => {
     const { getByTestId, onSelectAddress } = renderCard({
       status: 'verified',
       verifiedAddresses: [
@@ -76,7 +76,7 @@ describe('SelectedRecipientCard', () => {
     })
 
     fireEvent.press(getByTestId(`SelectRecipientAddress/Row/${mockAccount2.toLowerCase()}`))
-    expect(onSelectAddress).toHaveBeenCalledWith(mockAccount2.toLowerCase(), true)
+    expect(onSelectAddress).toHaveBeenCalledWith(mockAccount2.toLowerCase())
   })
 
   it('keeps the original (unverified) address selectable in the sheet alongside verified options', () => {
@@ -91,6 +91,6 @@ describe('SelectedRecipientCard', () => {
 
     // The original (unverified) address still renders as a selectable row.
     fireEvent.press(getByTestId(`SelectRecipientAddress/Row/${mockAccount}`))
-    expect(onSelectAddress).toHaveBeenCalledWith(mockAccount, false)
+    expect(onSelectAddress).toHaveBeenCalledWith(mockAccount)
   })
 })

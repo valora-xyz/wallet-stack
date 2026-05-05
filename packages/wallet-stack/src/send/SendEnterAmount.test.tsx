@@ -241,6 +241,14 @@ describe('SendEnterAmount', () => {
 
   describe('MiniPay filter', () => {
     const miniPayTokenIds = [mockCusdTokenId, mockUSDCTokenId]
+    // The screen now derives `isMiniPayRecipient` from the store rather than a route param,
+    // so set up the verifier mapping for the recipient address used in `params`.
+    const miniPayStore = createMockStore({
+      tokens: { tokenBalances },
+      identity: {
+        addressToVerifiedBy: { [params.recipient.address.toLowerCase()]: 'minipay' },
+      },
+    })
 
     beforeEach(() => {
       jest.mocked(getDynamicConfigParams).mockReturnValue({
@@ -248,13 +256,10 @@ describe('SendEnterAmount', () => {
       })
     })
 
-    it('should show MiniPay chip pre-selected and only MiniPay tokens when isMiniPayRecipient is true', () => {
+    it('should show MiniPay chip pre-selected and only MiniPay tokens when the recipient address is verified by minipay', () => {
       const { getAllByTestId, getByText } = render(
-        <Provider store={store}>
-          <MockedNavigator
-            component={SendEnterAmount}
-            params={{ ...params, isMiniPayRecipient: true }}
-          />
+        <Provider store={miniPayStore}>
+          <MockedNavigator component={SendEnterAmount} params={params} />
         </Provider>
       )
 
@@ -269,11 +274,8 @@ describe('SendEnterAmount', () => {
 
     it('should select default token from MiniPay list', () => {
       const { getByTestId } = render(
-        <Provider store={store}>
-          <MockedNavigator
-            component={SendEnterAmount}
-            params={{ ...params, isMiniPayRecipient: true }}
-          />
+        <Provider store={miniPayStore}>
+          <MockedNavigator component={SendEnterAmount} params={params} />
         </Provider>
       )
 
@@ -283,11 +285,8 @@ describe('SendEnterAmount', () => {
 
     it('should show all tokens when MiniPay chip is toggled off', () => {
       const { getAllByTestId, getByText } = render(
-        <Provider store={store}>
-          <MockedNavigator
-            component={SendEnterAmount}
-            params={{ ...params, isMiniPayRecipient: true }}
-          />
+        <Provider store={miniPayStore}>
+          <MockedNavigator component={SendEnterAmount} params={params} />
         </Provider>
       )
 
@@ -298,7 +297,7 @@ describe('SendEnterAmount', () => {
       expect(tokens).toHaveLength(3)
     })
 
-    it('should not show MiniPay chip when isMiniPayRecipient is not set', () => {
+    it('should not show MiniPay chip when the recipient address is not verified by minipay', () => {
       const { queryByText } = render(
         <Provider store={store}>
           <MockedNavigator component={SendEnterAmount} params={params} />
@@ -308,17 +307,14 @@ describe('SendEnterAmount', () => {
       expect(queryByText('sendEnterAmountScreen.miniPayFilterChip')).toBeFalsy()
     })
 
-    it('should not select a default token when isMiniPayRecipient is true and user has no MiniPay tokens', () => {
+    it('should not select a default token when the recipient is minipay-verified and user has no MiniPay tokens', () => {
       jest.mocked(getDynamicConfigParams).mockReturnValue({
         miniPayTokenIds: ['celo-alfajores:0xNOT_HELD_BY_USER'],
       })
 
       const { getByText, queryByTestId, getByTestId } = render(
-        <Provider store={store}>
-          <MockedNavigator
-            component={SendEnterAmount}
-            params={{ ...params, isMiniPayRecipient: true }}
-          />
+        <Provider store={miniPayStore}>
+          <MockedNavigator component={SendEnterAmount} params={params} />
         </Provider>
       )
 
@@ -335,7 +331,7 @@ describe('SendEnterAmount', () => {
       expect(getByTestId('TokenBottomSheet')).toBeTruthy()
     })
 
-    it('should include isMiniPayRecipient in send_amount_continue analytics', async () => {
+    it('should include isMiniPayRecipient=true in send_amount_continue analytics when the address is minipay-verified', async () => {
       jest.mocked(usePrepareSendTransactions).mockReturnValue({
         prepareTransactionsResult: mockPrepareTransactionsResultPossible,
         prepareTransactionLoading: false,
@@ -344,11 +340,8 @@ describe('SendEnterAmount', () => {
         prepareTransactionError: undefined,
       })
       const { getByTestId, getByText } = render(
-        <Provider store={store}>
-          <MockedNavigator
-            component={SendEnterAmount}
-            params={{ ...params, isMiniPayRecipient: true }}
-          />
+        <Provider store={miniPayStore}>
+          <MockedNavigator component={SendEnterAmount} params={params} />
         </Provider>
       )
 

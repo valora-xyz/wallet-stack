@@ -42,7 +42,6 @@ type SendEnterAmountParams = {
   origin: SendOrigin
   forceTokenId?: boolean
   defaultTokenIdOverride?: string
-  isMiniPayRecipient?: boolean
   // Set to true when the caller has just performed a fresh phone-number lookup
   // (e.g. recipient picker) so the enter-amount screen can skip re-fetching mappings.
   skipRecipientLookup?: boolean

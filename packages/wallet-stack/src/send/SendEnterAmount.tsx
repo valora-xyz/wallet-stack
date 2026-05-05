@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
+import { addressToVerifiedBySelector } from 'src/identity/selectors'
 import { getLocalCurrencyCode, usdToLocalCurrencyRateSelector } from 'src/localCurrency/selectors'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -31,14 +32,12 @@ function SendEnterAmount({ route }: Props) {
     recipient: initialRecipient,
     isFromScan,
     forceTokenId,
-    isMiniPayRecipient: initialIsMiniPayRecipient,
     skipRecipientLookup,
   } = route.params
 
   // Local state lets the user swap addresses (via SelectedRecipientCard) without re-navigating,
   // so the typed amount is preserved.
   const [selectedAddress, setSelectedAddress] = useState(initialRecipient.address)
-  const [isMiniPayRecipient, setIsMiniPayRecipient] = useState(initialIsMiniPayRecipient ?? false)
   const recipient = useMemo(
     () => ({ ...initialRecipient, address: selectedAddress }),
     [initialRecipient, selectedAddress]
@@ -47,6 +46,11 @@ function SendEnterAmount({ route }: Props) {
   const { status: lookupStatus, verifiedAddresses } = useRecipientLookup(recipient, {
     skipFetch: skipRecipientLookup,
   })
+
+  // Derive from the store so a fresh lookup that updates the verifier is reflected
+  // immediately (token filtering and analytics stay in sync with the selected address).
+  const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
+  const isMiniPayRecipient = addressToVerifiedBy[selectedAddress.toLowerCase()] === 'minipay'
 
   // explicitly allow zero state tokens to be shown for exploration purposes for
   // new users with no balance
@@ -96,7 +100,7 @@ function SendEnterAmount({ route }: Props) {
       amountEnteredIn,
       tokenId: token.tokenId,
       networkId: token.networkId,
-      isMiniPayRecipient: isMiniPayRecipient ?? false,
+      isMiniPayRecipient,
     })
   }
 
@@ -129,9 +133,8 @@ function SendEnterAmount({ route }: Props) {
     })
   }
 
-  const handleSelectAddress = useCallback((address: string, isMiniPay: boolean) => {
+  const handleSelectAddress = useCallback((address: string) => {
     setSelectedAddress(address)
-    setIsMiniPayRecipient(isMiniPay)
   }, [])
 
   return (

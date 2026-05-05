@@ -273,7 +273,6 @@ function SendSelectRecipient({ route }: Props) {
         address,
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: addressToVerifiedBy?.[address] === 'minipay',
       skipRecipientLookup,
     })
   }
