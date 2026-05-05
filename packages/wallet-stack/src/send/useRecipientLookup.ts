@@ -45,12 +45,13 @@ export function useRecipientLookup(
   const recipientLookupLoading = useSelector(recipientLookupLoadingSelector)
 
   useEffect(() => {
-    if (skipFetch) return
-    if (e164PhoneNumber) {
-      dispatch(fetchAddressesAndValidate(e164PhoneNumber))
-    } else {
-      dispatch(fetchAddressVerification(recipientAddress))
-    }
+    if (skipFetch || !e164PhoneNumber) return
+    dispatch(fetchAddressesAndValidate(e164PhoneNumber))
+  }, [dispatch, e164PhoneNumber, skipFetch])
+
+  useEffect(() => {
+    if (skipFetch || e164PhoneNumber) return
+    dispatch(fetchAddressVerification(recipientAddress))
   }, [dispatch, e164PhoneNumber, recipientAddress, skipFetch])
 
   const cachedAddresses = e164PhoneNumber ? e164NumberToAddress[e164PhoneNumber] : undefined
@@ -63,7 +64,7 @@ export function useRecipientLookup(
     status = 'loading'
   } else if (isKnownVerifier(verifier)) {
     status = 'verified'
-  } else if (verifier === null) {
+  } else if (verifier === null || cachedAddresses === null) {
     status = 'unverified'
   } else {
     status = 'unknown'

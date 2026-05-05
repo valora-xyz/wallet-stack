@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef } from 'react'
+import React, { memo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { formatShortenedAddress } from 'src/account/utils'
@@ -64,17 +64,19 @@ function SelectedRecipientCard({
     onSelectAddress(address)
   }
 
-  const contact = useMemo(() => {
-    const shortAddress = formatShortenedAddress(recipient.address)
-    const phone = recipient.displayNumber || recipient.e164PhoneNumber
-    if (recipient.name) return { title: recipient.name, icon: UserIcon, shortAddress }
-    if (phone) return { title: phone, icon: PhoneIcon, shortAddress }
-    return { title: shortAddress, icon: WalletIcon, shortAddress: undefined }
-  }, [recipient])
+  const shortAddress = formatShortenedAddress(recipient.address)
+  const phone = recipient.displayNumber || recipient.e164PhoneNumber
+  const contact = recipient.name
+    ? { title: recipient.name, icon: UserIcon, shortAddress }
+    : phone
+      ? { title: phone, icon: PhoneIcon, shortAddress }
+      : { title: shortAddress, icon: WalletIcon, shortAddress: undefined as string | undefined }
 
   const renderSecondary = () => {
     const { shortAddress } = contact
 
+    // Address-only recipients (no name/phone) use the address as the title and have no secondary
+    // line — by design we don't show an extra "unverified" warning row in that case.
     if (status === 'unverified' && shortAddress) {
       return (
         <View style={styles.secondaryRow} testID="SelectedRecipientCard/Unverified">
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
     ...typeScale.labelMedium,
   },
   secondaryWrapper: {
-    height: SECONDARY_ROW_MIN_HEIGHT,
+    minHeight: SECONDARY_ROW_MIN_HEIGHT,
     justifyContent: 'center',
   },
   secondaryRow: {

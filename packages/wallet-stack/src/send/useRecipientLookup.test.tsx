@@ -66,15 +66,22 @@ describe('useRecipientLookup', () => {
     expect(dispatchSpy).not.toHaveBeenCalledWith(fetchAddressesAndValidate(mockE164Number))
   })
 
-  it('reports loading while the lookup is in flight and resolves to verified once verified', () => {
+  it('reports loading while the lookup is in flight and resolves to unknown when no verifier is recorded', () => {
     const { result, store } = setupHook(addressRecipient)
     expect(result.current.status).toBe('loading')
 
     act(() => {
       store.dispatch(recipientLookupResolved())
     })
-    // No verifier in the store → unknown.
     expect(result.current.status).toBe('unknown')
+  })
+
+  it('returns "unverified" for a phone recipient when the lookup resolved with no verified addresses', () => {
+    const { result, store } = setupHook(phoneRecipient, { skipFetch: true })
+    act(() => {
+      store.dispatch(updateE164PhoneNumberAddresses({ [mockE164Number]: null }, {}))
+    })
+    expect(result.current.status).toBe('unverified')
   })
 
   it('returns "verified" when the address has a known verifier', () => {
