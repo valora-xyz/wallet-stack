@@ -135,18 +135,20 @@ function SelectedRecipientCard({
           ) : null}
         </>
       </Touchable>
-      <BottomSheet
-        forwardedRef={sheetRef}
-        title={t('selectRecipientAddress.header')}
-        snapPoints={['90%']}
-        testId="SelectRecipientAddressSheet"
-      >
-        <SelectRecipientAddressList
-          entries={sheetEntries}
-          onSelectAddress={onSelectFromSheet}
-          compact
-        />
-      </BottomSheet>
+      {hasAlternative && (
+        <BottomSheet
+          forwardedRef={sheetRef}
+          title={t('selectRecipientAddress.header')}
+          snapPoints={['90%']}
+          testId="SelectRecipientAddressSheet"
+        >
+          <SelectRecipientAddressList
+            entries={sheetEntries}
+            onSelectAddress={onSelectFromSheet}
+            compact
+          />
+        </BottomSheet>
+      )}
     </View>
   )
 }
