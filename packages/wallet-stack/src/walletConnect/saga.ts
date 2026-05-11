@@ -1123,31 +1123,29 @@ export function* initialiseWalletConnectV2(uri: string, origin: WalletConnectPai
   yield* put(initialisePairing(uri, origin))
 }
 
-export function isWalletConnectEnabled(uri: string) {
-  const { version } = parseUri(uri)
+export function isWalletConnectV2Uri(uri: string): boolean {
+  if (!uri.startsWith('wc:')) {
+    return false
+  }
+  return parseUri(uri).version === 2
+}
+
+export function isWalletConnectEnabled(): boolean {
   const walletConnectV2Disabled = getFeatureGate(StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2)
   const walletConnectProjectId = getAppConfig().features?.walletConnect?.projectId
-
-  return !!walletConnectProjectId && !walletConnectV2Disabled && version === 2
+  return !!walletConnectProjectId && !walletConnectV2Disabled
 }
 
 export function* initialiseWalletConnect(uri: string, origin: WalletConnectPairingOrigin) {
-  const walletConnectEnabled = yield* call(isWalletConnectEnabled, uri)
-
-  const { version } = parseUri(uri)
-  if (!walletConnectEnabled) {
-    Logger.debug('initialiseWalletConnect', `v${version} is disabled, ignoring`)
+  if (!isWalletConnectV2Uri(uri)) {
+    Logger.debug('initialiseWalletConnect', 'URI is not a WalletConnect v2 link, ignoring')
     return
   }
-
-  switch (version) {
-    case 2:
-      yield* call(initialiseWalletConnectV2, uri, origin)
-      break
-    case 1:
-    default:
-      throw new Error(`Unsupported WalletConnect version '${version}'`)
+  if (!isWalletConnectEnabled()) {
+    Logger.debug('initialiseWalletConnect', 'WalletConnect is disabled, ignoring')
+    return
   }
+  yield* call(initialiseWalletConnectV2, uri, origin)
 }
 
 export function* showWalletConnectionSuccessMessage(dappName: string) {
