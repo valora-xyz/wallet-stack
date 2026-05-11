@@ -88,11 +88,9 @@ export function* handleQRCodeDefault({
 }: HandleQRCodeDetectedAction) {
   AppAnalytics.track(QrScreenEvents.qr_scanned, qrCode)
 
-  const walletConnectEnabled: boolean = yield* call(isWalletConnectEnabled, qrCode.data)
-
   // TODO there's some duplication with deep links handing
   // would be nice to refactor this
-  if (qrCode.data.startsWith('wc:') && walletConnectEnabled) {
+  if (qrCode.data.startsWith('wc:') && (yield* call(isWalletConnectEnabled))) {
     yield* fork(handleLoadingWithTimeout, WalletConnectPairingOrigin.Scan)
     yield* call(initialiseWalletConnect, qrCode.data, WalletConnectPairingOrigin.Scan)
     return

@@ -36,6 +36,8 @@ import {
   handlePendingState,
   initialiseWalletConnect,
   initialiseWalletConnectV2,
+  isWalletConnectEnabled,
+  isWalletConnectV2Uri,
   normalizeTransactions,
   walletConnectSaga,
 } from 'src/walletConnect/saga'
@@ -1045,6 +1047,63 @@ describe('showActionRequest', () => {
 
 const v2ConnectionString =
   'wc:79a02f869d0f921e435a5e0643304548ebfa4a0430f9c66fe8b1a9254db7ef77@2?relay-protocol=irn&symKey=f661b0a9316a4ce0b6892bdce42bea0f45037f2c1bee9e118a3a4bc868a32a39'
+
+describe('isWalletConnectV2Uri', () => {
+  it('returns true for a v2 wc: URI', () => {
+    expect(isWalletConnectV2Uri(v2ConnectionString)).toBe(true)
+  })
+
+  it('returns false for any string that is not a wc: pairing URI', () => {
+    // parseUri is meant for wc: URIs only; passing anything else would force it
+    // down its base64 link-mode fallback, which can throw on RN's strict native
+    // base64 decoder. The startsWith('wc:') guard keeps non-WC strings out.
+    expect(isWalletConnectV2Uri('https://churrito.fi')).toBe(false)
+    expect(isWalletConnectV2Uri('testapp://wallet/wc?uri=wc:abc@2')).toBe(false)
+    expect(isWalletConnectV2Uri('')).toBe(false)
+  })
+
+  it('returns false for a v1 wc: URI', () => {
+    expect(isWalletConnectV2Uri('wc:abc@1?bridge=https%3A%2F%2Fbridge.walletconnect.org')).toBe(
+      false
+    )
+  })
+})
+
+describe('isWalletConnectEnabled', () => {
+  it('returns true when project id is set and v2 is not disabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      features: { walletConnect: { projectId: '123' } },
+    })
+    jest.mocked(getFeatureGate).mockReturnValue(false)
+    expect(isWalletConnectEnabled()).toBe(true)
+  })
+
+  it('returns false when project id is missing', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+    })
+    jest.mocked(getFeatureGate).mockReturnValue(false)
+    expect(isWalletConnectEnabled()).toBe(false)
+  })
+
+  it('returns false when v2 is feature-gated off', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      features: { walletConnect: { projectId: '123' } },
+    })
+    jest
+      .mocked(getFeatureGate)
+      .mockImplementation((gate) => gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2)
+    expect(isWalletConnectEnabled()).toBe(false)
+  })
+})
 
 describe('initialiseWalletConnect', () => {
   const origin = WalletConnectPairingOrigin.Deeplink

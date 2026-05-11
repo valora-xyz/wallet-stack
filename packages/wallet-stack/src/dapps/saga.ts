@@ -43,8 +43,10 @@ export function* handleOpenDapp(action: PayloadAction<DappSelectedAction>) {
   ).inAppWebviewEnabled
 
   if (dappsWebViewEnabled) {
-    const walletConnectEnabled: boolean = yield* call(isWalletConnectEnabled, dappUrl)
-    if (isDeepLink(dappUrl) || (walletConnectEnabled && isWalletConnectDeepLink(dappUrl))) {
+    if (
+      isDeepLink(dappUrl) ||
+      (isWalletConnectDeepLink(dappUrl) && (yield* call(isWalletConnectEnabled)))
+    ) {
       yield* call(handleDeepLink, openDeepLink(dappUrl, true))
     } else {
       navigate(Screens.WebViewScreen, { uri: dappUrl })
