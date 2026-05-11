@@ -1098,9 +1098,9 @@ describe('isWalletConnectEnabled', () => {
       registryName: 'test',
       features: { walletConnect: { projectId: '123' } },
     })
-    jest.mocked(getFeatureGate).mockImplementation(
-      (gate) => gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2
-    )
+    jest
+      .mocked(getFeatureGate)
+      .mockImplementation((gate) => gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2)
     expect(isWalletConnectEnabled()).toBe(false)
   })
 })
