@@ -1,4 +1,5 @@
 import offRamps from './usecases/OffRamps'
+import { launchApp } from './utils/retries'
 import { quickOnboarding } from './utils/utils'
 
 describe('Ramps', () => {
@@ -6,5 +7,5 @@ describe('Ramps', () => {
     await quickOnboarding()
   })
 
-  describe(':ios: Given Cash Out', offRamps)
+  describe('Given Cash Out', offRamps)
 })
