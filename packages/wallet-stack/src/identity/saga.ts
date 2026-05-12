@@ -7,7 +7,7 @@ import {
 import { Actions } from 'src/identity/actions'
 import Logger from 'src/utils/Logger'
 import { safely } from 'src/utils/safely'
-import { cancelled, spawn, takeEvery, takeLatest, takeLeading } from 'typed-redux-saga'
+import { cancelled, spawn, takeLatest, takeLeading } from 'typed-redux-saga'
 
 const TAG = 'identity/saga'
 
@@ -20,7 +20,7 @@ function* watchContactMapping() {
 }
 
 function* watchFetchAddressVerification() {
-  yield* takeEvery(Actions.FETCH_ADDRESS_VERIFICATION_STATUS, safely(fetchAddressVerificationSaga))
+  yield* takeLatest(Actions.FETCH_ADDRESS_VERIFICATION_STATUS, safely(fetchAddressVerificationSaga))
 }
 
 export function* identitySaga() {

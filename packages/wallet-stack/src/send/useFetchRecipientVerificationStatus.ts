@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
 import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
-import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
+import {
+  addressToVerifiedBySelector,
+  e164NumberToAddressSelector,
+  recipientLookupLoadingSelector,
+} from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { Recipient, RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -14,6 +18,7 @@ const useFetchRecipientVerificationStatus = () => {
 
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
+  const recipientLookupLoading = useSelector(recipientLookupLoadingSelector)
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
   const dispatch = useDispatch()
 
@@ -51,11 +56,14 @@ const useFetchRecipientVerificationStatus = () => {
     }
   }, [e164NumberToAddress, addressToVerifiedBy, recipient, recipientVerificationStatus])
 
+  const isSelectedRecipientLoading = !!recipient && recipientLookupLoading
+
   return {
     recipient,
     setSelectedRecipient,
     unsetSelectedRecipient,
     recipientVerificationStatus,
+    isSelectedRecipientLoading,
   }
 }
 

@@ -30,7 +30,6 @@ import { getLocalCurrencyCode, getLocalCurrencySymbol } from 'src/localCurrency/
 import { noHeader } from 'src/navigator/Headers'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-import { RecipientType } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { sendPayment } from 'src/send/actions'
 import { isSendingSelector } from 'src/send/selectors'
@@ -93,9 +92,7 @@ export default function SendConfirmation({ route: { params } }: Props) {
   const walletAddress = useSelector(walletAddressSelector)
   const addressToVerifiedBy = useSelector(addressToVerifiedBySelector)
   const showUnknownAddressInfo =
-    recipient.recipientType === RecipientType.Address &&
-    !!recipient.address &&
-    addressToVerifiedBy[recipient.address] === null
+    !!recipient.address && addressToVerifiedBy[recipient.address.toLowerCase()] === null
 
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, tokenInfo!.networkId))
   const {

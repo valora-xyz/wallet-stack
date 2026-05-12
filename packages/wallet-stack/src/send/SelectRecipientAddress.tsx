@@ -1,34 +1,26 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { formatShortenedAddress } from 'src/account/utils'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
-import Touchable from 'src/components/Touchable'
 import CustomHeader from 'src/components/header/CustomHeader'
-import VerifiedBadge from 'src/icons/VerifiedBadge'
 import { addressToVerifiedBySelector, e164NumberToAddressSelector } from 'src/identity/selectors'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { getDisplayName } from 'src/recipients/recipient'
-import { VERIFIERS, Verifier, isKnownVerifier } from 'src/recipients/verifier'
+import { Verifier, isKnownVerifier } from 'src/recipients/verifier'
 import { useSelector } from 'src/redux/hooks'
+import SelectRecipientAddressList from 'src/send/SelectRecipientAddressList'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SelectRecipientAddress>
-
-const ICON_SIZE = 40
-
-function VerifierIcon({ verifier }: { verifier: Verifier }) {
-  return <Image source={VERIFIERS[verifier].icon} style={styles.icon} resizeMode="contain" />
-}
 
 function SelectRecipientAddress({ route }: Props) {
   const { t } = useTranslation()
@@ -63,7 +55,7 @@ function SelectRecipientAddress({ route }: Props) {
         address,
       },
       origin,
-      isMiniPayRecipient: verifier === 'minipay',
+      skipRecipientLookup: true,
     })
   }
 
@@ -83,24 +75,7 @@ function SelectRecipientAddress({ route }: Props) {
             <Text style={styles.explanationName} />
           </Trans>
         </Text>
-        {verifiedEntries.map(({ address, verifier }) => (
-          <Touchable
-            key={address}
-            onPress={() => onSelectAddress(address, verifier)}
-            testID={`SelectRecipientAddress/Row/${address}`}
-          >
-            <View style={styles.row}>
-              <VerifierIcon verifier={verifier} />
-              <View style={styles.rowContent}>
-                <Text style={styles.address}>{formatShortenedAddress(address)}</Text>
-                <View style={styles.verifier}>
-                  <VerifiedBadge color={Colors.contentSecondary} />
-                  <Text style={styles.verifierName}>{VERIFIERS[verifier].name}</Text>
-                </View>
-              </View>
-            </View>
-          </Touchable>
-        ))}
+        <SelectRecipientAddressList entries={verifiedEntries} onSelectAddress={onSelectAddress} />
       </ScrollView>
     </SafeAreaView>
   )
@@ -130,32 +105,6 @@ const styles = StyleSheet.create({
   },
   explanationName: {
     fontWeight: 'bold',
-  },
-  icon: {
-    width: ICON_SIZE,
-    height: ICON_SIZE,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.Regular16,
-    paddingVertical: Spacing.Regular16,
-  },
-  rowContent: {
-    flex: 1,
-    marginLeft: Spacing.Small12,
-  },
-  address: {
-    ...typeScale.labelMedium,
-  },
-  verifier: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.Tiny4,
-  },
-  verifierName: {
-    ...typeScale.bodySmall,
-    color: Colors.contentSecondary,
   },
 })
 

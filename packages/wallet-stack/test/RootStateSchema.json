@@ -5532,6 +5532,9 @@
                         "string"
                     ]
                 },
+                "recipientLookupLoading": {
+                    "type": "boolean"
+                },
                 "shouldRefreshStoredPasswordHash": {
                     "type": "boolean"
                 }
@@ -5544,6 +5547,7 @@
                 "e164NumberToAddress",
                 "importContactsProgress",
                 "lastSavedContactsHash",
+                "recipientLookupLoading",
                 "shouldRefreshStoredPasswordHash"
             ],
             "type": "object"

@@ -172,6 +172,32 @@ describe('ReviewSummaryItemContact', () => {
     expect(subtitle).toHaveTextContent('MiniPay', { exact: false })
   })
 
+  it('shows the unverified warning in the subtitle for phone recipients with a known-unverified address', () => {
+    const address = '0x0123456789012345678901234567890123456789'
+    const recipient = {
+      name: 'John Doe',
+      e164PhoneNumber: '+222222222',
+      address,
+    } as Recipient
+    const tree = renderContact(recipient, {
+      identity: { addressToVerifiedBy: { [address]: null } },
+    })
+
+    const subtitle = tree.getByTestId('ContactItem/SecondaryValue')
+    expect(subtitle).toHaveTextContent('0x0123...6789', { exact: false })
+    expect(subtitle).toHaveTextContent('unverifiedAddress', { exact: false })
+  })
+
+  it('omits the unverified warning for address-only recipients (the address is already the primary value)', () => {
+    const address = '0x0123456789012345678901234567890123456789'
+    const recipient = { address } as Recipient
+    const tree = renderContact(recipient, {
+      identity: { addressToVerifiedBy: { [address]: null } },
+    })
+
+    expect(tree.queryByTestId('ContactItem/SecondaryValue')).toBeNull()
+  })
+
   it('logs an error if no name/phone/address exist', () => {
     const recipient = {} as Recipient
     const tree = renderContact(recipient)

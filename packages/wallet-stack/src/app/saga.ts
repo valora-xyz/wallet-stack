@@ -260,9 +260,8 @@ function* watchDeepLinks() {
 
 export function* handleOpenUrl(action: OpenUrlAction) {
   const { url, openExternal, isSecureOrigin } = action
-  const walletConnectEnabled: boolean = yield* call(isWalletConnectEnabled, url)
   Logger.debug(TAG, 'Handling url', url)
-  if (isDeepLink(url) || (walletConnectEnabled && isWalletConnectDeepLink(url))) {
+  if (isDeepLink(url) || (isWalletConnectDeepLink(url) && (yield* call(isWalletConnectEnabled)))) {
     // Handle celo links directly, this avoids showing the "Open with App" sheet on Android
     yield* call(handleDeepLink, openDeepLink(url, isSecureOrigin))
   } else if (/^https?:\/\//i.test(url) === true && !openExternal) {

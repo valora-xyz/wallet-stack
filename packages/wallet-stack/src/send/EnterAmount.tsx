@@ -30,6 +30,7 @@ import { useSelector } from 'src/redux/hooks'
 import EnterAmountOptions from 'src/send/EnterAmountOptions'
 import { AmountEnteredIn } from 'src/send/types'
 import { typeScale } from 'src/styles/fonts'
+import Colors from 'src/styles/colors'
 import { Spacing } from 'src/styles/styles'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
@@ -69,6 +70,7 @@ interface Props {
   ProceedComponent: ComponentType<ProceedComponentProps>
   disableBalanceCheck?: boolean
   filterChips?: FilterChip<TokenBalance>[]
+  recipientSlot?: React.ReactNode
 }
 
 export const SendProceed = ({
@@ -111,6 +113,7 @@ export default function EnterAmount({
   ProceedComponent,
   disableBalanceCheck = false,
   filterChips,
+  recipientSlot,
 }: Props) {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
@@ -253,6 +256,13 @@ export default function EnterAmount({
             onOpenTokenPicker={tokenSelectionDisabled ? undefined : onOpenTokenPicker}
           />
 
+          {!!recipientSlot && (
+            <>
+              <View style={styles.connectorLine} />
+              {recipientSlot}
+            </>
+          )}
+
           {token &&
             prepareTransactionsResult?.type !== 'not-enough-balance-for-gas' &&
             !!networkFee && (
@@ -383,5 +393,12 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.Regular16,
     paddingHorizontal: Spacing.Regular16,
     borderRadius: 16,
+  },
+  connectorLine: {
+    width: 2,
+    height: 12,
+    backgroundColor: Colors.borderPrimary,
+    alignSelf: 'center',
+    marginVertical: Spacing.Tiny4,
   },
 })

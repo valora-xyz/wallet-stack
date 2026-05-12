@@ -3794,6 +3794,18 @@ export const v257Schema = {
   identity: _.omit(v256Schema.identity, 'addressToVerificationStatus'),
 }
 
+export const v258Schema = {
+  ...v257Schema,
+  _persist: {
+    ...v257Schema._persist,
+    version: 258,
+  },
+  identity: {
+    ...v257Schema.identity,
+    recipientLookupLoading: false,
+  },
+}
+
 export function getLatestSchema(): Partial<RootState> {
-  return v257Schema as Partial<RootState>
+  return v258Schema as Partial<RootState>
 }

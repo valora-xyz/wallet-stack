@@ -184,8 +184,13 @@ function SendSelectRecipient({ route }: Props) {
   const { contactRecipients, recentRecipients } = useSendRecipients()
   const { mergedRecipients, searchQuery, setSearchQuery } = useMergedSearchRecipients(onSearch)
 
-  const { recipientVerificationStatus, recipient, setSelectedRecipient, unsetSelectedRecipient } =
-    useFetchRecipientVerificationStatus()
+  const {
+    recipientVerificationStatus,
+    recipient,
+    setSelectedRecipient,
+    unsetSelectedRecipient,
+    isSelectedRecipientLoading,
+  } = useFetchRecipientVerificationStatus()
 
   useEffect(() => {
     // Auto-navigate once verification resolves. The picker stays mounted so the
@@ -210,7 +215,8 @@ function SendSelectRecipient({ route }: Props) {
     AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
       recipientType: recipient.recipientType,
     })
-    nextScreen(recipient)
+    // useFetchRecipientVerificationStatus already performed the lookup for search results.
+    nextScreen(recipient, true)
   }, [recipient, recipientVerificationStatus, shareUrl])
 
   const onContactsPermissionGranted = () => {
@@ -226,10 +232,11 @@ function SendSelectRecipient({ route }: Props) {
     AppAnalytics.track(SendEvents.send_select_recipient_recent_press, {
       recipientType: recentRecipient.recipientType,
     })
-    nextScreen(recentRecipient)
+    // Recents may carry stale mappings — let the enter-amount screen refresh.
+    nextScreen(recentRecipient, false)
   }
 
-  const nextScreen = (selectedRecipient: Recipient) => {
+  const nextScreen = (selectedRecipient: Recipient, skipRecipientLookup: boolean) => {
     // use the address from the recipient object
     let address: string | null | undefined = selectedRecipient.address
 
@@ -266,7 +273,7 @@ function SendSelectRecipient({ route }: Props) {
         address,
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: addressToVerifiedBy?.[address] === 'minipay',
+      skipRecipientLookup,
     })
   }
 
@@ -280,9 +287,7 @@ function SendSelectRecipient({ route }: Props) {
             recipients={mergedRecipients}
             onSelectRecipient={setSelectedRecipient}
             selectedRecipient={recipient}
-            isSelectedRecipientLoading={
-              !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
-            }
+            isSelectedRecipientLoading={isSelectedRecipientLoading}
           />
         </>
       )
@@ -327,9 +332,7 @@ function SendSelectRecipient({ route }: Props) {
             recipients={contactRecipients}
             onSelectRecipient={setSelectedRecipient}
             selectedRecipient={recipient}
-            isSelectedRecipientLoading={
-              !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
-            }
+            isSelectedRecipientLoading={isSelectedRecipientLoading}
           />
         ) : (
           <>
@@ -344,9 +347,7 @@ function SendSelectRecipient({ route }: Props) {
                 title={t('sendSelectRecipient.recents')}
                 onSelectRecipient={onSelectRecentRecipient}
                 selectedRecipient={recipient}
-                isSelectedRecipientLoading={
-                  !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
-                }
+                isSelectedRecipientLoading={isSelectedRecipientLoading}
                 style={styles.recentRecipientPicker}
               />
             ) : (

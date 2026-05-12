@@ -1,19 +1,24 @@
 import Clipboard from '@react-native-clipboard/clipboard'
-import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
+import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
 import { getAppConfig } from 'src/appConfig'
-import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
+import {
+  fetchAddressVerification,
+  fetchAddressesAndValidate,
+  recipientLookupResolved,
+} from 'src/identity/actions'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { RecipientType } from 'src/recipients/recipient'
+import { setupStore } from 'src/redux/store'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
 import { getDynamicConfigParams } from 'src/statsig'
 import { StatsigDynamicConfigs } from 'src/statsig/types'
-import { createMockStore, getMockStackScreenProps } from 'test/utils'
+import { createMockStore, getMockStackScreenProps, getMockStoreData } from 'test/utils'
 import {
   mockAccount,
   mockAccount2,
@@ -33,6 +38,10 @@ jest.mock('src/recipients/resolve-id')
 
 jest.mock('react-native-device-info', () => ({ getFontScaleSync: () => 1 }))
 jest.mock('src/statsig')
+jest.mock('src/redux/sagas', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  rootSaga: jest.fn(function* () {}),
+}))
 
 const mockScreenProps = ({
   defaultTokenIdOverride,
@@ -197,6 +206,69 @@ describe('SendSelectRecipient', () => {
     })
     expect(getByTestId('SelectRecipient/NoResults')).toBeTruthy()
   })
+  describe('selection spinner', () => {
+    it('shows the spinner while the lookup is in flight and hides it once the saga resolves (error path)', async () => {
+      // Reducer-backed store: tapping a recipient dispatches `fetchAddressesAndValidate`
+      // which flips `recipientLookupLoading` to true; dispatching `recipientLookupResolved`
+      // (the saga's `finally` branch) flips it back to false. We assert the row spinner
+      // tracks the actual state transition, including the no-mapping (error) end state.
+      const { store } = setupStore(getMockStoreData(storeWithPhoneVerified))
+
+      const { getByTestId, queryByTestId } = render(
+        <Provider store={store}>
+          <SendSelectRecipient {...mockScreenProps({})} />
+        </Provider>
+      )
+
+      await act(() => {
+        fireEvent.changeText(getByTestId('SendSelectRecipientSearchInput'), 'George Bogart')
+      })
+      await act(() => {
+        fireEvent.press(getByTestId('RecipientItem'))
+      })
+
+      expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeTruthy()
+
+      await act(() => {
+        store.dispatch(recipientLookupResolved())
+      })
+
+      expect(queryByTestId('RecipientItem/ActivityIndicator')).toBeFalsy()
+    })
+  })
+
+  it('passes skipRecipientLookup=false when a recent recipient is tapped (cached mappings may be stale)', async () => {
+    const store = createMockStore({
+      ...defaultStore,
+      send: {
+        recentRecipients: [{ ...mockRecipient, address: mockAccount2.toLowerCase() }],
+      },
+      identity: {
+        addressToVerifiedBy: { [mockAccount2.toLowerCase()]: 'valora' },
+      },
+    })
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <SendSelectRecipient {...mockScreenProps({})} />
+      </Provider>
+    )
+
+    await act(() => {
+      fireEvent.press(
+        within(getByTestId('SelectRecipient/RecentRecipientPicker')).getByTestId('RecipientItem')
+      )
+    })
+
+    expect(AppAnalytics.track).toHaveBeenCalledWith(SendEvents.send_select_recipient_recent_press, {
+      recipientType: mockRecipient.recipientType,
+    })
+    expect(navigate).toHaveBeenCalledWith(
+      Screens.SendEnterAmount,
+      expect.objectContaining({ skipRecipientLookup: false })
+    )
+  })
+
   it('navigates to send amount when a verified phone recipient is tapped in search results', async () => {
     const store = createMockStore({
       ...storeWithPhoneVerified,
@@ -230,7 +302,7 @@ describe('SendSelectRecipient', () => {
       forceTokenId: undefined,
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
   })
   it('navigates to send amount when an address is tapped and the user phone number is not verified', async () => {
@@ -264,7 +336,7 @@ describe('SendSelectRecipient', () => {
       forceTokenId: undefined,
       recipient: expect.any(Object),
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
   })
 
@@ -509,44 +581,7 @@ describe('SendSelectRecipient', () => {
         recipientType: 'PhoneNumber',
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
-    })
-  })
-  it('navigates with isMiniPayRecipient when address is verified by minipay', async () => {
-    const store = createMockStore({
-      ...storeWithPhoneVerified,
-      identity: {
-        e164NumberToAddress: { [mockE164Number3]: [mockAccount3] },
-        addressToVerifiedBy: { [mockAccount3]: 'minipay' },
-      },
-    })
-
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <SendSelectRecipient {...mockScreenProps({})} />
-      </Provider>
-    )
-    const searchInput = getByTestId('SendSelectRecipientSearchInput')
-
-    await act(() => {
-      fireEvent.changeText(searchInput, mockE164Number3)
-    })
-    await act(() => {
-      fireEvent.press(getByTestId('RecipientItem'))
-    })
-
-    expect(navigate).toHaveBeenCalledWith(Screens.SendEnterAmount, {
-      isFromScan: false,
-      defaultTokenIdOverride: undefined,
-      forceTokenId: undefined,
-      recipient: {
-        address: mockAccount3,
-        displayNumber: '(415) 555-0123',
-        e164PhoneNumber: mockE164Number3,
-        recipientType: 'PhoneNumber',
-      },
-      origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: true,
+      skipRecipientLookup: true,
     })
   })
   it('navigates to address picker when phone number recipient has multiple verified addresses', async () => {
@@ -636,7 +671,7 @@ describe('SendSelectRecipient', () => {
         recipientType: 'PhoneNumber',
       },
       origin: SendOrigin.AppSendFlow,
-      isMiniPayRecipient: false,
+      skipRecipientLookup: true,
     })
   })
   it.each([{ searchAddress: mockAccount2 }, { searchAddress: mockAccount3 }])(
@@ -690,7 +725,7 @@ describe('SendSelectRecipient', () => {
           thumbnailPath: undefined,
         },
         origin: SendOrigin.AppSendFlow,
-        isMiniPayRecipient: searchAddress.toLowerCase() === mockAccount3.toLowerCase(),
+        skipRecipientLookup: true,
       })
     }
   )
