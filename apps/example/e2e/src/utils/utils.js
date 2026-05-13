@@ -122,14 +122,17 @@ export async function quickOnboarding({
       tap: true,
     })
 
-    await element(by.id('ImportWalletBackupKeyInputField')).replaceText(mnemonic)
     if (device.getPlatform() === 'ios') {
-      // On iOS, type one more space to workaround onChangeText not being triggered with replaceText above
-      // and leaving the restore button disabled
+      await element(by.id('ImportWalletBackupKeyInputField')).replaceText(mnemonic)
+      // iOS workaround: replaceText doesn't fire onChangeText, so the Restore button
+      // stays disabled. Typing a trailing newline triggers it.
       await element(by.id('ImportWalletBackupKeyInputField')).typeText('\n')
-    } else if (device.getPlatform() === 'android') {
-      // Press back button to close the keyboard
-      await device.pressBack()
+    } else {
+      // Android workaround: replaceText fails silently on this multiline +
+      // visible-password TextInput, so the text never reaches React state. Use
+      // typeText instead, which actually delivers the input.
+      await element(by.id('ImportWalletBackupKeyInputField')).typeText(mnemonic + '\n')
+      await device.pressBack() // close the keyboard so the Restore button is reachable
     }
 
     await scrollIntoView('Restore', 'ImportWalletKeyboardAwareScrollView')

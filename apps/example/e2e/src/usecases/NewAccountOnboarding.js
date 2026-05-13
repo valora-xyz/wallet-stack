@@ -26,11 +26,9 @@ const arriveAtHomeScreen = async () => {
 }
 
 const completeProtectWalletScreen = async () => {
-  await expect(element(by.id('recoveryPhraseCard'))).toBeVisible()
-  await element(by.id('recoveryPhraseCard')).tap()
+  await waitForElementById('recoveryPhraseCard', { tap: true })
   await enterPinUi()
-  await expect(element(by.id('protectWalletBottomSheetContinue'))).toBeVisible()
-  await element(by.id('protectWalletBottomSheetContinue')).tap()
+  await waitForElementById('protectWalletBottomSheetContinue', { tap: true })
 }
 
 export default NewAccountOnboarding = () => {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import ReactNativeModal from 'react-native-modal'
-import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Card from 'src/components/Card'
 import colors from 'src/styles/colors'
 
@@ -24,8 +24,6 @@ export default function Modal({
   onBackgroundPress,
   onModalHide,
 }: Props) {
-  const { height } = useSafeAreaFrame()
-
   return (
     <ReactNativeModal
       testID={testID}
@@ -33,9 +31,6 @@ export default function Modal({
       isVisible={isVisible}
       backdropOpacity={0.1}
       onBackdropPress={onBackgroundPress}
-      // The default uses `Dimensions.get('window').height` but sometimes reports an incorrect height on Android
-      // `useSafeAreaFrame()` seems to work better
-      deviceHeight={height}
       statusBarTranslucent={true}
       onModalHide={onModalHide}
     >

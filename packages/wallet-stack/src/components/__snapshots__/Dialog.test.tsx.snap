@@ -3,7 +3,7 @@
 exports[`renders correctly 1`] = `
 <Modal
   animationType="none"
-  deviceHeight={1334}
+  deviceHeight={null}
   deviceWidth={null}
   hideModalContentWhileAnimating={false}
   onBackdropPress={[Function]}
@@ -63,7 +63,7 @@ exports[`renders correctly 1`] = `
   />
   <View
     collapsable={false}
-    deviceHeight={1334}
+    deviceHeight={null}
     deviceWidth={null}
     hideModalContentWhileAnimating={false}
     onBackdropPress={[Function]}
