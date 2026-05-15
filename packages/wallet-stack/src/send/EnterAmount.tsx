@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Keyboard, TextInput as RNTextInput, StyleSheet, Text } from 'react-native'
 import { View } from 'react-native-animatable'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import Svg, { Path } from 'react-native-svg'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
@@ -29,8 +30,8 @@ import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
 import { useSelector } from 'src/redux/hooks'
 import EnterAmountOptions from 'src/send/EnterAmountOptions'
 import { AmountEnteredIn } from 'src/send/types'
-import { typeScale } from 'src/styles/fonts'
 import Colors from 'src/styles/colors'
+import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
@@ -258,7 +259,7 @@ export default function EnterAmount({
 
           {!!recipientSlot && (
             <>
-              <View style={styles.connectorLine} />
+              <ConnectorArrow />
               {recipientSlot}
             </>
           )}
@@ -367,6 +368,20 @@ export default function EnterAmount({
   )
 }
 
+function ConnectorArrow() {
+  return (
+    <Svg width={12} height={16} viewBox="0 0 12 16" fill="none" style={styles.connector}>
+      <Path
+        d="M6 0 V13 M2 9 L6 13 L10 9"
+        stroke={Colors.borderPrimary}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  )
+}
+
 const styles = StyleSheet.create({
   safeAreaContainer: {
     flex: 1,
@@ -394,10 +409,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.Regular16,
     borderRadius: 16,
   },
-  connectorLine: {
-    width: 2,
-    height: 12,
-    backgroundColor: Colors.borderPrimary,
+  connector: {
     alignSelf: 'center',
     marginVertical: Spacing.Tiny4,
   },
