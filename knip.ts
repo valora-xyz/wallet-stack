@@ -30,6 +30,7 @@ const config: KnipConfig = {
         'index.tsx!',
         'metro.config.js!',
         'detox.config.js!',
+        'react-native.config.js!',
         'plugins/**/*.{js,ts}',
         'e2e/**/*.{js,ts}',
       ],

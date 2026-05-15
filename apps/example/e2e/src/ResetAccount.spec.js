@@ -1,11 +1,11 @@
-import HomeFeed from './usecases/HomeFeed'
+import ResetAccount from './usecases/ResetAccount'
 import { launchApp } from './utils/retries'
 import { quickOnboarding } from './utils/utils'
 
-describe('Home feed', () => {
+describe('Account', () => {
   beforeAll(async () => {
     await quickOnboarding()
   })
 
-  describe('when loaded', HomeFeed)
+  describe('Reset Account', ResetAccount)
 })

@@ -1,10 +1,9 @@
-import { reloadReactNative } from '../utils/retries'
 import { enterPinUiIfNecessary, waitForElementById } from '../utils/utils'
-import { navigateToSecurity } from '../utils/navigation'
+import { navigateToHome, navigateToSecurity } from '../utils/navigation'
 
 export default ResetAccount = () => {
   beforeEach(async () => {
-    await reloadReactNative()
+    await navigateToHome()
   })
 
   it('Reset Account by doing the Recovery Phrase quiz', async () => {

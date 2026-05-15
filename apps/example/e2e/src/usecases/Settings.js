@@ -1,14 +1,12 @@
 import { dismissBanners } from '../utils/banners'
-import { navigateToPreferences, navigateToProfile } from '../utils/navigation'
-import { reloadReactNative } from '../utils/retries'
-import { scrollIntoView, waitForElementById, sleep } from '../utils/utils'
+import { navigateToHome, navigateToPreferences, navigateToProfile } from '../utils/navigation'
+import { scrollIntoView, waitForElementById } from '../utils/utils'
 
 const faker = require('@faker-js/faker')
 
 export default Settings = () => {
   beforeEach(async () => {
-    await reloadReactNative()
-    await sleep(3000)
+    await navigateToHome()
   })
 
   it('Edit Profile Name', async () => {

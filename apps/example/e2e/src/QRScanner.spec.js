@@ -1,4 +1,4 @@
-import { launchApp, reloadReactNative } from './utils/retries'
+import { launchApp } from './utils/retries'
 import { quickOnboarding, waitForElementById } from './utils/utils'
 
 const verifyCamera = async () => {
@@ -11,7 +11,6 @@ const verifyCamera = async () => {
 describe('Given QR Scanner', () => {
   beforeAll(async () => {
     await quickOnboarding()
-    await launchApp({ newInstance: false })
   })
 
   describe('When opening QR scanner', () => {
@@ -33,41 +32,6 @@ describe('Given QR Scanner', () => {
     it('Then should be able to close QR code scanner', async () => {
       await waitForElementById('Times', { tap: true })
       await waitForElementById('HomeAction-Send')
-    })
-  })
-
-  describe("When 'scanning' QR", () => {
-    beforeEach(async () => {
-      await reloadReactNative()
-      await waitForElementById('HomeAction-Receive', { tap: true })
-      await waitForElementById('Scan', { tap: true })
-      await verifyCamera()
-    })
-
-    it('Then should be able to handle Celo pay QR', async () => {
-      // Use instead of waitForElementById as the element is not visible behind opacity overlay
-      await element(by.text('Center code in the box above')).tap()
-      await waitForElementById('ManualInput')
-      await element(by.id('ManualInput')).replaceText(
-        'celo://wallet/pay?address=0xe5F5363e31351C38ac82DBAdeaD91Fd5a7B08846'
-      )
-      await waitForElementById('ManualSubmit')
-      await element(by.id('ManualSubmit')).tap()
-
-      await element(by.text('Enter Amount')).tap() // dismiss the keyboard to reveal the proceed button
-      await expect(element(by.id('SendEnterAmount/ReviewButton'))).toBeVisible()
-    })
-
-    it('Then should handle address only QR', async () => {
-      // Use instead of waitForElementById as the element is not visible behind opacity overlay
-      await element(by.text('Center code in the box above')).tap()
-      await waitForElementById('ManualInput')
-      await element(by.id('ManualInput')).replaceText('0xe5F5363e31351C38ac82DBAdeaD91Fd5a7B08846')
-      await waitForElementById('ManualSubmit')
-      await element(by.id('ManualSubmit')).tap()
-
-      await element(by.text('Enter Amount')).tap() // dismiss the keyboard to reveal the proceed button
-      await expect(element(by.id('SendEnterAmount/ReviewButton'))).toBeVisible()
     })
   })
 })

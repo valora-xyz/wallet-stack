@@ -7,7 +7,6 @@ exports[`WebViewAndroidBottomSheet renders correctly when visible 1`] = `
   animationType="none"
   deviceHeight={null}
   deviceWidth={null}
-  hardwareAccelerated={false}
   hideModalContentWhileAnimating={false}
   onBackdropPress={[MockFunction]}
   onModalHide={[Function]}

@@ -90,7 +90,8 @@
           "recordAudioAndroid": false
         }
       ],
-      "./plugins/withDesugaring"
+      "./plugins/withDesugaring",
+      "./plugins/withFmtConstevalFix"
     ]
   }
 }

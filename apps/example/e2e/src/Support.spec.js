@@ -1,11 +1,11 @@
-import HomeFeed from './usecases/HomeFeed'
+import Support from './usecases/Support'
 import { launchApp } from './utils/retries'
 import { quickOnboarding } from './utils/utils'
 
-describe('Home feed', () => {
+describe('Account', () => {
   beforeAll(async () => {
     await quickOnboarding()
   })
 
-  describe('when loaded', HomeFeed)
+  describe('Support', Support)
 })

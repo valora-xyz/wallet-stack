@@ -1,6 +1,5 @@
-import ResetAccount from './usecases/ResetAccount'
 import Settings from './usecases/Settings'
-import Support from './usecases/Support'
+import { launchApp } from './utils/retries'
 import { quickOnboarding } from './utils/utils'
 
 describe('Account', () => {
@@ -8,7 +7,5 @@ describe('Account', () => {
     await quickOnboarding()
   })
 
-  describe('Support', Support)
   describe('Settings', Settings)
-  describe('Reset Account', ResetAccount)
 })
