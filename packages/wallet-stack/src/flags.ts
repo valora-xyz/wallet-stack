@@ -10,7 +10,6 @@ export const countryFeatures = {
     CU: true, // Cuba
     KP: true, // North Korea
     SD: true, // Sudan
-    SY: true, // Syria
   },
   IS_IN_EUROPE: {
     // Countries in Europe, taken from https://en.wikipedia.org/wiki/List_of_sovereign_states_and_dependent_territories_in_Europe

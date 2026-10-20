@@ -26,15 +26,18 @@ describe('SelectCountry', () => {
     // Germany shows up
     fireEvent.changeText(tree.getByTestId('SearchInput'), 'Germany')
     expect(tree.queryByText('Germany')).not.toBeNull()
-    // Syria does not
+    // Syria shows up
     fireEvent.changeText(tree.getByTestId('SearchInput'), 'Syria')
-    expect(tree.queryByText('Syria')).toBeNull()
+    expect(tree.queryByText('Syrian Arab Republic')).not.toBeNull()
+    // Cuba does not
+    fireEvent.changeText(tree.getByTestId('SearchInput'), 'Cuba')
+    expect(tree.queryByText('Cuba')).toBeNull()
     // Iran does not
     fireEvent.changeText(tree.getByTestId('SearchInput'), 'Iran')
-    expect(tree.queryByText('Syria')).toBeNull()
+    expect(tree.queryByText('Iran, Islamic Republic Of')).toBeNull()
     // North Korea does not
-    fireEvent.changeText(tree.getByTestId('SearchInput'), 'North Korea')
-    expect(tree.queryByText('North Korea')).toBeNull()
+    fireEvent.changeText(tree.getByTestId('SearchInput'), 'Korea')
+    expect(tree.queryByText("Korea, Democratic People's Republic Of")).toBeNull()
   })
   it('tapping a country calls onSelectCountry', () => {
     const tree = render(
